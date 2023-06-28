@@ -20,7 +20,7 @@ public class ConfiguratoreMenuCarta extends ConfiguratoreManager {
 			writer.write("validitaMenu=" + ((MenuCarta) menuCarta).getValidita().toString());
 			writer.newLine();
 			HashSet<Piatto> elenco = ((MenuCarta) menuCarta).getElenco();
-			writer.write("elencoMenu=");
+			writer.write("elencoMenu= ");
 			writer.newLine();
 			ConfiguratorePiatto confPiat = new ConfiguratorePiatto();
 			for (Piatto piatto : elenco) {

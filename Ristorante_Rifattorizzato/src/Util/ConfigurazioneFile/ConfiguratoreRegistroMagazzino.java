@@ -20,7 +20,7 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 			RegistroMagazzino registroMagazzino = (RegistroMagazzino) oggetto;
 			HashMap<String, PriorityQueue<ElementoMagazzino>> registro = registroMagazzino.getRegistro();
 
-			writer.write("registro magazzino=");
+			writer.write("registro magazzino= ");
 			writer.newLine();
 			// Scriviamo i singoli elementi del registro nel file
 			for (String nomeMerce : registro.keySet()) {

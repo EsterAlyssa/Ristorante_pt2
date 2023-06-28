@@ -16,7 +16,7 @@ public class ConfiguratoreListaSpesa extends ConfiguratoreManager{
 	void scriviParametriNelFile(Object listaSpesa, BufferedWriter writer) {
 		try {
 			HashMap<String, Double> lista = ((ListaSpesa) listaSpesa).getLista();
-			writer.write("lista=");
+			writer.write("lista= ");
 			writer.newLine();
 			ConfiguratoreManager conf = new ConfiguratoreHashMapStringDouble();
 			conf.scriviParametriNelFile(lista, writer);

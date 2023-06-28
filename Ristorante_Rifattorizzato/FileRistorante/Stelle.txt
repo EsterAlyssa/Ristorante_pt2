@@ -1,0 +1,4 @@
+nome=Stelle
+caricoLavoroPersona=15
+numPosti=60
+caricoLavoroRistorante=1080.0

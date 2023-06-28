@@ -1,6 +1,9 @@
 package Utenti;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.List;
 import Giorno.Giorno;
 import Giorno.Periodo;
 import Ristorante.Ristorante;
+import Ristorante.InsiemeExtra;
 import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
 import Ristorante.ElementiRistorante.Ricetta;
@@ -18,12 +22,24 @@ import Util.ConfigurazioneFile.*;
 public class Gestore extends Utente{
 
 	private static String etichettaG = "gestore";
-	private static String[] voci = {"Cambia i parametri del ristorante","Visualizza i parametri del ristorante","Aggiungi bevanda all'insieme delle bevande",
-			"Rimuovi bevanda dall'insieme delle bevande", "Visualizza l'insieme delle bevande", "Aggiungi genere extra all'insieme dei generi extra",
-			"Rimuovi genere extra dall'insieme dei generi extra", "Visualizza l'insieme dei generi extra","Crea corrispondenza Piatto - Ricetta",
-			"Modifica il periodo di validita' di tutti i piatti", "Visualizza tutti i piatti", "Verifica l'esistenza di una ricetta",
-			"Crea una ricetta", "Visualizza il ricettario (solo i nomi)", "Visualizza una ricetta", "Visualizza le informazioni di tutte le ricetta",
-			"Crea un menu tematico", "Visualizza tutti i menu tematici (solo i nomi)", "Visualizza un menu tematico"};
+	private static String[] voci = {"Cambia i parametri del ristorante",
+			"Visualizza i parametri del ristorante",
+			"Aggiungi bevanda all'insieme delle bevande",
+			"Rimuovi bevanda dall'insieme delle bevande", 
+			"Visualizza l'insieme delle bevande", 
+			"Aggiungi genere extra all'insieme dei generi extra",
+			"Rimuovi genere extra dall'insieme dei generi extra", 
+			"Visualizza l'insieme dei generi extra",
+			"Crea corrispondenza Piatto - Ricetta",
+			"Visualizza tutti i piatti", 
+			"Verifica l'esistenza di una ricetta",
+			"Crea una ricetta", 
+			"Visualizza il ricettario (solo i nomi)", 
+			"Visualizza una ricetta", 
+			"Visualizza le informazioni di tutte le ricetta",
+			"Crea un menu tematico", 
+			"Visualizza tutti i menu tematici (solo i nomi)", 
+	"Visualizza un menu tematico"};
 
 	public Gestore(String nome) {
 		super(nome, etichettaG, voci);
@@ -73,6 +89,14 @@ public class Gestore extends Utente{
 		// Controlla se il file "insieme_bevande.txt" esiste, altrimenti lo crea
 		if (!ServizioFile.controlloEsistenzaFile(pathFileBevande)) {
 			ServizioFile.creaFile(pathFileBevande);
+			try {
+				BufferedWriter writer = new BufferedWriter(new FileWriter(pathFileBevande));
+				writer.write("Insieme Extra=");
+				writer.flush();
+			} catch (IOException e) {
+				System.out.println("Errore inizializzazione file");
+				e.printStackTrace();
+			}
 		}
 
 		String msgNome = "Inserisci il nome della bevanda da aggiungere: ";
@@ -82,7 +106,8 @@ public class Gestore extends Utente{
 		double consumoProCapite = InputDati.leggiDoubleConMinimo(msgConsumo, 0);
 
 		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
-		HashMap<String, Double> insiemeB = (HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileBevande);
+		InsiemeExtra insiemeB = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileBevande);
+
 		ristorante.setInsiemeB(insiemeB);
 		ristorante.aggiungiBevanda(nome, consumoProCapite);
 		insiemeB = ristorante.getInsiemeB();
@@ -104,7 +129,8 @@ public class Gestore extends Utente{
 		String pathFileBevande = pathInsiemiExtra + "/" + nomeFileBevande;
 
 		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
-		HashMap<String, Double> insiemeB = (HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileBevande);
+		InsiemeExtra insiemeB = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileBevande);
+
 		ristorante.setInsiemeB(insiemeB);
 		ristorante.rimuoviBevanda(nome);
 		insiemeB = ristorante.getInsiemeB();
@@ -122,11 +148,12 @@ public class Gestore extends Utente{
 		String pathFileBevande = pathInsiemiExtra + "/" + nomeFileBevande;
 
 		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
-		HashMap<String, Double> insiemeB = ((HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileBevande));
-		ristorante.setInsiemeB(insiemeB);
+		InsiemeExtra insiemeB = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileBevande);
 
-		for (String elemento : insiemeB.keySet()) {
-			System.out.printf("bevanda: %s\tconsumo pro capite: %f.2\n", elemento, insiemeB.get(elemento));
+		ristorante.setInsiemeB(insiemeB);	
+		
+		for (String elemento : insiemeB.getInsiemeExtra().keySet()) {
+			System.out.printf("bevanda: %s\tconsumo pro capite: %f.2\n", elemento, insiemeB.getInsiemeExtra().get(elemento));
 		}
 	}
 
@@ -149,10 +176,19 @@ public class Gestore extends Utente{
 		// Controlla se il file "insieme_generi extra.txt" esiste, altrimenti lo crea
 		if (!ServizioFile.controlloEsistenzaFile(pathFileGeneriExtra)) {
 			ServizioFile.creaFile(pathFileGeneriExtra);
+			try {
+				BufferedWriter writer = new BufferedWriter(new FileWriter(pathFileGeneriExtra));
+				writer.write("Insieme Extra=");
+				writer.flush();
+			} catch (IOException e) {
+				System.out.println("Errore inizializzazione file");
+				e.printStackTrace();
+			}
 		}
-
+		
 		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
-		HashMap<String, Double> insiemeGE = (HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
+		InsiemeExtra insiemeGE = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
+
 		ristorante.setInsiemeGE(insiemeGE);
 		ristorante.aggiungiGenereExtra(nome, consumoProCapite);
 		insiemeGE = ristorante.getInsiemeGE();
@@ -173,7 +209,8 @@ public class Gestore extends Utente{
 		String nome = InputDati.leggiStringaNonVuota(msgNome);
 
 		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
-		HashMap<String, Double> insiemeGE = (HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
+		InsiemeExtra insiemeGE = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
+
 		ristorante.setInsiemeGE(insiemeGE);
 		ristorante.rimuoviGenereExtra(nome);
 		insiemeGE = ristorante.getInsiemeGE();
@@ -191,11 +228,12 @@ public class Gestore extends Utente{
 		String pathFileGeneriExtra = pathInsiemiExtra + "/" + nomeFileGeneriExtra;
 
 		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
-		HashMap<String, Double> insiemeGE = (HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
-		ristorante.setInsiemeGE(insiemeGE);
+		InsiemeExtra insiemeGE = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
 
-		for (String elemento : ristorante.getInsiemeGE().keySet()) {
-			System.out.printf("genere extra: %s\tconsumo pro capite: %f.2\n", elemento, ristorante.getInsiemeGE().get(elemento));
+		ristorante.setInsiemeGE(insiemeGE);
+				
+		for (String elemento : ristorante.getInsiemeGE().getInsiemeExtra().keySet()) {
+			System.out.printf("genere extra: %s\tconsumo pro capite: %f.2\n", elemento, ristorante.getInsiemeGE().getInsiemeExtra().get(elemento));
 		}
 	}
 
@@ -380,9 +418,9 @@ public class Gestore extends Utente{
 
 		ConfiguratoreRicetta confRic = new ConfiguratoreRicetta();
 
-		List<File> elencoRicette = ServizioFile.getElencoFileTxt(pathRicettario);
+		List<File> elencoRicette = ServizioFile.getElencoFileTxt(pathRicettario+"/");
 		for (File file : elencoRicette) {
-			Ricetta ricetta = (Ricetta) confRic.caricaIstanzaOggettoDaFile(file.getAbsolutePath());
+			Ricetta ricetta = (Ricetta) confRic.caricaIstanzaOggettoDaFile(file.getPath());
 			ristorante.aggiungiRicetta(ricetta);
 		}
 

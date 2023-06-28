@@ -19,14 +19,14 @@ public class ConfiguratoreSceltaPrenotazione extends ConfiguratoreManager {
 			SceltaPrenotazione sceltaPren = (SceltaPrenotazione) sceltaPrenotazione;
 			if (sceltaPren instanceof MenuTematico) {
 				ConfiguratoreManager confMenuT = new ConfiguratoreMenuTematico();
-				writer.write("MenuTematico=");
+				writer.write("MenuTematico= ");
 				writer.newLine();
 				confMenuT.scriviParametriNelFile(sceltaPren, writer);
 			};
 
 			if (sceltaPren instanceof Piatto) {
 				ConfiguratoreManager confPiat = new ConfiguratorePiatto();
-				writer.write("Piatto=");
+				writer.write("Piatto= ");
 				writer.newLine();
 				confPiat.scriviParametriNelFile(sceltaPren, writer);
 			}

@@ -17,7 +17,7 @@ public class ConfiguratoreElementoMagazzino extends ConfiguratoreManager{
 		try {
 			ElementoMagazzino elementoMagazzino = (ElementoMagazzino) oggetto;
 			Merce merce = elementoMagazzino.getMerce();
-			writer.write("merce=");
+			writer.write("merce= ");
 			writer.newLine();
 			
 			ConfiguratoreMerce configuratoreMerce = new ConfiguratoreMerce();

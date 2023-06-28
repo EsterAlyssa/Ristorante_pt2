@@ -1,0 +1,6 @@
+nome=pollo
+numPorzioni=1
+caricoLavoroPorzione=5.0
+ingredienti=
+carote=3.0;
+pollo=3.0;

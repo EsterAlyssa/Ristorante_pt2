@@ -24,7 +24,7 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 			writer.newLine();
 
 			HashMap<SceltaPrenotazione, Integer> elenco = ((Prenotazione) prenotazione).getElenco();
-			writer.write("elenco=");
+			writer.write("elenco= ");
 			writer.newLine();
 			ConfiguratoreManager confScelta = new ConfiguratoreSceltaPrenotazione();
 			for (SceltaPrenotazione scelta : elenco.keySet()) {

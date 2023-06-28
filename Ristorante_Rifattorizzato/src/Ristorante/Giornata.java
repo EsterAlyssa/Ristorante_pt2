@@ -82,8 +82,8 @@ public class Giornata {
 
 		for (Prenotazione pren : prenotazioni) {
 			conDuplicati.putAll(Ingrediente.creaListaIngredientiDaPrenotazione(pren, ristorante.getRicettario()));
-			conDuplicati.putAll(Extra.creaListaExtraDaPrenotazione(pren, ristorante.getInsiemeB()));
-			conDuplicati.putAll(Extra.creaListaExtraDaPrenotazione(pren, ristorante.getInsiemeGE()));
+			conDuplicati.putAll(Extra.creaListaExtraDaPrenotazione(pren, ristorante.getInsiemeB().getInsiemeExtra()));
+			conDuplicati.putAll(Extra.creaListaExtraDaPrenotazione(pren, ristorante.getInsiemeGE().getInsiemeExtra()));
 
 			//gestione dei duplicati che toglie i duplicati
 			Merce.gestioneDuplicati(noDuplicati, conDuplicati);

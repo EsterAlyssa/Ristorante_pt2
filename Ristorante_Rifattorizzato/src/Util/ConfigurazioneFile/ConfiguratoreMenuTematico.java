@@ -25,7 +25,7 @@ public class ConfiguratoreMenuTematico extends ConfiguratoreManager {
 			writer.newLine();
 			
 			HashSet<Piatto> elenco = ((MenuTematico) menu).getElenco();
-			writer.write("elencoMenu=");
+			writer.write("elencoMenu= ");
 			ConfiguratoreManager confPiat = new ConfiguratorePiatto();
 			for (Piatto piatto : elenco) {
 				confPiat.scriviParametriNelFile(piatto, writer);

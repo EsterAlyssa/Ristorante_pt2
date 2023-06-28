@@ -123,8 +123,8 @@ public class RegistroMagazzino {
 
 	public void extraO (Ristorante ristorante, Giornata giornata) {	
 		//creiamo un unico insieme di elementi extra
-		HashMap<String, Double> extra = new HashMap<>(ristorante.getInsiemeB());
-		extra.putAll(ristorante.getInsiemeGE());
+		HashMap<String, Double> extra = new HashMap<>(ristorante.getInsiemeB().getInsiemeExtra());
+		extra.putAll(ristorante.getInsiemeGE().getInsiemeExtra());
 
 		//per ogni elemento dell'insieme preleviamo la merce da portare in sala dal magazzino
 		for (String elemento : extra.keySet()) {

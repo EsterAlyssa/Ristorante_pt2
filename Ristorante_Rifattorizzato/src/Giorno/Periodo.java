@@ -8,7 +8,7 @@ public class Periodo {
 	private TreeSet<Giorno> periodoValidita;
 	
 	private final static String MSG_PERIODO = "Inserisci il periodo di validità: ";
-	private final static String MSG_PIU_GIORNI = "\nVuoi inserire altri giorni di validita'? [S/N]";
+	private final static String MSG_PIU_GIORNI = "\nVuoi inserire altri giorni di validita'? ";
 
 	public Periodo () {
 		this.periodoValidita = new TreeSet<>();

@@ -22,7 +22,7 @@ public class ConfiguratoreRicetta extends ConfiguratoreManager {
             writer.newLine();
             writer.write("caricoLavoroPorzione=" + r.getCaricoLavoroPorzione());
             writer.newLine();
-            writer.write("ingredienti=");
+            writer.write("ingredienti= ");
             writer.newLine();
             HashMap<String, Double> ingredienti = r.getIngredienti();
             
