@@ -30,12 +30,8 @@ public class ConfiguratoreExtra extends ConfiguratoreManager{
 
 	@Override
 	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
-		switch(nomeAttributo) {
-		case "Insieme Extra":
-			ConfiguratoreHashMapStringDouble confIns = new ConfiguratoreHashMapStringDouble();
-			confIns.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, ((InsiemeExtra) oggetto).getInsiemeExtra());
-			break;
-		}
+		ConfiguratoreHashMapStringDouble confIns = new ConfiguratoreHashMapStringDouble();
+		confIns.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, ((InsiemeExtra) oggetto).getInsiemeExtra());
 	}
 
 	@Override
@@ -43,18 +39,4 @@ public class ConfiguratoreExtra extends ConfiguratoreManager{
 		return new InsiemeExtra();
 	}
 
-	@Override
-	public Object caricaIstanzaOggetto(String nomeOggetto, String line) {
-		// Implementazione necessaria per caricare i singoli attributi dell'oggetto
-		// da una riga letta dal file
-		// Esempio:
-		Object oggetto = creaIstanzaOggetto(nomeOggetto);
-		String[] parte = line.split("=");
-		if (parte.length == 2) {
-			String nomeAttributo = parte[0].trim();
-			String valoreAttributo = parte[1].trim();
-			setAttributiDatoOggetto(nomeAttributo, valoreAttributo, oggetto);
-		}
-		return oggetto;
-	}
 }

@@ -30,16 +30,8 @@ public class ConfiguratoreHashMapStringDouble extends ConfiguratoreManager {
 
 	@Override
 	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
-		String[] elementi = valoreAttributo.split(";\n"); // Utilizza ";" come separatore
-		for (String elemento : elementi) {
-			String[] coppia = elemento.split("=");
-			if (coppia.length == 2){
-				String chiave = coppia[0].trim();
-				double valore = Double.parseDouble(coppia[1].trim());
-				((HashMap<String, Double>) oggetto).put(chiave, valore);
-				System.out.printf("Inserito:%s, %.2f\n", chiave,((HashMap<String, Double>) oggetto).get(chiave));
-			}
-		}
+		double valore = Double.parseDouble(valoreAttributo.replace(";", ""));
+		((HashMap<String, Double>) oggetto).put(nomeAttributo, valore);
 	}
 
 
@@ -60,7 +52,7 @@ public class ConfiguratoreHashMapStringDouble extends ConfiguratoreManager {
 				String[] parte = line.split("=");
 				if (parte.length == 2) {
 					String nome = parte[0].trim();
-					double valore = Double.parseDouble(parte[1].trim());
+					double valore = Double.parseDouble(parte[1].trim().replace(";", ""));
 					// Aggiungere la coppia nome-valore alla mappa
 					mappaCaricata.put(nome, valore);
 				}

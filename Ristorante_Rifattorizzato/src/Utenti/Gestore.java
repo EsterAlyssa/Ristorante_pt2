@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -153,7 +152,7 @@ public class Gestore extends Utente{
 		ristorante.setInsiemeB(insiemeB);	
 		
 		for (String elemento : insiemeB.getInsiemeExtra().keySet()) {
-			System.out.printf("bevanda: %s\tconsumo pro capite: %f.2\n", elemento, insiemeB.getInsiemeExtra().get(elemento));
+			System.out.printf("bevanda: %s\tconsumo pro capite: %.2f\n", elemento, insiemeB.getInsiemeExtra().get(elemento));
 		}
 	}
 
@@ -233,7 +232,7 @@ public class Gestore extends Utente{
 		ristorante.setInsiemeGE(insiemeGE);
 				
 		for (String elemento : ristorante.getInsiemeGE().getInsiemeExtra().keySet()) {
-			System.out.printf("genere extra: %s\tconsumo pro capite: %f.2\n", elemento, ristorante.getInsiemeGE().getInsiemeExtra().get(elemento));
+			System.out.printf("genere extra: %s\tconsumo pro capite: %.2f\n", elemento, ristorante.getInsiemeGE().getInsiemeExtra().get(elemento));
 		}
 	}
 
@@ -242,16 +241,19 @@ public class Gestore extends Utente{
 		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
 		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectory = "Piatti";
-		String pathPiatti = pathDirectory + "/" + nomeDirectory;
+		String nomeDirectoryPiatti = "Piatti";
+		String pathPiatti = pathDirectory + "/" + nomeDirectoryPiatti;
 
 		ConfiguratorePiatto confPiat = new ConfiguratorePiatto();
+		
+		String nomeDirectoryRicettario = "Ricettario";
+		String pathRicettario = pathDirectory + "/" + nomeDirectoryRicettario;
 
 		ConfiguratoreRicetta confRice = new ConfiguratoreRicetta();
-		List<File> ricettario = ServizioFile.getElencoFileTxt(pathPiatti);
+		List<File> ricettario = ServizioFile.getElencoFileTxt(pathRicettario);
 
 		for (File ricettaFile : ricettario) {
-			Ricetta ricetta = (Ricetta) confRice.caricaIstanzaOggettoDaFile(ricettaFile.getAbsolutePath());
+			Ricetta ricetta = (Ricetta) confRice.caricaIstanzaOggettoDaFile(ricettaFile.getPath());
 
 			String nomeFilePiatto = ricetta.getNome()+".txt";
 			String pathFilePiatto = pathPiatti + "/" + nomeFilePiatto;

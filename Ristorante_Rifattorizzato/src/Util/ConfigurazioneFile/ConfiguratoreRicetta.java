@@ -22,7 +22,7 @@ public class ConfiguratoreRicetta extends ConfiguratoreManager {
             writer.newLine();
             writer.write("caricoLavoroPorzione=" + r.getCaricoLavoroPorzione());
             writer.newLine();
-            writer.write("ingredienti= ");
+            writer.write("ingredienti=");
             writer.newLine();
             HashMap<String, Double> ingredienti = r.getIngredienti();
             
@@ -48,12 +48,9 @@ public class ConfiguratoreRicetta extends ConfiguratoreManager {
             	((Ricetta) oggetto).setCaricoLavoroPorzione(Double.parseDouble(valoreAttributo));
                 break;
             case "ingredienti":
-                // Il valoreAttributo contiene gli ingredienti nel formato "nomeIngrediente=dose", separatore ";\n"
+                // Il valoreAttributo contiene gli ingredienti nel formato "nomeIngrediente=dose", separatore ";"
                 ConfiguratoreHashMapStringDouble conf = new ConfiguratoreHashMapStringDouble();
-                HashMap<String, Double> mapIngredienti = (HashMap<String, Double>) conf.creaIstanzaOggetto(valoreAttributo);
-                conf.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, mapIngredienti);
-                
-                ((Ricetta) oggetto).setIngredienti(mapIngredienti);
+                conf.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, ((Ricetta)oggetto).getIngredienti());
                 break;
             default:
                 System.out.println("Errore nel settaggio dei parametri");

@@ -6,7 +6,7 @@ import java.io.*;
 
 public abstract class ConfiguratoreManager {
 
-	public void salvaIstanzaOggetto(Object oggetto, String pathRistorante) {
+	public final void salvaIstanzaOggetto(Object oggetto, String pathRistorante) {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathRistorante))) {
 			// Scrittura dei parametri nel file
 			scriviParametriNelFile(oggetto, writer);
@@ -22,9 +22,10 @@ public abstract class ConfiguratoreManager {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pathFileOggetto));
 			String nomeOggetto = ServizioFile.getNomeFileSenzaEstensione(pathFileOggetto);
+			oggettoCaricato = creaIstanzaOggetto(nomeOggetto);
 			String line;
 			while ((line = reader.readLine()) != null) {
-				oggettoCaricato = caricaIstanzaOggetto(nomeOggetto, line);
+				oggettoCaricato = caricaIstanzaOggetto(oggettoCaricato, line);
 			}
 			reader.close();
 		} catch (IOException e) {
@@ -34,8 +35,7 @@ public abstract class ConfiguratoreManager {
 	}
 
 
-	public Object caricaIstanzaOggetto(String nomeOggetto, String line) {
-		Object oggetto = creaIstanzaOggetto(nomeOggetto);
+	public Object caricaIstanzaOggetto(Object oggetto, String line) {
 		String[] parte = line.split("=");
 		if (parte.length==2) {
 			String nomeAttributo = parte[0].trim();
