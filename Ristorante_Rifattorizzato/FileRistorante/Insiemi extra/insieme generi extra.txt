@@ -1,2 +1,2 @@
 Insieme Extra=
-ewd<saew=5.0;
+pane=3.0;

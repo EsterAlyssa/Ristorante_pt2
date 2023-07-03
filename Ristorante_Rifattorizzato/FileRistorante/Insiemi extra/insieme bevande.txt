@@ -1,2 +1,3 @@
 Insieme Extra=
-savef=5.0;
+vino=2.0;
+acqua=2.0;

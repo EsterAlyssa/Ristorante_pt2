@@ -1,6 +1,0 @@
-nome=pasta
-numPorzioni=1
-caricoLavoroPorzione=1.0
-ingredienti=
-pasta=100.0;
-pomodoro=2.0;
