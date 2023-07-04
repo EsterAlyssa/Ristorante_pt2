@@ -19,8 +19,10 @@ public class ConfiguratoreMenuTematico extends ConfiguratoreManager {
 			MenuTematico menu = (MenuTematico) menuTematico;
 			writer.write("nomeMenuTematico=" + menu.getNome());
 			writer.newLine();
-			writer.write("validitaMenu=" + menu.getValidita().toString());
+			writer.write("validitaMenu=");
 			writer.newLine();
+			ConfiguratorePeriodo confP = new ConfiguratorePeriodo();
+			confP.scriviParametriNelFile(menu.getValidita(), writer);
 			writer.write("caricoLavoroMenuTematico=" + menu.getCaricoLavoro());
 			writer.newLine();
 			

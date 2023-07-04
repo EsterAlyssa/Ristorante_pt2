@@ -53,6 +53,7 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 		case "numCoperti":
 			((Prenotazione)oggetto).setNumCoperti(Integer.parseInt(valoreAttributo));
 			break;
+		// probabile errore
 		case "data":
 			((Prenotazione)oggetto).setData(Giorno.parseGiorno(valoreAttributo));
 			break;

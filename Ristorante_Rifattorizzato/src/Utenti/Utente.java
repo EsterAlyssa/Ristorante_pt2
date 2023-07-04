@@ -12,7 +12,7 @@ public abstract class Utente implements MenuUtente {
 	private MyMenu menu;
 
 	private static final String[] MENU_RUOLI = {"Gestore", "Addetto alle prenotazioni", "Magazziniere"};
-	
+
 	public Utente(String nome, String etichetta, String[] azioni) {
 		this.nome = nome;
 		this.etichetta = etichetta;
@@ -43,11 +43,12 @@ public abstract class Utente implements MenuUtente {
 	public void setAzioni(String[] azioni) {
 		this.azioni = azioni;
 	}
-	
+
 	public void menu(String pathCompletoFile) {
 		System.out.printf("Ciao %s!\n", this.nome);
 		int scelta = menu.scegli();
 		eseguiMetodi(scelta, pathCompletoFile);
+
 	}
 
 
@@ -67,14 +68,17 @@ public abstract class Utente implements MenuUtente {
 		case 3:
 			utente = new Magazziniere(nome);
 			break;
-		default:
-			System.out.println("Grazie per aver usato l'applicazione. Arrivederci!");
 		}
 
 		if (utente != null) {
-			utente.menu(pathCompletoFile);
+			boolean sceltaAltreAzioni = false;
+			do {
+				utente.menu(pathCompletoFile);
+				sceltaAltreAzioni = InputDati.yesOrNo("Vuoi fare altro?");
+			} while (sceltaAltreAzioni);
 		}
+		System.out.println("Grazie per aver usato l'applicazione. Arrivederci!");
 	}
-	
+
 	public abstract void eseguiMetodi(int scelta, String pathCompletoFile);
 }

@@ -40,8 +40,7 @@ public class Periodo {
 
 	@Override
 	public String toString() {
-		String daTornare = "Periodo: \n";
-		
+		String daTornare = "";
 		for (Giorno giorno : periodoValidita) {
 			daTornare += giorno.toString() + ";";
 			daTornare += "\n";
@@ -62,5 +61,16 @@ public class Periodo {
 	    return periodo;
 	}
 	
+	public static Periodo unisciPeriodi(Periodo periodo1, Periodo periodo2) {
+	   
+	    Periodo periodoSomma = new Periodo();
+	    // Aggiungi tutti i giorni del primo periodo al periodoSomma
+	    periodoSomma.getPeriodoValidita().addAll(periodo1.getPeriodoValidita());
+
+	    // Aggiungi tutti i giorni del secondo periodo al periodoSomma
+	    periodoSomma.getPeriodoValidita().addAll(periodo2.getPeriodoValidita());
+	    return periodoSomma;
+	}
+
 	
 }

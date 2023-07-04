@@ -17,8 +17,10 @@ public class ConfiguratoreMenuCarta extends ConfiguratoreManager {
 	@Override
 	void scriviParametriNelFile(Object menuCarta, BufferedWriter writer) {
 		try {
-			writer.write("validitaMenu=" + ((MenuCarta) menuCarta).getValidita().toString());
+			writer.write("validitaMenu=");
 			writer.newLine();
+			ConfiguratorePeriodo confP = new ConfiguratorePeriodo();
+			confP.scriviParametriNelFile(((MenuCarta)menuCarta).getValidita(), writer);
 			HashSet<Piatto> elenco = ((MenuCarta) menuCarta).getElenco();
 			writer.write("elencoMenu= ");
 			writer.newLine();

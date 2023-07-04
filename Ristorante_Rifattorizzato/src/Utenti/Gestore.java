@@ -169,6 +169,10 @@ public class Gestore extends Utente{
 		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
 		String nomeDirectory = "Insiemi extra";
 		String pathInsiemiExtra = pathDirectory + "/" + nomeDirectory;
+		
+		// Controlla se la directory "Insiemi extra" esiste, altrimenti la crea
+		ServizioFile.creaDirectory(pathInsiemiExtra);
+
 		String nomeFileGeneriExtra = "insieme generi extra.txt";
 		String pathFileGeneriExtra = pathInsiemiExtra + "/" + nomeFileGeneriExtra;
 
@@ -236,43 +240,57 @@ public class Gestore extends Utente{
 		}
 	}
 
-	public void corrispondenzaPiattoRicetta (String pathCompletoFileRistorante) {
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+	public void corrispondenzaPiattoRicetta(String pathCompletoFileRistorante) {
+	    ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
+	    Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectoryPiatti = "Piatti";
-		String pathPiatti = pathDirectory + "/" + nomeDirectoryPiatti;
+	    String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
+	    String nomeDirectoryPiatti = "Piatti";
+	    String pathPiatti = pathDirectory + "/" + nomeDirectoryPiatti;
 
-		ConfiguratorePiatto confPiat = new ConfiguratorePiatto();
-		
-		String nomeDirectoryRicettario = "Ricettario";
-		String pathRicettario = pathDirectory + "/" + nomeDirectoryRicettario;
+	    // Controlla se la directory "Piatti" esiste, altrimenti la crea
+	    ServizioFile.creaDirectory(pathPiatti);
 
-		ConfiguratoreRicetta confRice = new ConfiguratoreRicetta();
-		List<File> ricettario = ServizioFile.getElencoFileTxt(pathRicettario);
+	    ConfiguratorePiatto confPiat = new ConfiguratorePiatto();
 
-		for (File ricettaFile : ricettario) {
-			Ricetta ricetta = (Ricetta) confRice.caricaIstanzaOggettoDaFile(ricettaFile.getPath());
+	    String nomeDirectoryRicettario = "Ricettario";
+	    String pathRicettario = pathDirectory + "/" + nomeDirectoryRicettario;
 
-			String nomeFilePiatto = ricetta.getNome()+".txt";
-			String pathFilePiatto = pathPiatti + "/" + nomeFilePiatto;
+	    ConfiguratoreRicetta confRice = new ConfiguratoreRicetta();
+	    List<File> ricettario = ServizioFile.getElencoFileTxt(pathRicettario);
 
-			Piatto piatto = new Piatto (ricetta.getNome(), ricetta.getCaricoLavoroPorzione());
-			aggiungiValiditaPiatto(pathCompletoFileRistorante, piatto);
+	    for (File ricettaFile : ricettario) {
+	        Ricetta ricetta = (Ricetta) confRice.caricaIstanzaOggettoDaFile(ricettaFile.getPath());
 
-			confPiat.salvaIstanzaOggetto(piatto, pathFilePiatto);
-			ristorante.aggiungiPiatto(piatto);
-		}
+	        Piatto piatto = new Piatto(ricetta.getNome(), ricetta.getCaricoLavoroPorzione());
+
+	        String nomeFilePiatto = ricetta.getNome() + ".txt";
+	        String pathFilePiatto = pathPiatti + "/" + nomeFilePiatto;
+
+	        // Controlla se il file nomeFilePiatto + ".txt" esiste, altrimenti lo crea
+	        if (!ServizioFile.controlloEsistenzaFile(pathFilePiatto)) {
+	            ServizioFile.creaFile(pathFilePiatto);
+	            confPiat.salvaIstanzaOggetto(piatto, pathFilePiatto);
+	        } else {
+	        	piatto = (Piatto) confPiat.caricaIstanzaOggettoDaFile(pathFilePiatto);
+	        }
+
+	        aggiungiValiditaPiatto(pathCompletoFileRistorante, piatto);
+	        confPiat.salvaIstanzaOggetto(piatto, pathFilePiatto);
+	        
+	        ristorante.aggiungiPiatto(piatto);
+	    }
 	}
 
+
 	private void aggiungiValiditaPiatto (String pathCompletoFileRistorante, Piatto piatto) {
-		String msgValidita = "Inserisci il periodo di validita' del piatto: ";
-		System.out.println(msgValidita);
+		String msgValidita = "Inserisci il periodo di validita' del piatto %s: \n";
+		System.out.printf(msgValidita, piatto.getNome());
 
 		Periodo validita = new Periodo();
 		validita.creaPeriodoValidita();
-		piatto.setValidita(validita);
+		Periodo newValidita = Periodo.unisciPeriodi(validita, piatto.getValidita());
+		piatto.setValidita(newValidita);
 
 		ConfiguratorePiatto confPiatto = new ConfiguratorePiatto();
 

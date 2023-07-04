@@ -6,7 +6,7 @@ import Util.InputDati;
 public class Giorno implements Comparable<Giorno> {
 
 	private LocalDate giorno;
-	
+
 	private final static String messaggioAnno = "\nInserisci l'anno: ";
 	private final static String messaggioMese = "\nInserisci il mese: ";
 	private final static String messaggioGiorno = "\nInserisci il giorno: ";
@@ -15,7 +15,7 @@ public class Giorno implements Comparable<Giorno> {
 	public Giorno(LocalDate giorno) {
 		this.giorno = giorno;
 	}
-	
+
 	public Giorno (int anno, int mese, int giorno) { //aaaa-mm-gg
 		this.giorno = LocalDate.of(anno, mese, giorno);
 	}
@@ -28,11 +28,15 @@ public class Giorno implements Comparable<Giorno> {
 		this.giorno = giorno;
 	}
 
+	public void setGiorno(Giorno giorno) {
+		this.giorno = giorno.getGiorno();
+	}
+
 	@Override
-    public int compareTo(Giorno altroGiorno) {
-        return this.giorno.compareTo(altroGiorno.getGiorno());
-    }
-	
+	public int compareTo(Giorno altroGiorno) {
+		return this.giorno.compareTo(altroGiorno.getGiorno());
+	}
+
 	public static Giorno richiestaCreaGiorno() {
 		int anno = InputDati.leggiInteroConMinimo(messaggioAnno, 2023);
 		int mese = InputDati.leggiIntero(messaggioMese, 1, 12);
@@ -44,11 +48,11 @@ public class Giorno implements Comparable<Giorno> {
 		} else {
 			giorno = InputDati.leggiIntero(messaggioGiorno, 1, 29);
 		}
-		
+
 		return new Giorno (anno, mese, giorno);
 	}
-	
-	
+
+
 	public boolean contains (LocalDate data, LocalDate inizio, LocalDate fine) {
 		return (data.isEqual(inizio) || data.isAfter(inizio)) &&
 				(data.isEqual(fine) || data.isBefore(fine));
@@ -59,7 +63,7 @@ public class Giorno implements Comparable<Giorno> {
 		//positivo se giorno scade dopo giorno2, 
 		//0 se sono lo stesso giorno
 	}
-	
+
 	public static Giorno ritornaGiornoCorrente() {
 		return new Giorno (LocalDate.now());
 	}
@@ -68,14 +72,14 @@ public class Giorno implements Comparable<Giorno> {
 	public String toString() {
 		return giorno.getDayOfMonth() + "-" + giorno.getMonthValue() + "-" + giorno.getYear();
 	}
-	
-	public static Giorno parseGiorno(String input) { //String stile aaaa-mm-gg
-	    String[] parts = input.split("-");
-	    int giorno = Integer.parseInt(parts[2]);
-	    int mese = Integer.parseInt(parts[1]);
-	    int anno = Integer.parseInt(parts[0]);
 
-	    return new Giorno(anno, mese, giorno);
+	public static Giorno parseGiorno(String input) { //String stile gg-mm-aaaa
+		String[] parts = input.split("-");
+		int giorno = Integer.parseInt(parts[0]);
+		int mese = Integer.parseInt(parts[1]);
+		int anno = Integer.parseInt(parts[2]);
+
+		return new Giorno(anno, mese, giorno);
 	}
-	
+
 }
