@@ -43,14 +43,14 @@ public class MenuTematico extends Menu implements SceltaPrenotazione{
 		super.aggiungiPiatto(piatto);
 	}
 
-	public static MenuTematico trovaMenuTDaNome(String menu, HashSet<MenuTematico> menuTematici) throws NullPointerException {
+	public static MenuTematico trovaMenuTDaNome(String menu, HashSet<MenuTematico> menuTematici) {
 		for (MenuTematico m : menuTematici) {
 			if (m.getNome().equals(menu)) {
 				return m;
 			}
 		}
-		// Se il menu non viene trovato si lancia un'eccezione
-		throw new NullPointerException();
+		// Se il menu non viene trovato si ritorna null
+		return null;
 	}
 	
 	

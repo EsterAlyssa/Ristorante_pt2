@@ -3,10 +3,7 @@ package Util.ConfigurazioneFile;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-import Giorno.Giorno;
-import Giorno.Periodo;
 import Ristorante.ElementiRistorante.Piatto;
-import Ristorante.ElementiRistorante.Ricetta;
 
 public class ConfiguratorePiatto extends ConfiguratoreManager{
 
@@ -42,14 +39,17 @@ public class ConfiguratorePiatto extends ConfiguratoreManager{
 		case "caricoLavoroPiatto":
 			((Piatto) oggetto).setCaricoLavoro(Double.parseDouble(valoreAttributo));
 			break;
-		case "validitaPiatto":
+		case "validitaMenu":
 			//questa linea è validitaPiatto= quindi non dovrebbe salvare valori, solo far capire che
 			//deve iniziare un elenco di giorni
 			break;
-		default:
+		case "giorno":
 			// Il valoreAttributo contiene i giorni nel formato "gg-mm-aaaa;"
 			ConfiguratorePeriodo confP = new ConfiguratorePeriodo();
 			confP.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, ((Piatto)oggetto).getValidita());
+			break;
+		default:
+			System.out.println("Attributo non riconosciuto");
 			break;
 		}
 	}

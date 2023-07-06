@@ -1,12 +1,11 @@
 package Util.ConfigurazioneFile;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashSet;
 
-import Giorno.Periodo;
 import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
+import Util.ServizioFile;
 
 public class ConfiguratoreMenuTematico extends ConfiguratoreManager {
 	public ConfiguratoreMenuTematico() {
@@ -25,21 +24,65 @@ public class ConfiguratoreMenuTematico extends ConfiguratoreManager {
 			confP.scriviParametriNelFile(menu.getValidita(), writer);
 			writer.write("caricoLavoroMenuTematico=" + menu.getCaricoLavoro());
 			writer.newLine();
-			
+
 			HashSet<Piatto> elenco = ((MenuTematico) menu).getElenco();
 			writer.write("elencoMenu= ");
+			writer.newLine();
+			writer.newLine();
 			ConfiguratoreManager confPiat = new ConfiguratorePiatto();
 			for (Piatto piatto : elenco) {
 				confPiat.scriviParametriNelFile(piatto, writer);
-				writer.newLine();
 				writer.append("---");
 				writer.newLine();
 			}
-			
+
 		} catch (IOException e) {
 			System.out.println("Impossibile salvare l'oggetto menu tematico");
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public Object caricaIstanzaOggettoDaFile(String pathFileOggetto) {
+		String nomeMenu = ServizioFile.getNomeFileSenzaEstensione(pathFileOggetto);
+		MenuTematico menuTematico = (MenuTematico) creaIstanzaOggetto(nomeMenu);
+		Piatto piattoCorrente = null; // Per tenere traccia del piatto corrente
+		boolean inSezionePiatto = false; // Per indicare se si è all'interno di una sezione di un piatto
+
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(pathFileOggetto));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (line.equals("---")) {
+					// Se si incontra il separatore, si aggiunge il piattoCorrente all'insieme MenuTematico
+					if (piattoCorrente != null) {
+						menuTematico.aggiungiPiatto(piattoCorrente);
+						piattoCorrente = null; //il piatto viene poi annullato perchè dovrà "lasciare posto" a un nuovo piatto
+					}
+					inSezionePiatto = false; // Segna la fine della sezione del piatto corrente
+				} else if (line.startsWith("nomePiatto")) {
+					// Inizia una nuova sezione di piatto
+					piattoCorrente = new Piatto(line.substring(line.indexOf('=') + 1));
+					inSezionePiatto = true;
+				} else if (inSezionePiatto) {
+					// Se si è all'interno di una sezione di piatto, carica gli attributi del piatto
+					ConfiguratoreManager confPiatto = new ConfiguratorePiatto();
+					confPiatto.caricaIstanzaOggetto(piattoCorrente, line);
+				} else {
+					// Altrimenti, gestisci gli attributi generici del menu tematico
+					String[] parte = line.split("=");
+					if (parte.length == 2) {
+						String nomeAttributo = parte[0].trim();
+						String valoreAttributo = parte[1].trim();
+						setAttributiDatoOggetto(nomeAttributo, valoreAttributo, menuTematico);
+					}
+				}
+			}
+			reader.close();
+		} catch (IOException e) {
+			System.out.println("Impossibile caricare l'oggetto");
+		}
+		return menuTematico;
 	}
 
 	@Override
@@ -50,26 +93,19 @@ public class ConfiguratoreMenuTematico extends ConfiguratoreManager {
 			((MenuTematico) oggetto).setNome(valoreAttributo);
 			break;
 		case "validitaMenu":
-			// Chiamata al metodo statico parsePeriodo per ottenere un oggetto di tipo Periodo
-			((MenuTematico) oggetto).setValidita(Periodo.parsePeriodo(valoreAttributo));
+			//questa linea è validitaPiatto= quindi non dovrebbe salvare valori, solo far capire che
+			//deve iniziare un elenco di giorni
+			break;
+		case "giorno":
+			// Il valoreAttributo contiene i giorni nel formato "gg-mm-aaaa;"
+			ConfiguratorePeriodo confP = new ConfiguratorePeriodo();
+			confP.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, ((MenuTematico)oggetto).getValidita());
 			break;
 		case "caricoLavoroMenuTematico":
 			((MenuTematico) oggetto).setCaricoLavoro(Double.parseDouble(valoreAttributo));
-			break;
-		case "elencoMenu":
-			HashSet<Piatto> elenco = new HashSet<>();
-			String[] piatti = valoreAttributo.split("\n---\n");
-			ConfiguratoreManager confPiat = new ConfiguratorePiatto();
-			for (String piatto : piatti) {
-				int i=1;
-				String nomePiatto = "Piatto"+i;
-				Piatto p = new Piatto(nomePiatto); 
-				confPiat.caricaIstanzaOggetto(nomePiatto, piatto);
-				elenco.add(p);
-				i++;
-			}
-			((MenuTematico) oggetto).setElenco(elenco);
 			break;   
+		case "elencoMenu":
+			break;
 		default:
 			System.out.println("Errore nel settaggio dei parametri");
 			break;

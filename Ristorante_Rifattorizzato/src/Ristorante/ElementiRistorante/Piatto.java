@@ -55,7 +55,7 @@ public class Piatto implements SceltaPrenotazione{
 			}
 		}
 		// Se il piatto non viene trovato si ritorna null
-		throw null;
+		return null;
 	}
 
 	@Override

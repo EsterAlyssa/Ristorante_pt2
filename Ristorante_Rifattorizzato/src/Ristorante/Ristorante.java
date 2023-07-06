@@ -22,8 +22,6 @@ public class Ristorante {
 	private InsiemeExtra insiemeGE;
 	private InsiemeExtra insiemeB;
 
-	//private HashMap<String, Double> insiemeGE;
-	//private HashMap<String, Double> insiemeB;
 	private HashSet<Ricetta> ricettario;
 	private HashSet<Piatto> piatti;
 	private HashSet<MenuTematico> menuTematici;
@@ -33,8 +31,6 @@ public class Ristorante {
 	private Ristorante(String nome) {
 		this.nome = nome;
 		this.calendario = new TreeSet<>();
-		//this.insiemeGE = new HashMap<>();
-		//this.insiemeB = new HashMap<>();
 		this.insiemeB = new InsiemeExtra();
 		this.insiemeGE = new InsiemeExtra();
 

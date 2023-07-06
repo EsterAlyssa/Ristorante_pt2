@@ -38,6 +38,7 @@ public class Gestore extends Utente{
 			"Visualizza le informazioni di tutte le ricetta",
 			"Crea un menu tematico", 
 			"Visualizza tutti i menu tematici (solo i nomi)", 
+			"Visualizza tutti i menu tematici",
 	"Visualizza un menu tematico"};
 
 	public Gestore(String nome) {
@@ -150,7 +151,7 @@ public class Gestore extends Utente{
 		InsiemeExtra insiemeB = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileBevande);
 
 		ristorante.setInsiemeB(insiemeB);	
-		
+
 		for (String elemento : insiemeB.getInsiemeExtra().keySet()) {
 			System.out.printf("bevanda: %s\tconsumo pro capite: %.2f\n", elemento, insiemeB.getInsiemeExtra().get(elemento));
 		}
@@ -169,7 +170,7 @@ public class Gestore extends Utente{
 		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
 		String nomeDirectory = "Insiemi extra";
 		String pathInsiemiExtra = pathDirectory + "/" + nomeDirectory;
-		
+
 		// Controlla se la directory "Insiemi extra" esiste, altrimenti la crea
 		ServizioFile.creaDirectory(pathInsiemiExtra);
 
@@ -188,7 +189,7 @@ public class Gestore extends Utente{
 				e.printStackTrace();
 			}
 		}
-		
+
 		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
 		InsiemeExtra insiemeGE = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
 
@@ -234,57 +235,64 @@ public class Gestore extends Utente{
 		InsiemeExtra insiemeGE = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
 
 		ristorante.setInsiemeGE(insiemeGE);
-				
+
 		for (String elemento : ristorante.getInsiemeGE().getInsiemeExtra().keySet()) {
 			System.out.printf("genere extra: %s\tconsumo pro capite: %.2f\n", elemento, ristorante.getInsiemeGE().getInsiemeExtra().get(elemento));
 		}
 	}
 
 	public void corrispondenzaPiattoRicetta(String pathCompletoFileRistorante) {
-	    ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-	    Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
+		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-	    String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-	    String nomeDirectoryPiatti = "Piatti";
-	    String pathPiatti = pathDirectory + "/" + nomeDirectoryPiatti;
+		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
+		String nomeDirectoryPiatti = "Piatti";
+		String pathPiatti = pathDirectory + "/" + nomeDirectoryPiatti;
 
-	    // Controlla se la directory "Piatti" esiste, altrimenti la crea
-	    ServizioFile.creaDirectory(pathPiatti);
+		// Controlla se la directory "Piatti" esiste, altrimenti la crea
+		ServizioFile.creaDirectory(pathPiatti);
 
-	    ConfiguratorePiatto confPiat = new ConfiguratorePiatto();
+		ConfiguratorePiatto confPiat = new ConfiguratorePiatto();
 
-	    String nomeDirectoryRicettario = "Ricettario";
-	    String pathRicettario = pathDirectory + "/" + nomeDirectoryRicettario;
+		String nomeDirectoryRicettario = "Ricettario";
+		String pathRicettario = pathDirectory + "/" + nomeDirectoryRicettario;
 
-	    ConfiguratoreRicetta confRice = new ConfiguratoreRicetta();
-	    List<File> ricettario = ServizioFile.getElencoFileTxt(pathRicettario);
+		ConfiguratoreRicetta confRice = new ConfiguratoreRicetta();
+		List<File> ricettario = ServizioFile.getElencoFileTxt(pathRicettario);
 
-	    for (File ricettaFile : ricettario) {
-	        Ricetta ricetta = (Ricetta) confRice.caricaIstanzaOggettoDaFile(ricettaFile.getPath());
+		for (File ricettaFile : ricettario) {
+			Ricetta ricetta = (Ricetta) confRice.caricaIstanzaOggettoDaFile(ricettaFile.getPath());
 
-	        Piatto piatto = new Piatto(ricetta.getNome(), ricetta.getCaricoLavoroPorzione());
+			Piatto piatto = new Piatto(ricetta.getNome(), ricetta.getCaricoLavoroPorzione());
 
-	        String nomeFilePiatto = ricetta.getNome() + ".txt";
-	        String pathFilePiatto = pathPiatti + "/" + nomeFilePiatto;
+			String nomeFilePiatto = ricetta.getNome() + ".txt";
+			String pathFilePiatto = pathPiatti + "/" + nomeFilePiatto;
 
-	        // Controlla se il file nomeFilePiatto + ".txt" esiste, altrimenti lo crea
-	        if (!ServizioFile.controlloEsistenzaFile(pathFilePiatto)) {
-	            ServizioFile.creaFile(pathFilePiatto);
-	            confPiat.salvaIstanzaOggetto(piatto, pathFilePiatto);
-	        } else {
-	        	piatto = (Piatto) confPiat.caricaIstanzaOggettoDaFile(pathFilePiatto);
-	        }
+			// Controlla se il file nomeFilePiatto + ".txt" esiste, altrimenti lo crea
+			if (!ServizioFile.controlloEsistenzaFile(pathFilePiatto)) {
+				ServizioFile.creaFile(pathFilePiatto);
+				aggiungiValiditaPiatto(pathCompletoFileRistorante, piatto);
+				confPiat.salvaIstanzaOggetto(piatto, pathFilePiatto);
+			} else {
+				piatto = (Piatto) confPiat.caricaIstanzaOggettoDaFile(pathFilePiatto);
+				System.out.printf("Periodo di validità del piatto %s:\n", piatto.getNome());
+				for (Giorno giorno : piatto.getValidita().getPeriodoValidita()) {
+					System.out.println(giorno.toString());
+				}
+				boolean scelta = InputDati.yesOrNo("Vuoi aggiungere altri giorni validi?");
+				if (scelta) {
+					aggiungiValiditaPiatto(pathCompletoFileRistorante, piatto);
+					confPiat.salvaIstanzaOggetto(piatto, pathFilePiatto);
+				}
+			}
 
-	        aggiungiValiditaPiatto(pathCompletoFileRistorante, piatto);
-	        confPiat.salvaIstanzaOggetto(piatto, pathFilePiatto);
-	        
-	        ristorante.aggiungiPiatto(piatto);
-	    }
+			ristorante.aggiungiPiatto(piatto);
+		}
 	}
 
 
 	private void aggiungiValiditaPiatto (String pathCompletoFileRistorante, Piatto piatto) {
-		String msgValidita = "Inserisci il periodo di validita' del piatto %s: \n";
+		String msgValidita = "Piatto: %s\n";
 		System.out.printf(msgValidita, piatto.getNome());
 
 		Periodo validita = new Periodo();
@@ -345,10 +353,10 @@ public class Gestore extends Utente{
 
 		String nome = InputDati.leggiStringaNonVuota(msgNome);
 
-		try {
-			Ricetta.trovaRicetta(nome, ristorante.getRicettario());
+
+		if (Ricetta.trovaRicetta(nome, ristorante.getRicettario())!=null) {
 			System.out.println(msgSiRicetta);
-		} catch (NullPointerException e) {
+		} else {
 			System.out.println(msgNoRicetta);
 		}
 	}
@@ -372,7 +380,7 @@ public class Gestore extends Utente{
 		HashSet<Piatto> piatti = ristorante.getPiatti();
 
 		for (Piatto piatto : piatti) {
-			System.out.printf("nome piatto: %s\tperiodo di validita': %s\n", piatto.getNome(), piatto.getValidita().toString());
+			System.out.printf("Nome piatto: %s\nPeriodo di validita': %s\n", piatto.getNome(), piatto.getValidita().toString());
 		}
 	}
 
@@ -439,10 +447,13 @@ public class Gestore extends Utente{
 		ConfiguratoreRicetta confRic = new ConfiguratoreRicetta();
 
 		List<File> elencoRicette = ServizioFile.getElencoFileTxt(pathRicettario+"/");
+		HashSet<Ricetta> ricettario = new HashSet<>();
 		for (File file : elencoRicette) {
 			Ricetta ricetta = (Ricetta) confRic.caricaIstanzaOggettoDaFile(file.getPath());
-			ristorante.aggiungiRicetta(ricetta);
+			ricettario.add(ricetta);
 		}
+
+		ristorante.setRicettario(ricettario);
 
 		int i = 1;
 		for (Ricetta ric : ristorante.getRicettario()) {
@@ -456,7 +467,8 @@ public class Gestore extends Utente{
 		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
 		String msgRichiestaRicetta = "Inserisci il nome della ricetta da visualizzare: ";
-		String msgNoRicetta = "Non esiste una ricetta con questo nome. Inseriscilo di nuovo: ";
+		String msgNoRicetta = "Non esiste una ricetta con questo nome.";
+		String msgRichiestaNuovaRicetta = "Inserisci di nuovo il nome della ricetta: ";
 
 		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
 		String nomeDirectory = "Ricettario";
@@ -465,10 +477,12 @@ public class Gestore extends Utente{
 		ConfiguratoreRicetta confRic = new ConfiguratoreRicetta();
 
 		List<File> elencoRicette = ServizioFile.getElencoFileTxt(pathRicettario);
+		HashSet<Ricetta> ricettario = new HashSet<>();
 		for (File file : elencoRicette) {
-			Ricetta ricetta = (Ricetta) confRic.caricaIstanzaOggettoDaFile(file.getAbsolutePath());
-			ristorante.aggiungiRicetta(ricetta);
+			Ricetta ricetta = (Ricetta) confRic.caricaIstanzaOggettoDaFile(file.getPath());
+			ricettario.add(ricetta);
 		}
+		ristorante.setRicettario(ricettario);
 
 		visualizzaRicettario(pathCompletoFileRistorante);
 
@@ -478,11 +492,12 @@ public class Gestore extends Utente{
 			Ricetta ricettaTrovata = Ricetta.trovaRicetta(ricettaScelta, ristorante.getRicettario());
 			if (ricettaTrovata != null) {
 				//ritornare la ricetta
-				ricettaTrovata.toString();
+				System.out.println(ricettaTrovata.toString());
 				trovata = false;
 			} else {
 				//la ricetta non è nel ricettario
 				System.out.println(msgNoRicetta);
+				ricettaScelta = InputDati.leggiStringaNonVuota(msgRichiestaNuovaRicetta);
 			}
 		} while (trovata);
 	}
@@ -498,10 +513,13 @@ public class Gestore extends Utente{
 		ConfiguratoreRicetta confRic = new ConfiguratoreRicetta();
 
 		List<File> elencoRicette = ServizioFile.getElencoFileTxt(pathRicettario);
+		HashSet<Ricetta> ricettario = new HashSet<>();
 		for (File file : elencoRicette) {
-			Ricetta ricetta = (Ricetta) confRic.caricaIstanzaOggettoDaFile(file.getAbsolutePath());
-			ristorante.aggiungiRicetta(ricetta);
+			Ricetta ricetta = (Ricetta) confRic.caricaIstanzaOggettoDaFile(file.getPath());
+			ricettario.add(ricetta);
 		}
+
+		ristorante.setRicettario(ricettario);
 
 		for (Ricetta ric : ristorante.getRicettario()) {
 			System.out.println(ric.toString());
@@ -514,11 +532,23 @@ public class Gestore extends Utente{
 		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
 		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectory = "Menu Tematici";
-		String pathMenuTematici = pathDirectory + "/" + nomeDirectory;
+		String nomeDirectoryMenuT = "Menu Tematici";
+		String pathDirectoryMenuTematici = pathDirectory + "/" + nomeDirectoryMenuT;
 
 		// Controlla se la directory "Menu Tematici" esiste, altrimenti la crea
-		ServizioFile.creaDirectory(pathMenuTematici);
+		ServizioFile.creaDirectory(pathDirectoryMenuTematici);
+
+		String nomeDirectoryPiatti = "Piatti";
+		String pathDirectoryPiatti = pathDirectory + "/" + nomeDirectoryPiatti;
+
+		ConfiguratoreManager confPiat = new ConfiguratorePiatto();
+		List<File> elencoPiatti = ServizioFile.getElencoFileTxt(pathDirectoryPiatti);
+		HashSet<Piatto> piatti = new HashSet<>();
+		for (File file : elencoPiatti) {
+			Piatto piatto = (Piatto) confPiat.caricaIstanzaOggettoDaFile(file.getPath());
+			piatti.add(piatto);
+		}
+		ristorante.setPiatti(piatti);
 
 		String msgNome = "Inserisci il nome del menu tematico da creare: ";
 		String msgPiatto = "Inserisci il nome del piatto da aggiungere al menu tematico: ";
@@ -532,6 +562,7 @@ public class Gestore extends Utente{
 		MenuTematico nuovo = new MenuTematico(nomeMenuT, validitaMenuT);
 		boolean scelta = true;
 		do {
+			visualizzaRicettario(pathCompletoFileRistorante);
 			String nomePiatto = InputDati.leggiStringaNonVuota(msgPiatto);
 			Piatto piattoTrovato = Piatto.trovaPiattoDaNome(nomePiatto, ristorante.getPiatti());
 			if (piattoTrovato != null) {
@@ -539,7 +570,7 @@ public class Gestore extends Utente{
 				double CLM = nuovo.getCaricoLavoro();
 				double CLPersona = ristorante.getCaricoLavoroPersona();
 				if ((CLP+CLM) <= (4/3)*CLPersona) {
-					if (validitaMenuT.getPeriodoValidita().containsAll(piattoTrovato.getValidita().getPeriodoValidita())) {
+					if (piattoTrovato.getValidita().getPeriodoValidita().containsAll(nuovo.getValidita().getPeriodoValidita())) {
 						nuovo.aggiungiPiatto(piattoTrovato);
 						scelta = InputDati.yesOrNo(msgScelta);
 					} else {
@@ -548,12 +579,14 @@ public class Gestore extends Utente{
 				} else {
 					System.out.println(msgErrPiatto);
 				}
+			} else {
+				System.out.println("Non è stato trovato nessun piatto con questo nome");
 			}
 		} while (scelta);
 		ristorante.aggiungiMenuTematico(nuovo);
 
 		String nomeFileMenuTematico = nomeMenuT + ".txt";
-		String pathFileMenuTematico = pathMenuTematici + "/" + nomeFileMenuTematico;
+		String pathFileMenuTematico = pathDirectoryMenuTematici + "/" + nomeFileMenuTematico;
 
 		// Controlla se il file nomeMenuT + ".txt" esiste, altrimenti lo crea
 		if (!ServizioFile.controlloEsistenzaFile(pathFileMenuTematico)) {
@@ -590,7 +623,7 @@ public class Gestore extends Utente{
 		}
 	}
 
-	public void visualizzaMenuTematici(String pathCompletoFileRistorante) {
+	private HashSet<MenuTematico> ottieniMenuTematici(String pathCompletoFileRistorante) {
 		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
 		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
@@ -601,21 +634,29 @@ public class Gestore extends Utente{
 		ConfiguratoreMenuTematico confMenuT = new ConfiguratoreMenuTematico();
 
 		List<File> elencoMenuT = ServizioFile.getElencoFileTxt(pathMenuTematici);
+		HashSet<MenuTematico> menuT = new HashSet<>();
 		for (File file : elencoMenuT) {
-			MenuTematico menu = (MenuTematico) confMenuT.caricaIstanzaOggettoDaFile(file.getAbsolutePath());
-			ristorante.aggiungiMenuTematico(menu);
+			MenuTematico menu = (MenuTematico) confMenuT.caricaIstanzaOggettoDaFile(file.getPath());
+			menuT.add(menu);
 		}
-
-		for (MenuTematico menu : ristorante.getMenuTematici()) {
-			System.out.println(menu.toString());
-		}
+		ristorante.setMenuTematici(menuT);
+		return menuT;
 	}	
 
-	private void visualizzaNomiMenuTematici(Ristorante ristorante) {
+	public void visualizzaNomiMenuTematici(String pathCompletoFileRistorante) {
+		HashSet<MenuTematico> menuTRistorante = ottieniMenuTematici(pathCompletoFileRistorante);
+
 		int i = 1;
-		for (MenuTematico menu : ristorante.getMenuTematici()) {
-			System.out.printf("%d) %s", i, menu.getNome());
+		for (MenuTematico menu : menuTRistorante) {
+			System.out.printf("%d) %s\n", i, menu.getNome());
 			i++;
+		}
+	}
+
+	public void visualizzaInfoMenuTematici(String pathCompletoFileRistorante) {
+		HashSet<MenuTematico> menuTRistorante = ottieniMenuTematici(pathCompletoFileRistorante);
+		for (MenuTematico menu : menuTRistorante) {
+			System.out.println(menu.toString());
 		}
 	}
 
@@ -624,22 +665,13 @@ public class Gestore extends Utente{
 		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
 		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
+		HashSet<MenuTematico> menuTRistorante = ottieniMenuTematici(pathCompletoFileRistorante);
+		ristorante.setMenuTematici(menuTRistorante);
+
+		visualizzaNomiMenuTematici(pathCompletoFileRistorante);
+
 		String msgRichiesta = "Inserisci il nome del menu tematico da visualizzare: ";
 		String msgErrMenu= "ATTENZIONE! Il menu inserito non esiste";
-
-		ConfiguratoreMenuTematico confMenuT = new ConfiguratoreMenuTematico();
-
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectory = "Menu Tematici";
-		String pathMenuTematici = pathDirectory + "/" + nomeDirectory;
-
-		List<File> elencoMenuT = ServizioFile.getElencoFileTxt(pathMenuTematici);
-		for (File file : elencoMenuT) {
-			MenuTematico menu = (MenuTematico) confMenuT.caricaIstanzaOggettoDaFile(file.getAbsolutePath());
-			ristorante.aggiungiMenuTematico(menu);
-		}
-
-		visualizzaNomiMenuTematici(ristorante);
 
 		boolean trovato = true;
 		do {
@@ -706,9 +738,12 @@ public class Gestore extends Utente{
 			creaMenuTematico(pathCompletoFileRistorante); 
 			break;
 		case 17:
-			visualizzaMenuTematici(pathCompletoFileRistorante);
+			visualizzaNomiMenuTematici(pathCompletoFileRistorante);
 			break;
 		case 18:
+			visualizzaInfoMenuTematici(pathCompletoFileRistorante);
+			break;
+		case 19:
 			visualizzaMenuTematico(pathCompletoFileRistorante); 
 			break;
 		}

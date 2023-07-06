@@ -1,0 +1,8 @@
+nome=tagliatelle
+numPorzioni=2
+caricoLavoroPorzione=2.0
+ingredienti=
+carote=3.0;
+ragu=4.0;
+tagliatelle=4.0;
+pomodoro=1.5;
