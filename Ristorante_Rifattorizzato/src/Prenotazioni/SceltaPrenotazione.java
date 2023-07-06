@@ -5,7 +5,7 @@ import java.util.HashSet;
 import Ristorante.ElementiRistorante.Piatto;
 
 public interface SceltaPrenotazione {
-	
+
 	public static SceltaPrenotazione trovaDaNome(String nome, HashSet<SceltaPrenotazione> insieme) {
 		for (SceltaPrenotazione menu : insieme) {
 			if (menu.getNome().equalsIgnoreCase(nome)) {

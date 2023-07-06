@@ -1,7 +1,9 @@
 package Utenti;
 
 import Giorno.Periodo;
+import Giorno.GiornoView.GiornoView;
 import Prenotazioni.Prenotazione;
+import Prenotazioni.PrenotazioneView;
 import Prenotazioni.SceltaPrenotazione;
 import Ristorante.Giornata;
 import Ristorante.Ristorante;
@@ -12,7 +14,7 @@ import Util.InputDati;
 import Util.ServizioFile;
 import Util.ConfigurazioneFile.ConfiguratoreRistorante;
 import Util.ConfigurazioneFile.ConfiguratorePrenotazione;
-import Util.ConfigurazioneFile.ConfiguratoreMenuCarta;
+import Util.ConfigurazioneFile.ConfiguratorePiatto;
 import Util.ConfigurazioneFile.ConfiguratoreMenuTematico;
 
 import java.util.TreeSet;
@@ -46,10 +48,10 @@ public class AddettoPrenotazioni extends Utente {
 		String messaggioSuccessoAccettazione = "La prenotazione è avvenuta con successo";
 		String messaggioErrAccettazione = "La prenotazione non si può accettare";
 
-		Prenotazione prenotazione = Prenotazione.creaPrenotazioneVuota(ristorante.getNumPosti());
+		Prenotazione prenotazione = PrenotazioneView.creaPrenotazioneVuota(ristorante.getNumPosti());
 		Giorno dataPrenotazione = prenotazione.getData();
 
-		String nomeDirectoryGiornata = dataPrenotazione.toString();
+		String nomeDirectoryGiornata = dataPrenotazione.descrizioneGiorno();
 		String pathGiornata = pathCalendario + "/" + nomeDirectoryGiornata;
 		ServizioFile.creaDirectory(pathGiornata);
 
@@ -74,53 +76,53 @@ public class AddettoPrenotazioni extends Utente {
 			Giornata giornata = new Giornata(file.getName());
 			calendarioNoParam.add(giornata);
 		}
-		ristorante.setCalendario(calendarioNoParam);
+		ristorante.setCalendario(calendarioNoParam); //il ristorante così ha le giornate vuote (solo con il giorno)
 
 		HashSet<Prenotazione> prenotazioni = new HashSet<>();
 		HashSet<Piatto> menuCarta = new HashSet<>();
 		HashSet<MenuTematico> menuTematici = new HashSet<>();
 
-		for (File file : elencoDirGiornate) {
+		for (File file : elencoDirGiornate) { //per ogni cartella del calendario
 			List<File> elencoDir1Giornata = ServizioFile.getElencoDirectory(file.getAbsolutePath());
-			for (File f : elencoDir1Giornata) {
+			for (File f : elencoDir1Giornata) { //per ogni cartella in ogni cartella del calendario, quindi per ogni cartella giornata
 				String nomeCartella = f.getName();
 				switch (nomeCartella) {
 				case "Prenotazioni":
 					ConfiguratorePrenotazione confPren = new ConfiguratorePrenotazione();
-					for (File filePren : ServizioFile.getElencoFileTxt(f.getAbsolutePath()+"/"+nomeCartella)) {
+					for (File filePren : ServizioFile.getElencoFileTxt(f.getPath())) {
 						Prenotazione pren = (Prenotazione) confPren.caricaIstanzaOggettoDaFile(filePren.getAbsolutePath());
 						prenotazioni.add(pren);
 					}
-					Giornata giornataVecchiaP = ristorante.getGiornata(Giorno.parseGiorno(nomeCartella));
+					Giornata giornataVecchiaP = ristorante.getGiornata(Giorno.parseGiorno(file.getName()));
 					ristorante.getCalendario().remove(giornataVecchiaP);
 					giornataVecchiaP.setPrenotazioni(prenotazioni); //giornata nuova
 					ristorante.getCalendario().add(giornataVecchiaP); //giornata vecchia che è diventata nuova
 
 					break;
 				case "Menu alla carta":
-					ConfiguratoreMenuCarta confMC = new ConfiguratoreMenuCarta();
-					for (File fileMC : ServizioFile.getElencoFileTxt(f.getAbsolutePath()+"/"+nomeCartella)) {
-						Piatto piatto = (Piatto) confMC.caricaIstanzaOggettoDaFile(fileMC.getAbsolutePath());
+					ConfiguratorePiatto confPiatto = new ConfiguratorePiatto();
+					for (File fileMC : ServizioFile.getElencoFileTxt(f.getPath())) {
+						Piatto piatto = (Piatto) confPiatto.caricaIstanzaOggettoDaFile(fileMC.getPath());
 						menuCarta.add(piatto);
 					}
 
-					Periodo periodoMenuCarta = new Periodo(Giorno.parseGiorno(nomeCartella));
+					Periodo periodoMenuCarta = new Periodo(Giorno.parseGiorno(file.getName()));
 					MenuCarta menu = new MenuCarta(periodoMenuCarta);
 					menu.setElenco(menuCarta);
 
-					Giornata giornataVecchiaMC = ristorante.getGiornata(Giorno.parseGiorno(nomeCartella));
+					Giornata giornataVecchiaMC = ristorante.getGiornata(Giorno.parseGiorno(file.getName()));
 					ristorante.getCalendario().remove(giornataVecchiaMC);
 					giornataVecchiaMC.setMenuCarta(menu); //giornata nuova
 					ristorante.getCalendario().add(giornataVecchiaMC); //giornata vecchia che è diventata nuova
 					break;
 				case "Menu Tematici":
 					ConfiguratoreMenuTematico confMT = new ConfiguratoreMenuTematico();
-					for (File fileMT : ServizioFile.getElencoFileTxt(f.getAbsolutePath()+"/"+nomeCartella)) {
+					for (File fileMT : ServizioFile.getElencoFileTxt(f.getPath())) {
 						MenuTematico menuT = (MenuTematico) confMT.caricaIstanzaOggettoDaFile(fileMT.getAbsolutePath());
 						menuTematici.add(menuT);
 					}
 
-					Giornata giornataVecchiaMT = ristorante.getGiornata(Giorno.parseGiorno(nomeCartella));
+					Giornata giornataVecchiaMT = ristorante.getGiornata(Giorno.parseGiorno(file.getName()));
 					ristorante.getCalendario().remove(giornataVecchiaMT);
 					giornataVecchiaMT.setMenuTematici(menuTematici); //giornata nuova
 					ristorante.getCalendario().add(giornataVecchiaMT); //giornata vecchia che è diventata nuova
@@ -135,7 +137,7 @@ public class AddettoPrenotazioni extends Utente {
 		int postiRimasti = ristorante.getNumPosti();
 
 		for (Giornata giornata : calendario) {
-			if (giornata.getGiorno().equals(dataPrenotazione)) {
+			if (giornata.getGiorno().compareTo(dataPrenotazione)==0) {
 				if (controlloVincoli(giornata.numCopertiPrenotati(), postiRimasti, prenotazione, ristorante.getCaricoLavoroRistorante())) {
 					giornata.getPrenotazioni().add(prenotazione);
 
@@ -166,9 +168,9 @@ public class AddettoPrenotazioni extends Utente {
 
 		List<File> menuCarta = ServizioFile.getElencoFileTxt(pathDirectoryMenuCarta);
 		HashSet<Piatto> piattiMenuCarta = new HashSet<>();
-		ConfiguratoreMenuCarta confMC = new ConfiguratoreMenuCarta();
+		ConfiguratorePiatto confPiatto = new ConfiguratorePiatto();
 		for (File fileMenuCarta : menuCarta) {
-			Piatto piatto = (Piatto) confMC.caricaIstanzaOggettoDaFile(fileMenuCarta.getAbsolutePath());
+			Piatto piatto = (Piatto) confPiatto.caricaIstanzaOggettoDaFile(fileMenuCarta.getPath());
 			piattiMenuCarta.add(piatto);
 		}
 
@@ -195,7 +197,7 @@ public class AddettoPrenotazioni extends Utente {
 
 			System.out.println("Menu Tematici:");
 			for (MenuTematico menu : elencoMenuTematici) {
-				System.out.println(menu.toString()+'\n');
+				System.out.println(menu.descrizioneMenuTematico()+'\n');
 			}
 
 			String nomeScelta = InputDati.leggiStringaNonVuota(messaggioNomeScelta);
@@ -207,7 +209,7 @@ public class AddettoPrenotazioni extends Utente {
 
 			SceltaPrenotazione scelta = SceltaPrenotazione.trovaDaNome(nomeScelta, insiemeTotale);
 			if (scelta!=null) {
-				prenotazione.addScelta(scelta, numScelta);	
+				prenotazione.aggiungiScelta(scelta, numScelta);	
 			}
 
 			risposta = InputDati.yesOrNo(messaggioRichiestaAltreScelte);
@@ -245,11 +247,11 @@ public class AddettoPrenotazioni extends Utente {
 		String messaggioGiornata = "Inserire la giornata di cui si vuole vedere le prenotazioni";
 
 		System.out.println(messaggioGiornata);
-		Giorno giornoScelto = Giorno.richiestaCreaGiorno();
+		Giorno giornoScelto = GiornoView.richiestaCreaGiorno();
 
 		for (Giornata giornata : ristorante.getCalendario()) {
 			if (giornoScelto.equals(giornata.getGiorno())) {
-				System.out.println(giornata.stampaPrenotazioni());
+				System.out.println(giornata.descrizionePrenotazioni());
 			}
 		}
 	}

@@ -12,7 +12,7 @@ public class ConfiguratoreGiorno extends ConfiguratoreManager {
 		if (oggetto instanceof Giorno) {
 			Giorno giorno = (Giorno) oggetto;
 			try {
-				writer.write("giorno=" + giorno.toString());
+				writer.write("giorno=" + giorno.descrizioneGiorno());
 			} catch (IOException e) {
 				System.out.println("Impossibile scrivere il giorno nel file");
 			}

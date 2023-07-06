@@ -25,7 +25,7 @@ public class Ingrediente extends Merce {
 		HashMap<String,Double> listaIngredientiNoDuplicati = new HashMap<>();
 
 		// per ogni piatto e' associato il numero di persone che l'ha ordinato
-		HashMap<Piatto, Integer> elencoPiatti= prenotazione.elencoPiatti(); 
+		HashMap<Piatto, Integer> elencoPiatti= prenotazione.elencoPiattiDaScelte(); 
 
 		// per ogni piatto di elencoPiatti va trovata la Ricetta associata
 		for (Piatto piatto : elencoPiatti.keySet()) {
@@ -37,7 +37,7 @@ public class Ingrediente extends Merce {
 			// dalla ricetta ricaviaamo quante porzioni soddisfa
 			int numPorzioniRicetta = ricetta.getNumPorzioni(); 
 			//coef. che va moltiplicato per ogni ingrediente
-			int coefficiente = (int) Math.ceil((double) prenotazione.elencoPiatti().get(piatto) / numPorzioniRicetta); 
+			int coefficiente = (int) Math.ceil((double) prenotazione.elencoPiattiDaScelte().get(piatto) / numPorzioniRicetta); 
 
 
 			for (String ingrediente : ingredienti.keySet()) {

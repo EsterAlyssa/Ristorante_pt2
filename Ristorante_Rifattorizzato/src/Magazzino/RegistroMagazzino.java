@@ -147,14 +147,13 @@ public class RegistroMagazzino {
 				if (!codaMerce.peek().getMerce().getQualita()) { //se è scaduto
 					codaMerce.remove(elemento); //viene rimosso l'elemento dalla coda
 				}
-
 			}
 			if (codaMerce.isEmpty()) { //se la coda e' vuota = se non ci sono piu' elementi
 				registro.remove(merce);//si rimuove la chiave dal registro
 			}
 		}
 	}
-	
+
 	public void setFalseQualitaMerce(Merce merceNonDiQualita) {
 		PriorityQueue<ElementoMagazzino> codaMerce = registro.get(merceNonDiQualita.getNome());
 		for (ElementoMagazzino elemento : codaMerce) {
@@ -164,16 +163,14 @@ public class RegistroMagazzino {
 			}
 		}
 	}
-	
+
 	public double ritornaQuantitaDatoNome(String nome) {
 		double quantita = 0.0;
-		
 		PriorityQueue<ElementoMagazzino> codaMerce = registro.get(nome);
-		
+
 		for (ElementoMagazzino elemento : codaMerce) {
 			quantita += elemento.getQuantita();
 		}
-		
 		return quantita;
 	}
 }

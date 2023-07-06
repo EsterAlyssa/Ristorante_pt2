@@ -20,7 +20,7 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 			writer.newLine();
 			writer.write("numCoperti=" + ((Prenotazione) prenotazione).getNumCoperti());
 			writer.newLine();
-			writer.write("data=" + ((Prenotazione) prenotazione).getData().toString());
+			writer.write("data=" + ((Prenotazione) prenotazione).getData().descrizioneGiorno());
 			writer.newLine();
 
 			HashMap<SceltaPrenotazione, Integer> elenco = ((Prenotazione) prenotazione).getElenco();
@@ -31,8 +31,8 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 				writer.write("quantitaPrenotate=" + elenco.get(scelta));
 				writer.newLine();
 				writer.append('~');
-				confScelta.scriviParametriNelFile(scelta, writer);
 				writer.newLine();
+				confScelta.scriviParametriNelFile(scelta, writer);
 				writer.append("----");
 				writer.newLine();
 			}

@@ -4,7 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.HashMap;
 
-import Ristorante.InsiemeExtra;
+import Ristorante.ElementiRistorante.InsiemeExtra;
 
 
 public class ConfiguratoreExtra extends ConfiguratoreManager{

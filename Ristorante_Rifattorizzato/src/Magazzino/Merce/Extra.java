@@ -36,7 +36,6 @@ public abstract class Extra extends Merce {
 		for (String extra : insieme.keySet()) {
 			listaExtra.put(extra, num*(insieme.get(extra)));
 		}
-
 		return listaExtra;	
 	}
 }

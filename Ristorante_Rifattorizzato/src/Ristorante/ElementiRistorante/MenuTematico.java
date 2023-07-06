@@ -53,9 +53,7 @@ public class MenuTematico extends Menu implements SceltaPrenotazione{
 		return null;
 	}
 	
-	
-	@Override
-	public String toString() {
+	public String descrizioneMenuTematico() {
 		String stringa = "Menu Tematico: "+ nomeMenuTematico + "\nCarico di lavoro del menu tematico: " + caricoLavoroMenuTematico + "\nPiatti:\n";
 		for (Piatto piatto : getElenco()) {
 			stringa += piatto.getNome() + "\n";

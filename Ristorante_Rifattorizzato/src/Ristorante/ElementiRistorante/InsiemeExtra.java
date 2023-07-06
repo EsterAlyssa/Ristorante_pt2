@@ -1,4 +1,4 @@
-package Ristorante;
+package Ristorante.ElementiRistorante;
 
 import java.util.HashMap;
 
@@ -25,11 +25,11 @@ public class InsiemeExtra {
 		this.insiemeExtra.put(nome, consumoProCapite);
 	}
 
-	public void rimuoviElementoExtra (String nome) {
+	public boolean rimuoviElementoExtra (String nome) {
 		if (insiemeExtra.containsKey(nome)) {
 			this.insiemeExtra.remove(nome);
+			return true;
 		} else 
-			System.out.println("L'elemento non era presente nell'insieme");
-
+			return false;
 	}
 }

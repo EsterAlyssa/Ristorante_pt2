@@ -31,7 +31,7 @@ public class ConfiguratoreMerce extends ConfiguratoreManager {
 				writer.newLine();
 				writer.write("unitaMisura=" + merce.getUnitaMisura());
 				writer.newLine();
-				writer.write("scadenza=" + merce.getScadenza().toString());
+				writer.write("scadenza=" + merce.getScadenza().descrizioneGiorno());
 				writer.newLine();
 				writer.write("qualita=" + merce.getQualita());
 			}

@@ -5,6 +5,7 @@ import java.util.TreeSet;
 
 import Giorno.Giorno;
 import Magazzino.RegistroMagazzino;
+import Ristorante.ElementiRistorante.InsiemeExtra;
 import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
 import Ristorante.ElementiRistorante.Ricetta;
@@ -89,7 +90,7 @@ public class Ristorante {
 
 	public Giornata getGiornata (Giorno giorno) {
 		for (Giornata giornata : calendario) {
-			if (giornata.getGiorno().equals(giorno)) {
+			if (giornata.getGiorno().compareTo(giorno)==0){
 				return giornata;
 			}
 		}
@@ -120,16 +121,16 @@ public class Ristorante {
 		this.insiemeB.aggiungiElementoExtra(nome, consumoProCapite);
 	}
 
-	public void rimuoviBevanda(String nome) {
-		insiemeB.rimuoviElementoExtra(nome);
+	public boolean rimuoviBevanda(String nome) {
+		return insiemeB.rimuoviElementoExtra(nome);
 	}
 
 	public void aggiungiGenereExtra(String nomeGE, double consumoProCapiteGE) {
 		insiemeGE.aggiungiElementoExtra(nomeGE, consumoProCapiteGE);
 	}
 
-	public void rimuoviGenereExtra(String nome) {
-		insiemeGE.rimuoviElementoExtra(nome);
+	public boolean rimuoviGenereExtra(String nome) {
+		return insiemeGE.rimuoviElementoExtra(nome);
 	}
 
 	public void setRicettario(HashSet<Ricetta> ricettario) {

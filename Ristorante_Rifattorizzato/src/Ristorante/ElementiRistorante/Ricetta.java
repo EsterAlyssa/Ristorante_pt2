@@ -72,8 +72,7 @@ public class Ricetta {
 		return null;
 	}
 
-	@Override
-	public String toString() {
+	public String descrizioneRicetta() {
 		String descrizione = "Ricetta: "+ nome + "\nNumero di porzioni previste: " + numPorzioni + "\nIngredienti:\n";
 		for (String nome : ingredienti.keySet()) {
 			descrizione += "- " + nome + ", dose: " + Formattazione.ritornaDoubleFormattato(ingredienti.get(nome)) + "\n";

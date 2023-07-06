@@ -12,7 +12,7 @@ import Ristorante.ElementiRistorante.MenuTematico;
 
 import java.util.HashMap;
 
-public class Giornata {
+public class Giornata implements Comparable<Giornata> {
 
 	private Giorno giorno;
 	private HashSet<Prenotazione> prenotazioni;
@@ -76,7 +76,7 @@ public class Giornata {
 		this.menuTematici = menuTematici;
 	}
 
-	public void creaListaSpesa(Ristorante ristorante) {
+	public void creaListaSpesaIniziale(Ristorante ristorante) {
 		HashMap<String, Double> conDuplicati = new HashMap<>();
 		HashMap<String, Double> noDuplicati = new HashMap<>();
 
@@ -103,11 +103,16 @@ public class Giornata {
 		return num;
 	}
 
-	public String stampaPrenotazioni() {
+	public String descrizionePrenotazioni() {
 		String daStampare="Prenotazioni:\n";
 		for (Prenotazione pren : prenotazioni) {
-			daStampare += pren.toString() + "\n"; 
+			daStampare += pren.descrizionePrenotazione() + "\n"; 
 		}
 		return daStampare;
+	}
+
+	@Override
+	public int compareTo(Giornata altraGiornata) {
+		return this.giorno.compareTo(altraGiornata.getGiorno());
 	}
 }

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import Giorno.Giorno;
-import Giorno.Periodo;
+import Giorno.*;
+import Giorno.GiornoView.GiornoView;
 import Magazzino.ElementoMagazzino;
 import Magazzino.ListaSpesa;
 import Magazzino.RegistroMagazzino;
@@ -21,7 +21,7 @@ import Ristorante.ElementiRistorante.Ricetta;
 import Util.InputDati;
 import Util.ServizioFile;
 import Util.ConfigurazioneFile.ConfiguratoreRistorante;
-import Util.ConfigurazioneFile.ConfiguratoreMenuCarta;
+import Util.ConfigurazioneFile.ConfiguratorePiatto;
 import Util.ConfigurazioneFile.ConfiguratoreMenuTematico;
 import Util.ConfigurazioneFile.ConfiguratorePrenotazione;
 import Util.ConfigurazioneFile.ConfiguratoreRegistroMagazzino;
@@ -132,7 +132,7 @@ public class Magazziniere extends Utente {
 		// Controlla se la directory esiste, altrimenti la crea
 		ServizioFile.creaDirectory(pathDirectoryCalendario);
 
-		String nomeDirectoryGiornata = giornoCorrente.toString();
+		String nomeDirectoryGiornata = giornoCorrente.descrizioneGiorno();
 		String pathDirectoryGiornata = pathDirectoryCalendario + "/" + nomeDirectoryGiornata;
 
 		// Controlla se la directory esiste, altrimenti la crea
@@ -153,7 +153,7 @@ public class Magazziniere extends Utente {
 		}
 
 		//Giornata corrente con inizializzato solo il giorno
-		Giornata giornataCorrente = new Giornata(giornoCorrente.toString());
+		Giornata giornataCorrente = new Giornata(giornoCorrente.descrizioneGiorno());
 
 		HashSet<Prenotazione> prenotazioni = new HashSet<>();
 		HashSet<Piatto> menuCarta = new HashSet<>();
@@ -175,9 +175,9 @@ public class Magazziniere extends Utente {
 
 				break;
 			case "Menu alla carta":
-				ConfiguratoreMenuCarta confMC = new ConfiguratoreMenuCarta();
+				ConfiguratorePiatto confPiatto = new ConfiguratorePiatto();
 				for (File fileMC : ServizioFile.getElencoFileTxt(f.getAbsolutePath()+"/"+nomeCartella)) {
-					Piatto piatto = (Piatto) confMC.caricaIstanzaOggettoDaFile(fileMC.getAbsolutePath());
+					Piatto piatto = (Piatto) confPiatto.caricaIstanzaOggettoDaFile(fileMC.getAbsolutePath());
 					menuCarta.add(piatto);
 				}
 
@@ -229,14 +229,14 @@ public class Magazziniere extends Utente {
 		// Controlla se la directory esiste, altrimenti la crea
 		ServizioFile.creaDirectory(pathDirectoryCalendario);
 
-		String nomeDirectoryGiornata = giornoCorrente.toString();
+		String nomeDirectoryGiornata = giornoCorrente.descrizioneGiorno();
 		String pathDirectoryGiornata = pathDirectoryCalendario + "/" + nomeDirectoryGiornata;
 
 		// Controlla se la directory esiste, altrimenti la crea
 		ServizioFile.creaDirectory(pathDirectoryGiornata);
 
 		//Giornata corrente con inizializzato solo il giorno
-		Giornata giornataCorrente = new Giornata(giornoCorrente.toString());
+		Giornata giornataCorrente = new Giornata(giornoCorrente.descrizioneGiorno());
 
 		HashSet<Prenotazione> prenotazioni = new HashSet<>();
 
@@ -318,7 +318,7 @@ public class Magazziniere extends Utente {
 		String nomeMerce = InputDati.leggiStringaNonVuota(messaggioNome);
 		String unitaMisura = InputDati.leggiStringaNonVuota(messaggioUnitaMisura);
 		System.out.println(messaggioScadenza);
-		Giorno scadenza = Giorno.richiestaCreaGiorno();
+		Giorno scadenza = GiornoView.richiestaCreaGiorno();
 
 		String tipo = "";
 		boolean controllo = false;
@@ -345,7 +345,7 @@ public class Magazziniere extends Utente {
 		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
 		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		Giornata giornataCorrente = new Giornata(giornoCorrente.toString());
+		Giornata giornataCorrente = new Giornata(giornoCorrente.descrizioneGiorno());
 
 		Merce merceNonDiQualita = dichiarazioneMerceDeteriorata();
 
@@ -381,7 +381,7 @@ public class Magazziniere extends Utente {
 		// Controlla se la directory esiste, altrimenti la crea
 		ServizioFile.creaDirectory(pathDirectoryCalendario);
 
-		String nomeDirectoryGiornata = giornoCorrente.toString();
+		String nomeDirectoryGiornata = giornoCorrente.descrizioneGiorno();
 		String pathDirectoryGiornata = pathDirectoryCalendario + "/" + nomeDirectoryGiornata;
 
 		// Controlla se la directory esiste, altrimenti la crea
@@ -402,7 +402,7 @@ public class Magazziniere extends Utente {
 		}
 
 		//Giornata corrente con inizializzato solo il giorno
-		Giornata giornataCorrente = new Giornata(giornoCorrente.toString());
+		Giornata giornataCorrente = new Giornata(giornoCorrente.descrizioneGiorno());
 
 		HashSet<Prenotazione> prenotazioni = new HashSet<>();
 		HashSet<Piatto> menuCarta = new HashSet<>();
@@ -424,9 +424,9 @@ public class Magazziniere extends Utente {
 
 				break;
 			case "Menu alla carta":
-				ConfiguratoreMenuCarta confMC = new ConfiguratoreMenuCarta();
+				ConfiguratorePiatto confPiatto = new ConfiguratorePiatto();
 				for (File fileMC : ServizioFile.getElencoFileTxt(f.getAbsolutePath()+"/"+nomeCartella)) {
-					Piatto piatto = (Piatto) confMC.caricaIstanzaOggettoDaFile(fileMC.getAbsolutePath());
+					Piatto piatto = (Piatto) confPiatto.caricaIstanzaOggettoDaFile(fileMC.getAbsolutePath());
 					menuCarta.add(piatto);
 				}
 
@@ -481,7 +481,7 @@ public class Magazziniere extends Utente {
 			ristorante.aggiungiRicetta(ricetta);
 		}
 
-		giornataCorrente.creaListaSpesa(ristorante);
+		giornataCorrente.creaListaSpesaIniziale(ristorante);
 
 		ListaSpesa lista = giornataCorrente.getDaComprare(); 
 		for (String nome : lista.getLista().keySet()) {

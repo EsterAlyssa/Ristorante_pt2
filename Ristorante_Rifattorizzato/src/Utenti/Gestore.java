@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
-import Giorno.Giorno;
-import Giorno.Periodo;
+import Giorno.*;
+import Giorno.GiornoView.*;
 import Ristorante.Ristorante;
-import Ristorante.InsiemeExtra;
+import Ristorante.ElementiRistorante.InsiemeExtra;
 import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
 import Ristorante.ElementiRistorante.Ricetta;
@@ -132,7 +132,11 @@ public class Gestore extends Utente{
 		InsiemeExtra insiemeB = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileBevande);
 
 		ristorante.setInsiemeB(insiemeB);
-		ristorante.rimuoviBevanda(nome);
+		if (ristorante.rimuoviBevanda(nome))
+			System.out.println("Bevanda rimossa con successo");
+		else 
+			System.out.println("La bevanda non e' presente nell'insieme");
+
 		insiemeB = ristorante.getInsiemeB();
 		confIns.salvaIstanzaOggetto(insiemeB, pathFileBevande);
 	}
@@ -216,7 +220,11 @@ public class Gestore extends Utente{
 		InsiemeExtra insiemeGE = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
 
 		ristorante.setInsiemeGE(insiemeGE);
-		ristorante.rimuoviGenereExtra(nome);
+		if (ristorante.rimuoviGenereExtra(nome))
+			System.out.println("Genere extra rimosso con successo");
+		else 
+			System.out.println("Il genere extra non e' presente nell'insieme");
+
 		insiemeGE = ristorante.getInsiemeGE();
 		confIns.salvaIstanzaOggetto(insiemeGE, pathFileGeneriExtra);
 	}
@@ -277,7 +285,7 @@ public class Gestore extends Utente{
 				piatto = (Piatto) confPiat.caricaIstanzaOggettoDaFile(pathFilePiatto);
 				System.out.printf("Periodo di validità del piatto %s:\n", piatto.getNome());
 				for (Giorno giorno : piatto.getValidita().getPeriodoValidita()) {
-					System.out.println(giorno.toString());
+					GiornoView.mostraDescrizioneGiorno(giorno.descrizioneGiorno());
 				}
 				boolean scelta = InputDati.yesOrNo("Vuoi aggiungere altri giorni validi?");
 				if (scelta) {
@@ -295,8 +303,7 @@ public class Gestore extends Utente{
 		String msgValidita = "Piatto: %s\n";
 		System.out.printf(msgValidita, piatto.getNome());
 
-		Periodo validita = new Periodo();
-		validita.creaPeriodoValidita();
+		Periodo validita = PeriodoView.creaPeriodoValidita();
 		Periodo newValidita = Periodo.unisciPeriodi(validita, piatto.getValidita());
 		piatto.setValidita(newValidita);
 
@@ -310,7 +317,7 @@ public class Gestore extends Utente{
 		ServizioFile.creaDirectory(pathCalendario);
 
 		for (Giorno giorno : piatto.getValidita().getPeriodoValidita()) {
-			String nomeDirectoryGiornata = giorno.toString();
+			String nomeDirectoryGiornata = giorno.descrizioneGiorno();
 			String pathGiornata = pathCalendario + "/" + nomeDirectoryGiornata;
 			ServizioFile.creaDirectory(pathGiornata);
 
@@ -380,7 +387,7 @@ public class Gestore extends Utente{
 		HashSet<Piatto> piatti = ristorante.getPiatti();
 
 		for (Piatto piatto : piatti) {
-			System.out.printf("Nome piatto: %s\nPeriodo di validita': %s\n", piatto.getNome(), piatto.getValidita().toString());
+			System.out.printf("Nome piatto: %s\nPeriodo di validita': %s\n", piatto.getNome(), piatto.getValidita().descrizionePeriodo());
 		}
 	}
 
@@ -492,7 +499,7 @@ public class Gestore extends Utente{
 			Ricetta ricettaTrovata = Ricetta.trovaRicetta(ricettaScelta, ristorante.getRicettario());
 			if (ricettaTrovata != null) {
 				//ritornare la ricetta
-				System.out.println(ricettaTrovata.toString());
+				System.out.println(ricettaTrovata.descrizioneRicetta());
 				trovata = false;
 			} else {
 				//la ricetta non è nel ricettario
@@ -522,7 +529,7 @@ public class Gestore extends Utente{
 		ristorante.setRicettario(ricettario);
 
 		for (Ricetta ric : ristorante.getRicettario()) {
-			System.out.println(ric.toString());
+			System.out.println(ric.descrizioneRicetta());
 		}
 	}
 
@@ -557,8 +564,7 @@ public class Gestore extends Utente{
 		String msgScelta = "Vuoi inserire altri piatti? ";
 
 		String nomeMenuT = InputDati.leggiStringaNonVuota(msgNome);
-		Periodo validitaMenuT = new Periodo();
-		validitaMenuT.creaPeriodoValidita();
+		Periodo validitaMenuT = PeriodoView.creaPeriodoValidita();
 		MenuTematico nuovo = new MenuTematico(nomeMenuT, validitaMenuT);
 		boolean scelta = true;
 		do {
@@ -602,7 +608,7 @@ public class Gestore extends Utente{
 		String pathCalendario = pathDirectory + "/" + nomeDirectoryCalenario;
 
 		for (Giorno giorno : nuovo.getValidita().getPeriodoValidita()) {
-			String nomeDirectoryGiornata = giorno.toString();
+			String nomeDirectoryGiornata = giorno.descrizioneGiorno();
 			String pathGiornata = pathCalendario + "/" + nomeDirectoryGiornata;
 			ServizioFile.creaDirectory(pathGiornata);
 
@@ -656,7 +662,7 @@ public class Gestore extends Utente{
 	public void visualizzaInfoMenuTematici(String pathCompletoFileRistorante) {
 		HashSet<MenuTematico> menuTRistorante = ottieniMenuTematici(pathCompletoFileRistorante);
 		for (MenuTematico menu : menuTRistorante) {
-			System.out.println(menu.toString());
+			System.out.println(menu.descrizioneMenuTematico());
 		}
 	}
 
@@ -678,7 +684,7 @@ public class Gestore extends Utente{
 			String ricerca = InputDati.leggiStringaNonVuota(msgRichiesta);	
 			MenuTematico menu = MenuTematico.trovaMenuTDaNome(ricerca, ristorante.getMenuTematici());
 			if (menu != null) {
-				System.out.println(menu.toString());
+				System.out.println(menu.descrizioneMenuTematico());
 				trovato = false;
 			} else {
 				System.out.println(msgErrMenu);
