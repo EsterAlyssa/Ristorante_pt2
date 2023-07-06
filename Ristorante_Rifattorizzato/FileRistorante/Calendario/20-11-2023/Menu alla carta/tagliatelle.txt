@@ -1,0 +1,4 @@
+nomePiatto=tagliatelle
+caricoLavoroPiatto=2.0
+validitaPiatto=
+giorno=20-11-2023;
