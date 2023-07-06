@@ -37,40 +37,99 @@ public class AddettoPrenotazioni extends Utente {
 	public void accettazionePrenotazione(String pathCompletoFileRistorante) {
 		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
 		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		
+		String messaggioSuccessoAccettazione = "La prenotazione è avvenuta con successo";
+		String messaggioErrAccettazione = "La prenotazione non si può accettare";
 
+		Prenotazione prenotazione = PrenotazioneView.creaPrenotazioneVuota(ristorante.getNumPosti());
+		Giorno dataPrenotazione = prenotazione.getData();
+		
+		String pathCalendario = creaDirectoryCalendario(pathCompletoFileRistorante);
+
+		String pathGiornata = creaDirectoryGiornata(dataPrenotazione, pathCalendario);
+
+		String pathDirectoryPrenotazioni = creaSubDirectoryPrenotazioni(pathGiornata);
+
+		String pathDirectoryMenuCarta = creaSubDirectoryMenuCarta(pathGiornata);
+
+		String pathDirectoryMenuTematici = creaSubDirectoryMenuTematici(pathGiornata);
+
+		aggiungiScelte(pathCompletoFileRistorante, prenotazione, pathDirectoryMenuCarta, pathDirectoryMenuTematici);
+
+		List<File> elencoDirGiornate = ServizioFile.getElencoDirectory(pathCalendario);
+		
+		aggiornamentoCalendario(ristorante, elencoDirGiornate);
+
+		TreeSet<Giornata> calendario = ristorante.getCalendario();
+
+		int postiRimasti = ristorante.getNumPosti();
+
+		for (Giornata giornata : calendario) {
+			if (giornata.getGiorno().compareTo(dataPrenotazione)==0) {
+				if (controlloVincoli(giornata.numCopertiPrenotati(), postiRimasti, prenotazione, ristorante.getCaricoLavoroRistorante())) {
+					giornata.getPrenotazioni().add(prenotazione);
+
+					String nomePrenotazione = prenotazione.getCliente()+"_"+prenotazione.getNumCoperti() + ".txt";
+					String pathPrenotazione = pathDirectoryPrenotazioni + "/" + nomePrenotazione;
+
+					// Controlla se il file esiste, altrimenti lo crea
+					if (!ServizioFile.controlloEsistenzaFile(pathPrenotazione)) {
+						ServizioFile.creaFile(pathPrenotazione);
+					}
+
+					//salva il file della prenotazione nella cartella delle prenotazioni del giorno per cui si prenota
+					ConfiguratorePrenotazione confPren = new ConfiguratorePrenotazione();
+					confPren.salvaIstanzaOggetto(prenotazione, pathPrenotazione);
+
+					postiRimasti-=prenotazione.getNumCoperti();
+					System.out.println(messaggioSuccessoAccettazione);
+
+				} else {
+					System.out.println(messaggioErrAccettazione);
+				}
+			}
+		}
+	}
+
+	public String creaDirectoryGiornata(Giorno dataPrenotazione, String pathCalendario) {
+		String nomeDirectoryGiornata = dataPrenotazione.descrizioneGiorno();
+		String pathGiornata = pathCalendario + "/" + nomeDirectoryGiornata;
+		ServizioFile.creaDirectory(pathGiornata);
+		return pathGiornata;
+	}
+
+	public String creaSubDirectoryMenuTematici(String pathGiornata) {
+		String nomeDirectoryMenuTematici = "Menu Tematici";
+		String pathDirectoryMenuTematici = pathGiornata + "/" + nomeDirectoryMenuTematici;
+		ServizioFile.creaDirectory(pathDirectoryMenuTematici);
+		return pathDirectoryMenuTematici;
+	}
+
+	public String creaSubDirectoryMenuCarta(String pathGiornata) {
+		String nomeDirectoryMenuCarta = "Menu alla carta";
+		String pathDirectoryMenuCarta = pathGiornata + "/" + nomeDirectoryMenuCarta;
+		ServizioFile.creaDirectory(pathDirectoryMenuCarta);
+		return pathDirectoryMenuCarta;
+	}
+
+	public String creaSubDirectoryPrenotazioni(String pathGiornata) {
+		String nomeDirectoryPrenotazioni = "Prenotazioni";
+		String pathDirectoryPrenotazioni = pathGiornata + "/" + nomeDirectoryPrenotazioni;
+		ServizioFile.creaDirectory(pathDirectoryPrenotazioni);
+		return pathDirectoryPrenotazioni;
+	}
+
+	public String creaDirectoryCalendario(String pathCompletoFileRistorante) {
 		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
 		String nomeDirectory = "Calendario";
 		String pathCalendario = pathDirectory + "/" + nomeDirectory;
 
 		// Controlla se la directory "Calendario" esiste, altrimenti la crea
 		ServizioFile.creaDirectory(pathCalendario);
+		return pathCalendario;
+	}
 
-		String messaggioSuccessoAccettazione = "La prenotazione è avvenuta con successo";
-		String messaggioErrAccettazione = "La prenotazione non si può accettare";
-
-		Prenotazione prenotazione = PrenotazioneView.creaPrenotazioneVuota(ristorante.getNumPosti());
-		Giorno dataPrenotazione = prenotazione.getData();
-
-		String nomeDirectoryGiornata = dataPrenotazione.descrizioneGiorno();
-		String pathGiornata = pathCalendario + "/" + nomeDirectoryGiornata;
-		ServizioFile.creaDirectory(pathGiornata);
-
-		String nomeDirectoryPrenotazioni = "Prenotazioni";
-		String pathDirectoryPrenotazioni = pathGiornata + "/" + nomeDirectoryPrenotazioni;
-		ServizioFile.creaDirectory(pathDirectoryPrenotazioni);
-
-		String nomeDirectoryMenuCarta = "Menu alla carta";
-		String pathDirectoryMenuCarta = pathGiornata + "/" + nomeDirectoryMenuCarta;
-		ServizioFile.creaDirectory(pathDirectoryMenuCarta);
-
-		String nomeDirectoryMenuTematici = "Menu Tematici";
-		String pathDirectoryMenuTematici = pathGiornata + "/" + nomeDirectoryMenuTematici;
-		ServizioFile.creaDirectory(pathDirectoryMenuTematici);
-
-		aggiungiScelte(pathCompletoFileRistorante, prenotazione, pathDirectoryMenuCarta, pathDirectoryMenuTematici);
-
-		List<File> elencoDirGiornate = ServizioFile.getElencoDirectory(pathCalendario);
-
+	public void aggiornamentoCalendario(Ristorante ristorante, List<File> elencoDirGiornate) {
 		TreeSet<Giornata> calendarioNoParam = new TreeSet<>();
 		for (File file : elencoDirGiornate) {
 			Giornata giornata = new Giornata(file.getName());
@@ -90,7 +149,7 @@ public class AddettoPrenotazioni extends Utente {
 				case "Prenotazioni":
 					ConfiguratorePrenotazione confPren = new ConfiguratorePrenotazione();
 					for (File filePren : ServizioFile.getElencoFileTxt(f.getPath())) {
-						Prenotazione pren = (Prenotazione) confPren.caricaIstanzaOggettoDaFile(filePren.getAbsolutePath());
+						Prenotazione pren = (Prenotazione) confPren.caricaIstanzaOggettoDaFile(filePren.getPath());
 						prenotazioni.add(pren);
 					}
 					Giornata giornataVecchiaP = ristorante.getGiornata(Giorno.parseGiorno(file.getName()));
@@ -130,37 +189,6 @@ public class AddettoPrenotazioni extends Utente {
 				}
 			}
 		} //fine aggiornamento calendario da file
-
-
-		TreeSet<Giornata> calendario = ristorante.getCalendario();
-
-		int postiRimasti = ristorante.getNumPosti();
-
-		for (Giornata giornata : calendario) {
-			if (giornata.getGiorno().compareTo(dataPrenotazione)==0) {
-				if (controlloVincoli(giornata.numCopertiPrenotati(), postiRimasti, prenotazione, ristorante.getCaricoLavoroRistorante())) {
-					giornata.getPrenotazioni().add(prenotazione);
-
-					String nomePrenotazione = prenotazione.getCliente()+"_"+prenotazione.getNumCoperti() + ".txt";
-					String pathPrenotazione = pathDirectoryPrenotazioni + "/" + nomePrenotazione;
-
-					// Controlla se il file esiste, altrimenti lo crea
-					if (!ServizioFile.controlloEsistenzaFile(pathPrenotazione)) {
-						ServizioFile.creaFile(pathPrenotazione);
-					}
-
-					//salva il file della prenotazione nella cartella delle prenotazioni del giorno per cui si prenota
-					ConfiguratorePrenotazione confPren = new ConfiguratorePrenotazione();
-					confPren.salvaIstanzaOggetto(prenotazione, pathPrenotazione);
-
-					postiRimasti-=prenotazione.getNumCoperti();
-					System.out.println(messaggioSuccessoAccettazione);
-
-				} else {
-					System.out.println(messaggioErrAccettazione);
-				}
-			}
-		}
 	}
 
 	public void aggiungiScelte(String pathCompletoFileRistorante, Prenotazione prenotazione, 
@@ -245,11 +273,18 @@ public class AddettoPrenotazioni extends Utente {
 		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
 		String messaggioGiornata = "Inserire la giornata di cui si vuole vedere le prenotazioni";
-
 		System.out.println(messaggioGiornata);
 		Giorno giornoScelto = GiornoView.richiestaCreaGiorno();
+		
+		String pathCalendario = creaDirectoryCalendario(pathCompletoFileRistorante);
 
-		for (Giornata giornata : ristorante.getCalendario()) {
+		List<File> elencoDirGiornate = ServizioFile.getElencoDirectory(pathCalendario);
+		
+		aggiornamentoCalendario(ristorante, elencoDirGiornate);
+
+		TreeSet<Giornata> calendario = ristorante.getCalendario();
+
+		for (Giornata giornata : calendario) {
 			if (giornoScelto.equals(giornata.getGiorno())) {
 				System.out.println(giornata.descrizionePrenotazioni());
 			}

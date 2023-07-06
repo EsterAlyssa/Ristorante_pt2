@@ -1,0 +1,16 @@
+cliente=anna
+numCoperti=3
+data=3-6-2023
+elenco=
+~
+quantitaPrenotate=3
+
+Piatto= 
+nomePiatto=pollo
+caricoLavoroPiatto=3.0
+validitaPiatto=
+giorno=3-6-2023;
+giorno=11-9-2023;
+giorno=20-11-2023;
+giorno=8-6-2024;
+----
