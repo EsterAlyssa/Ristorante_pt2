@@ -1,4 +1,4 @@
-package Util.ConfigurazioneFile;
+package Util.GestioneFile.ConfiguratoriFile;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,9 +7,10 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import Giorno.Giorno;
+import Giorno.GiornoView.GiornoView;
 import Prenotazioni.Prenotazione;
 import Prenotazioni.SceltaPrenotazione;
-import Util.ServizioFile;
+import Util.GestioneFile.ServizioFile;
 
 public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 
@@ -23,7 +24,8 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 			writer.newLine();
 			writer.write("numCoperti=" + ((Prenotazione) prenotazione).getNumCoperti());
 			writer.newLine();
-			writer.write("data=" + ((Prenotazione) prenotazione).getData().descrizioneGiorno());
+			GiornoView giornoView = new GiornoView (((Prenotazione) prenotazione).getData().getGiorno());
+			writer.write("data=" + giornoView.descrizioneGiorno());
 			writer.newLine();
 
 			HashMap<SceltaPrenotazione, Integer> elenco = ((Prenotazione) prenotazione).getElenco();
@@ -88,6 +90,7 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 					if (sceltaCorrente != null) {
 						pren.aggiungiScelta(sceltaCorrente, quantita);
 						sceltaCorrente = null; //la scelta viene poi annullato perchè dovrà "lasciare posto" a quella nuova
+						quantita = 0;
 					}
 					inSezioneScelta = false; // Segna la fine della sezione della scelta corrente
 				} else if (line.startsWith("quantitaPrenotate")) {

@@ -1,4 +1,4 @@
-package Util.ConfigurazioneFile;
+package Util.GestioneFile.ConfiguratoriFile;
 
 import Giorno.Giorno;
 import Giorno.Periodo;

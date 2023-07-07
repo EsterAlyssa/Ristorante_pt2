@@ -41,10 +41,6 @@ public class Giorno implements Comparable<Giorno> {
 		return new Giorno (LocalDate.now());
 	}
 	
-	public String descrizioneGiorno() {
-		return giorno.getDayOfMonth() + "-" + giorno.getMonthValue() + "-" + giorno.getYear();
-	}
-
 	public static Giorno parseGiorno(String input) { //String stile gg-mm-aaaa
 		String[] parts = input.split("-");
 		int giorno = Integer.parseInt(parts[0]);

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
+import Giorno.GiornoView.GiornoView;
 import Magazzino.Merce.Ingrediente;
 import Magazzino.Merce.Merce;
 import Ristorante.Giornata;
@@ -16,7 +17,6 @@ public class RegistroMagazzino {
 	public RegistroMagazzino() {
 		this.registro = new HashMap<>();
 	}
-
 
 	public HashMap<String, PriorityQueue<ElementoMagazzino>> getRegistro() {
 		return registro;
@@ -172,5 +172,22 @@ public class RegistroMagazzino {
 			quantita += elemento.getQuantita();
 		}
 		return quantita;
+	}
+
+	public String descrizioneRegistroMagazzino() {
+		String daTornare = "Registro Magazzino:\n";
+		for (String nome : registro.keySet()) {
+			daTornare += "Merce: " + nome + "\n";
+			PriorityQueue<ElementoMagazzino> codaMerce = registro.get(nome);
+			for (ElementoMagazzino elemento : codaMerce) {
+				GiornoView giornoView = new GiornoView(elemento.getMerce().getScadenza().getGiorno());
+				daTornare += "Sottocategoria: " + elemento.getMerce().getClass() + 
+						"\nUnita' di misura: " + elemento.getMerce().getUnitaMisura() +
+						"\nScadenza: " + giornoView.descrizioneGiorno() + 
+						"\nQuantita': " + elemento.getQuantita() + "\n";
+			}
+		}
+		
+		return daTornare;
 	}
 }

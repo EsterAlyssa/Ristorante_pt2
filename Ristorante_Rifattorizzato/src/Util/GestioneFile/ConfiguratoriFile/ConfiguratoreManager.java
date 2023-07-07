@@ -1,13 +1,17 @@
-package Util.ConfigurazioneFile;
+package Util.GestioneFile.ConfiguratoriFile;
 
-import Util.ServizioFile;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
-import java.io.*;
+import Util.GestioneFile.ServizioFile;
 
 public abstract class ConfiguratoreManager {
 
-	public final void salvaIstanzaOggetto(Object oggetto, String pathRistorante) {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathRistorante))) {
+	public void salvaIstanzaOggetto(Object oggetto, String pathFile) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathFile))) {
 			// Scrittura dei parametri nel file
 			scriviParametriNelFile(oggetto, writer);
 		} catch (IOException e) {

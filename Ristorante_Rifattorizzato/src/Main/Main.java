@@ -4,8 +4,8 @@ import Ristorante.Ristorante;
 import Utenti.Gestore;
 import Utenti.Utente;
 import Util.InputDati;
-import Util.ServizioFile;
-import Util.ConfigurazioneFile.ConfiguratoreRistorante;
+import Util.GestioneFile.ServizioFile;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRistorante;
 
 public class Main {
 

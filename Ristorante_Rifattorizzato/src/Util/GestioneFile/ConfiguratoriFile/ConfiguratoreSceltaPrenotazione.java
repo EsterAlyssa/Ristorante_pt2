@@ -1,4 +1,4 @@
-package Util.ConfigurazioneFile;
+package Util.GestioneFile.ConfiguratoriFile;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

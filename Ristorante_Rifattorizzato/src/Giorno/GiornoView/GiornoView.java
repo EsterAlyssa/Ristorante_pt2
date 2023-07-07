@@ -6,7 +6,13 @@ import Giorno.Giorno;
 import Util.InputDati;
 
 public class GiornoView {
-	public LocalDate giorno;
+
+	private LocalDate giorno;
+
+	public GiornoView(LocalDate giorno) {
+		this.giorno = giorno;
+	}
+
 	final static String messaggioAnno = "\nInserisci l'anno: ";
 	final static String messaggioMese = "\nInserisci il mese: ";
 	final static String messaggioGiorno = "\nInserisci il giorno: ";
@@ -22,11 +28,16 @@ public class GiornoView {
 		} else {
 			giorno = InputDati.leggiIntero(messaggioGiorno, 1, 29);
 		}
-	
+
 		return new Giorno (anno, mese, giorno);
 	}
-	
-	public static void mostraDescrizioneGiorno(String descrizioneGiorno) {
-        System.out.println(descrizioneGiorno);
+
+	public String descrizioneGiorno() {
+		return giorno.getDayOfMonth() + "-" + giorno.getMonthValue() + "-" + giorno.getYear();
+	}
+
+	public void mostraDescrizioneGiorno() {
+		String descrizione = descrizioneGiorno();
+		System.out.println(descrizione);
 	}
 }

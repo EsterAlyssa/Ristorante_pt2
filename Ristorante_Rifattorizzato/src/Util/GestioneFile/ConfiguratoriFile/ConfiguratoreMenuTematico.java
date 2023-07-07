@@ -1,11 +1,14 @@
-package Util.ConfigurazioneFile;
+package Util.GestioneFile.ConfiguratoriFile;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashSet;
 
 import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
-import Util.ServizioFile;
+import Util.GestioneFile.ServizioFile;
 
 public class ConfiguratoreMenuTematico extends ConfiguratoreManager {
 	public ConfiguratoreMenuTematico() {

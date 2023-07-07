@@ -7,16 +7,23 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
-import Giorno.*;
-import Giorno.GiornoView.*;
+import Giorno.Giorno;
+import Giorno.Periodo;
+import Giorno.GiornoView.GiornoView;
+import Giorno.GiornoView.PeriodoView;
 import Ristorante.Ristorante;
 import Ristorante.ElementiRistorante.InsiemeExtra;
 import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
 import Ristorante.ElementiRistorante.Ricetta;
 import Util.InputDati;
-import Util.ServizioFile;
-import Util.ConfigurazioneFile.*;
+import Util.GestioneFile.ServizioFile;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreExtra;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreManager;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreMenuTematico;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratorePiatto;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRicetta;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRistorante;
 
 public class Gestore extends Utente{
 
@@ -93,6 +100,7 @@ public class Gestore extends Utente{
 				BufferedWriter writer = new BufferedWriter(new FileWriter(pathFileBevande));
 				writer.write("Insieme Extra=");
 				writer.flush();
+				writer.close();
 			} catch (IOException e) {
 				System.out.println("Errore inizializzazione file");
 				e.printStackTrace();
@@ -188,6 +196,7 @@ public class Gestore extends Utente{
 				BufferedWriter writer = new BufferedWriter(new FileWriter(pathFileGeneriExtra));
 				writer.write("Insieme Extra=");
 				writer.flush();
+				writer.close();
 			} catch (IOException e) {
 				System.out.println("Errore inizializzazione file");
 				e.printStackTrace();
@@ -285,7 +294,8 @@ public class Gestore extends Utente{
 				piatto = (Piatto) confPiat.caricaIstanzaOggettoDaFile(pathFilePiatto);
 				System.out.printf("Periodo di validità del piatto %s:\n", piatto.getNome());
 				for (Giorno giorno : piatto.getValidita().getPeriodoValidita()) {
-					GiornoView.mostraDescrizioneGiorno(giorno.descrizioneGiorno());
+					GiornoView giornoView = new GiornoView (giorno.getGiorno());
+					giornoView.mostraDescrizioneGiorno();
 				}
 				boolean scelta = InputDati.yesOrNo("Vuoi aggiungere altri giorni validi?");
 				if (scelta) {
@@ -317,7 +327,8 @@ public class Gestore extends Utente{
 		ServizioFile.creaDirectory(pathCalendario);
 
 		for (Giorno giorno : piatto.getValidita().getPeriodoValidita()) {
-			String nomeDirectoryGiornata = giorno.descrizioneGiorno();
+			GiornoView giornoView = new GiornoView (giorno.getGiorno());
+			String nomeDirectoryGiornata = giornoView.descrizioneGiorno();
 			String pathGiornata = pathCalendario + "/" + nomeDirectoryGiornata;
 			ServizioFile.creaDirectory(pathGiornata);
 
@@ -387,7 +398,9 @@ public class Gestore extends Utente{
 		HashSet<Piatto> piatti = ristorante.getPiatti();
 
 		for (Piatto piatto : piatti) {
-			System.out.printf("Nome piatto: %s\nPeriodo di validita': %s\n", piatto.getNome(), piatto.getValidita().descrizionePeriodo());
+			System.out.printf("Nome piatto: %s", piatto.getNome());
+			PeriodoView periodoView = new PeriodoView(piatto.getValidita());
+			periodoView.descrizionePeriodo();
 		}
 	}
 
@@ -608,7 +621,8 @@ public class Gestore extends Utente{
 		String pathCalendario = pathDirectory + "/" + nomeDirectoryCalenario;
 
 		for (Giorno giorno : nuovo.getValidita().getPeriodoValidita()) {
-			String nomeDirectoryGiornata = giorno.descrizioneGiorno();
+			GiornoView giornoView = new GiornoView (giorno.getGiorno());
+			String nomeDirectoryGiornata = giornoView.descrizioneGiorno();
 			String pathGiornata = pathCalendario + "/" + nomeDirectoryGiornata;
 			ServizioFile.creaDirectory(pathGiornata);
 

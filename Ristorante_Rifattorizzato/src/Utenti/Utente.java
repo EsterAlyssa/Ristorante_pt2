@@ -1,5 +1,6 @@
 package Utenti;
 
+import Utenti.AddettoPrenotazioni.AddettoPrenotazioni;
 import Util.*;
 
 public abstract class Utente implements MenuUtente {

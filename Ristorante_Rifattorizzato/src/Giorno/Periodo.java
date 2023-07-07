@@ -23,15 +23,6 @@ public class Periodo {
 		this.periodoValidita = periodoValidita;
 	}
 
-	public String descrizionePeriodo() {
-		String daTornare = "";
-		for (Giorno giorno : periodoValidita) {
-			daTornare += giorno.descrizioneGiorno() + ";";
-			daTornare += "\n";
-		}
-		return daTornare;
-	}
-
 	public static Periodo unisciPeriodi(Periodo periodo1, Periodo periodo2) {
 		Periodo periodoSomma = new Periodo();
 		// Aggiungi tutti i giorni del primo periodo al periodoSomma

@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import Giorno.*;
+import Giorno.Giorno;
+import Giorno.Periodo;
 import Giorno.GiornoView.GiornoView;
 import Magazzino.ElementoMagazzino;
 import Magazzino.ListaSpesa;
@@ -19,15 +20,15 @@ import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
 import Ristorante.ElementiRistorante.Ricetta;
 import Util.InputDati;
-import Util.ServizioFile;
-import Util.ConfigurazioneFile.ConfiguratoreRistorante;
-import Util.ConfigurazioneFile.ConfiguratorePiatto;
-import Util.ConfigurazioneFile.ConfiguratoreMenuTematico;
-import Util.ConfigurazioneFile.ConfiguratorePrenotazione;
-import Util.ConfigurazioneFile.ConfiguratoreRegistroMagazzino;
-import Util.ConfigurazioneFile.ConfiguratoreRicetta;
-import Util.ConfigurazioneFile.ConfiguratoreExtra;
-import Util.ConfigurazioneFile.ConfiguratoreListaSpesa;
+import Util.GestioneFile.ServizioFile;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreExtra;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreListaSpesa;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreMenuTematico;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratorePiatto;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratorePrenotazione;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRegistroMagazzino;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRicetta;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRistorante;
 
 public class Magazziniere extends Utente {
 
@@ -37,7 +38,8 @@ public class Magazziniere extends Utente {
 			"Preleva bevande e generi extra da portare in sala", 
 			"Aggiungi al magazzino le merci inutilizzate", 
 			"Elimina dal magazzino gli scarti",
-			"Genera lista della spesa per il prossimo giorno"};
+			"Genera lista della spesa per il prossimo giorno",
+	"Visualizza registro magazzino"};
 
 	public Magazziniere(String nome) {
 		super(nome, etichettaM, voci);
@@ -80,9 +82,10 @@ public class Magazziniere extends Utente {
 		case 6:
 			generaListaSpesa(giornoCorrente, pathCompletoFileRistorante, pathFileRegistroMagazzino);
 			break;
+		case 7:
+			visualizzaRegistroMagazzino(pathFileRegistroMagazzino);
 		}
 	}
-
 
 	public void aggiuntaProdottiAcquistati(String pathCompletoFileRistorante, String pathFileRegistroMagazzino) {
 		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
@@ -132,7 +135,8 @@ public class Magazziniere extends Utente {
 		// Controlla se la directory esiste, altrimenti la crea
 		ServizioFile.creaDirectory(pathDirectoryCalendario);
 
-		String nomeDirectoryGiornata = giornoCorrente.descrizioneGiorno();
+		GiornoView giornoView = new GiornoView (giornoCorrente.getGiorno());
+		String nomeDirectoryGiornata = giornoView.descrizioneGiorno();
 		String pathDirectoryGiornata = pathDirectoryCalendario + "/" + nomeDirectoryGiornata;
 
 		// Controlla se la directory esiste, altrimenti la crea
@@ -153,7 +157,7 @@ public class Magazziniere extends Utente {
 		}
 
 		//Giornata corrente con inizializzato solo il giorno
-		Giornata giornataCorrente = new Giornata(giornoCorrente.descrizioneGiorno());
+		Giornata giornataCorrente = new Giornata(giornoView.descrizioneGiorno());
 
 		HashSet<Prenotazione> prenotazioni = new HashSet<>();
 		HashSet<Piatto> menuCarta = new HashSet<>();
@@ -229,14 +233,15 @@ public class Magazziniere extends Utente {
 		// Controlla se la directory esiste, altrimenti la crea
 		ServizioFile.creaDirectory(pathDirectoryCalendario);
 
-		String nomeDirectoryGiornata = giornoCorrente.descrizioneGiorno();
+		GiornoView giornoView = new GiornoView (giornoCorrente.getGiorno());
+		String nomeDirectoryGiornata = giornoView.descrizioneGiorno();
 		String pathDirectoryGiornata = pathDirectoryCalendario + "/" + nomeDirectoryGiornata;
 
 		// Controlla se la directory esiste, altrimenti la crea
 		ServizioFile.creaDirectory(pathDirectoryGiornata);
 
 		//Giornata corrente con inizializzato solo il giorno
-		Giornata giornataCorrente = new Giornata(giornoCorrente.descrizioneGiorno());
+		Giornata giornataCorrente = new Giornata(giornoView.descrizioneGiorno());
 
 		HashSet<Prenotazione> prenotazioni = new HashSet<>();
 
@@ -265,12 +270,12 @@ public class Magazziniere extends Utente {
 		String pathFileGeneriExtra = pathDirectoryInsiemiExtra + "/" + nomeFileGeneriExtra;
 
 		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
-		HashMap<String, Double> insiemeB = ((HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileBevande));
+		HashMap<String, Double> insiemeB = (HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileBevande);
 		ristorante.getInsiemeB().setInsiemeExtra(insiemeB);
-		
-		HashMap<String, Double> insiemeGE = ((HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra));
+
+		HashMap<String, Double> insiemeGE = (HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
 		ristorante.getInsiemeGE().setInsiemeExtra(insiemeGE);
-		
+
 		ConfiguratoreRegistroMagazzino confRegMag = new ConfiguratoreRegistroMagazzino();
 		RegistroMagazzino registro = (RegistroMagazzino) confRegMag.caricaIstanzaOggettoDaFile(pathFileRegistroMagazzino);
 
@@ -321,14 +326,14 @@ public class Magazziniere extends Utente {
 		Giorno scadenza = GiornoView.richiestaCreaGiorno();
 
 		String tipo = "";
-		boolean controllo = false;
+		boolean controllo = true;
 		do {
 			tipo = InputDati.leggiStringaNonVuota(messaggioTipo);
-
-			if (tipo != "ingrediente" || tipo != "bevanda" || tipo != "genere extra") {
-				controllo = true;
-				System.out.println(messaggioErrTipo);
+			if (tipo.equalsIgnoreCase("ingrediente") || tipo.equalsIgnoreCase("bevanda") || tipo.equalsIgnoreCase("genere extra")) {
+				controllo = false;
+				break;
 			}
+			System.out.println(messaggioErrTipo);
 		} while (controllo);
 
 		double consumoProCapite = 0.0;
@@ -345,7 +350,8 @@ public class Magazziniere extends Utente {
 		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
 		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		Giornata giornataCorrente = new Giornata(giornoCorrente.descrizioneGiorno());
+		GiornoView giornoView = new GiornoView (giornoCorrente.getGiorno());
+		Giornata giornataCorrente = new Giornata(giornoView.descrizioneGiorno());
 
 		Merce merceNonDiQualita = dichiarazioneMerceDeteriorata();
 
@@ -381,7 +387,8 @@ public class Magazziniere extends Utente {
 		// Controlla se la directory esiste, altrimenti la crea
 		ServizioFile.creaDirectory(pathDirectoryCalendario);
 
-		String nomeDirectoryGiornata = giornoCorrente.descrizioneGiorno();
+		GiornoView giornoView = new GiornoView (giornoCorrente.getGiorno());
+		String nomeDirectoryGiornata = giornoView.descrizioneGiorno();
 		String pathDirectoryGiornata = pathDirectoryCalendario + "/" + nomeDirectoryGiornata;
 
 		// Controlla se la directory esiste, altrimenti la crea
@@ -402,7 +409,7 @@ public class Magazziniere extends Utente {
 		}
 
 		//Giornata corrente con inizializzato solo il giorno
-		Giornata giornataCorrente = new Giornata(giornoCorrente.descrizioneGiorno());
+		Giornata giornataCorrente = new Giornata(giornoView.descrizioneGiorno());
 
 		HashSet<Prenotazione> prenotazioni = new HashSet<>();
 		HashSet<Piatto> menuCarta = new HashSet<>();
@@ -466,7 +473,7 @@ public class Magazziniere extends Utente {
 		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
 		HashMap<String, Double> insiemeB = ((HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileBevande));
 		ristorante.getInsiemeB().setInsiemeExtra(insiemeB);		
-		
+
 		HashMap<String, Double> insiemeGE = ((HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra));
 		ristorante.getInsiemeGE().setInsiemeExtra(insiemeGE);
 
@@ -492,5 +499,12 @@ public class Magazziniere extends Utente {
 				lista.getLista().put(nome, lista.getLista().get(nome) * 1.1);
 			}
 		}
+	}
+
+	public void visualizzaRegistroMagazzino(String pathFileRegistroMagazzino) {
+		ConfiguratoreRegistroMagazzino confRegMag = new ConfiguratoreRegistroMagazzino();
+		RegistroMagazzino registro = (RegistroMagazzino) confRegMag.caricaIstanzaOggettoDaFile(pathFileRegistroMagazzino);
+
+		System.out.println(registro.descrizioneRegistroMagazzino());
 	}
 }
