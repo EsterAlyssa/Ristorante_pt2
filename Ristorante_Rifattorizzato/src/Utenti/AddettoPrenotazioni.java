@@ -285,7 +285,7 @@ public class AddettoPrenotazioni extends Utente {
 		TreeSet<Giornata> calendario = ristorante.getCalendario();
 
 		for (Giornata giornata : calendario) {
-			if (giornoScelto.equals(giornata.getGiorno())) {
+			if (giornoScelto.compareTo(giornata.getGiorno())==0) {
 				System.out.println(giornata.descrizionePrenotazioni());
 			}
 		}

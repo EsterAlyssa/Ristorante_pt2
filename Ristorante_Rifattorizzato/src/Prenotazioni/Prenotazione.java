@@ -73,7 +73,7 @@ public class Prenotazione {
 	}
 	
 	public String descrizionePrenotazione() {
-		return "Prenotazione di " + cliente + ", per " + numCoperti + "persone";
+		return "Prenotazione di " + cliente + ", per " + numCoperti + " persone";
 	}
 	
 }

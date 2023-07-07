@@ -1,14 +1,11 @@
 package Util.ConfigurazioneFile;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.IOException;
 
 import Prenotazioni.SceltaPrenotazione;
 import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
-import Util.ServizioFile;
 
 public class ConfiguratoreSceltaPrenotazione extends ConfiguratoreManager {
 

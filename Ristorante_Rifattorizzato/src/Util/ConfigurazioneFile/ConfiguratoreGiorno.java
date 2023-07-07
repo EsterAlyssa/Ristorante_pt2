@@ -21,7 +21,7 @@ public class ConfiguratoreGiorno extends ConfiguratoreManager {
 
 	@Override
 	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
-		((Giorno)oggetto).setGiorno((Giorno.parseGiorno(valoreAttributo)));
+		((Giorno)oggetto).setGiorno(Giorno.parseGiorno(valoreAttributo).getGiorno());
 	}
 
 	@Override

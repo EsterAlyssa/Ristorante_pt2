@@ -9,8 +9,6 @@ import java.util.HashMap;
 import Giorno.Giorno;
 import Prenotazioni.Prenotazione;
 import Prenotazioni.SceltaPrenotazione;
-import Ristorante.ElementiRistorante.MenuTematico;
-import Ristorante.ElementiRistorante.Piatto;
 import Util.ServizioFile;
 
 public class ConfiguratorePrenotazione extends ConfiguratoreManager{
@@ -39,7 +37,6 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 				writer.newLine();
 				writer.newLine();
 				confScelta.scriviParametriNelFile(scelta, writer);
-				writer.append("----");
 				writer.newLine();
 			}
 		} catch (IOException e) {
@@ -61,30 +58,11 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 			break;
 			// probabile errore
 		case "data":
-			ConfiguratoreManager confGiorno = new ConfiguratoreGiorno();
-			confGiorno.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, ((Prenotazione)oggetto).getData());
+			Giorno giorno = Giorno.parseGiorno(valoreAttributo);
+			((Prenotazione)oggetto).setData(giorno);
 			break;
 		case "elenco":
 			break;
-			/*		HashMap<SceltaPrenotazione, Integer> elenco = new HashMap<>();
-			String[] sceltePrenotate = valoreAttributo.split("\n----\n");
-			ConfiguratoreManager confScelta = new ConfiguratoreSceltaPrenotazione();
-			for (String scelta : sceltePrenotate) {
-				String[] coppia = scelta.split("~");
-				String quantitaPrenotate = coppia[0].trim();
-				String descrizioneScelta = coppia[1].trim();
-
-				String[] perQuantitaSelta = quantitaPrenotate.split("=");
-				int numScelta = Integer.parseInt(perQuantitaSelta[1].trim());
-
-				SceltaPrenotazione sceltaPren = (SceltaPrenotazione) confScelta.creaIstanzaOggetto(descrizioneScelta);
-				confScelta.setAttributiDatoOggetto(scelta, descrizioneScelta, sceltaPren);
-
-				elenco.put(sceltaPren, numScelta);
-			}
-			((Prenotazione)oggetto).setElenco(elenco);
-			break;
-			 */
 		default:
 			System.out.println("Errore nel settaggio dei parametri");
 			break;
@@ -103,8 +81,8 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pathFileOggetto));
 			String line;
+			int quantita = 0;
 			while ((line = reader.readLine()) != null) {
-				int quantita = 0;
 				if (line.equals("~")) {
 					// Se si incontra il separatore, si aggiunge sceltaCorrente all'insieme MenuTematico
 					if (sceltaCorrente != null) {
@@ -115,7 +93,10 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 				} else if (line.startsWith("quantitaPrenotate")) {
 					// Inizia una nuova sezione della scelta
 					quantita = Integer.parseInt(line.substring(line.indexOf('=') + 1));
-					sceltaCorrente = (SceltaPrenotazione) confScelta.creaIstanzaOggetto("");
+					//si leggono due linee
+					line = reader.readLine();//la prima linea è un a capo separatore
+					line = reader.readLine();//la seconda linea dice la "categoria" della scelta (Piatto o menu)
+					sceltaCorrente = (SceltaPrenotazione) confScelta.creaIstanzaOggetto(line);
 					inSezioneScelta = true;
 				} else if (inSezioneScelta) {
 					// Se si è all'interno di una sezione di scelta, carica gli attributi
