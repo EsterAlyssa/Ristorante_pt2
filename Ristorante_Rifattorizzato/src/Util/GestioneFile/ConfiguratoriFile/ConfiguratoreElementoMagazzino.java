@@ -46,31 +46,7 @@ public class ConfiguratoreElementoMagazzino extends ConfiguratoreManager{
 			BufferedReader reader = new BufferedReader(new FileReader(pathFileOggetto));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				if (line.startsWith("merce=")) {
-					// Si aggiunge la merceCorrente all'elementoMagazzino
-					if (merceCorrente != null) {
-						elementoMagazzino.setMerce(merceCorrente);
-						merceCorrente = null; //la merce viene poi annullato perchè dovrà "lasciare posto" a una nuova merce
-					}
-					inSezioneMerce = false; // Segna la fine della sezione della merce corrente
-				
-					// Inizia una nuova sezione di merce
-					// Si legge la linea dopo per sapere il tipo di merce
-					String tipo = reader.readLine().substring(line.indexOf('=') + 1);
-					merceCorrente = (Merce) confMerce.creaIstanzaOggetto(tipo);
-					inSezioneMerce = true;
-				} else if (inSezioneMerce) {
-					// Se si è all'interno di una sezione di merce, carica gli attributi
-					confMerce.caricaIstanzaOggetto(merceCorrente, line);
-				} else {
-					// Altrimenti, gestisci gli attributi generici dell'elemento magazzino
-					String[] parte = line.split("=");
-					if (parte.length == 2) {
-						String nomeAttributo = parte[0].trim();
-						String valoreAttributo = parte[1].trim();
-						setAttributiDatoOggetto(nomeAttributo, valoreAttributo, elementoMagazzino);
-					}
-				}
+				letturaIstanza(line, merceCorrente, elementoMagazzino, inSezioneMerce, reader, confMerce);
 			}
 			reader.close();
 		} catch (IOException e) {
@@ -79,6 +55,45 @@ public class ConfiguratoreElementoMagazzino extends ConfiguratoreManager{
 		return elementoMagazzino;
 	}
 
+	public ElementoMagazzino letturaIstanza(String line, Merce merceCorrente, ElementoMagazzino elementoMagazzino, 
+			boolean inSezioneMerce, BufferedReader reader, ConfiguratoreMerce confMerce) {
+		if (line.startsWith("merce=")) {
+			// Si aggiunge la merceCorrente all'elementoMagazzino
+			if (merceCorrente != null) {
+				elementoMagazzino.setMerce(merceCorrente);
+				merceCorrente = null; //la merce viene poi annullato perchè dovrà "lasciare posto" a una nuova merce
+			}
+			inSezioneMerce = false; // Segna la fine della sezione della merce corrente
+		
+			// Inizia una nuova sezione di merce
+			// Si legge la linea dopo per sapere il tipo di merce
+			String tipo = "";
+			try {
+				tipo = reader.readLine();
+				tipo = tipo.substring(tipo.indexOf('=')+1);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			merceCorrente = (Merce) confMerce.creaIstanzaOggetto(tipo);
+			elementoMagazzino.setMerce(merceCorrente);
+			inSezioneMerce = true;
+		} else if (inSezioneMerce) {
+			// Se si è all'interno di una sezione di merce, carica gli attributi
+			merceCorrente = elementoMagazzino.getMerce();
+			merceCorrente = (Merce) confMerce.caricaIstanzaOggetto(merceCorrente, line);
+			elementoMagazzino.setMerce(merceCorrente);
+		} else {
+			// Altrimenti, gestisci gli attributi generici dell'elemento magazzino
+			String[] parte = line.split("=");
+			if (parte.length == 2) {
+				String nomeAttributo = parte[0].trim();
+				String valoreAttributo = parte[1].trim();
+				setAttributiDatoOggetto(nomeAttributo, valoreAttributo, elementoMagazzino);
+			}
+		}
+		return elementoMagazzino;
+	}
+	
 	@Override
 	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object elementoMagazzino) {
 		switch (nomeAttributo) {

@@ -1,6 +1,8 @@
 package Utenti;
 
 import Utenti.AddettoPrenotazioni.AddettoPrenotazioni;
+import Utenti.Gestore.GestoreRistorante;
+import Utenti.Magazziniere.Magazziniere;
 import Util.*;
 
 public abstract class Utente implements MenuUtente {
@@ -61,7 +63,7 @@ public abstract class Utente implements MenuUtente {
 		int scelta = menuRuoli.scegli();
 		switch (scelta) {
 		case 1:
-			utente = new Gestore(nome);
+			utente = new GestoreRistorante(nome);
 			break;
 		case 2:
 			utente = new AddettoPrenotazioni(nome);

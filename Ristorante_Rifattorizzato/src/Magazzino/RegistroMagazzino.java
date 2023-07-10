@@ -25,7 +25,7 @@ public class RegistroMagazzino {
 	public void setRegistro(HashMap<String, PriorityQueue<ElementoMagazzino>> registro) {
 		this.registro = registro;
 	}
-
+	
 	public void aggiungiMerce(Merce merce, double quantita) {
 		String nomeMerce = merce.getNome();
 
@@ -34,7 +34,7 @@ public class RegistroMagazzino {
 
 			// Controllo se esiste un elemento con la stessa scadenza
 			for (ElementoMagazzino elemento : codaMerce) {
-				if (elemento.getMerce().getScadenza().equals(merce.getScadenza())) {
+				if (elemento.getMerce().getScadenza().compareTo(merce.getScadenza())==0) {
 					// Aggiorno la quantita' se la scadenza e' la stessa
 					elemento.setQuantita(elemento.getQuantita() + quantita);
 					return;
@@ -45,7 +45,7 @@ public class RegistroMagazzino {
 			codaMerce.add(nuovoElemento); //il vincolo sulla scadenza è rispettato per default
 		} else {
 			// Se la merce non e' ancora presente nel magazzino, creo una nuova coda e aggiungo il primo elemento
-			PriorityQueue<ElementoMagazzino> nuovaCoda = new PriorityQueue<>((em1, em2) -> em1.getMerce().getScadenza().confrontoScadenza(em2.getMerce().getScadenza()));
+			PriorityQueue<ElementoMagazzino> nuovaCoda = new PriorityQueue<>();
 			ElementoMagazzino nuovoElemento = new ElementoMagazzino(merce, quantita);
 			nuovaCoda.add(nuovoElemento);
 			registro.put(nomeMerce, nuovaCoda);
@@ -175,19 +175,20 @@ public class RegistroMagazzino {
 	}
 
 	public String descrizioneRegistroMagazzino() {
-		String daTornare = "Registro Magazzino:\n";
+		String daTornare = "Registro Magazzino:\n\n";
 		for (String nome : registro.keySet()) {
 			daTornare += "Merce: " + nome + "\n";
 			PriorityQueue<ElementoMagazzino> codaMerce = registro.get(nome);
 			for (ElementoMagazzino elemento : codaMerce) {
 				GiornoView giornoView = new GiornoView(elemento.getMerce().getScadenza().getGiorno());
-				daTornare += "Sottocategoria: " + elemento.getMerce().getClass() + 
+				daTornare += "Sottocategoria: " + elemento.getMerce().getClass().getSimpleName() + 
 						"\nUnita' di misura: " + elemento.getMerce().getUnitaMisura() +
 						"\nScadenza: " + giornoView.descrizioneGiorno() + 
 						"\nQuantita': " + elemento.getQuantita() + "\n";
+				daTornare += "\n";
 			}
+			daTornare +="---\n";
 		}
-		
 		return daTornare;
 	}
 }

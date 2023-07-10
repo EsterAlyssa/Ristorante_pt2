@@ -50,7 +50,6 @@ public abstract class ConfiguratoreManager {
 		return oggetto;
 	}
 
-
 	public abstract void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto);
 	public abstract Object creaIstanzaOggetto(String nomeOggetto);
 

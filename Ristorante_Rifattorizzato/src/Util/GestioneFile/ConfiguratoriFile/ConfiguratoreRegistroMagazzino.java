@@ -10,9 +10,6 @@ import java.util.PriorityQueue;
 import Magazzino.ElementoMagazzino;
 import Magazzino.Merce.*;
 import Magazzino.RegistroMagazzino;
-import Ristorante.ElementiRistorante.MenuTematico;
-import Ristorante.ElementiRistorante.Piatto;
-import Util.GestioneFile.ServizioFile;
 
 public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 
@@ -28,11 +25,13 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 
 			writer.write("registro magazzino= ");
 			writer.newLine();
+			writer.write("~");
+			writer.newLine();
 			// Scriviamo i singoli elementi del registro nel file
 			for (String nomeMerce : registro.keySet()) {
 				PriorityQueue<ElementoMagazzino> codaMerce = registro.get(nomeMerce);
-				writer.write("~");
-				writer.write("nomeMerce=" + nomeMerce);
+
+				writer.write("chiaveMerce=" + nomeMerce);
 				writer.newLine();
 
 				for (ElementoMagazzino elemento : codaMerce) {
@@ -43,6 +42,8 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 					writer.write("---");
 					writer.newLine();
 				}
+				writer.write("~");
+				writer.newLine();
 			}
 		} catch (IOException e) {
 			System.out.println("Impossibile salvare l'oggetto Registro Magazzino");
@@ -50,58 +51,68 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 		}
 	}
 
-	//da aggiustare 
 	@Override
 	public Object caricaIstanzaOggettoDaFile(String pathFileOggetto) {
 		RegistroMagazzino registroMagazzino = new RegistroMagazzino();
 		HashMap<String, PriorityQueue<ElementoMagazzino>> registro = new HashMap<>();
+		ConfiguratoreElementoMagazzino confEleMag = new ConfiguratoreElementoMagazzino();
 
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pathFileOggetto));
 			String line;
-			String nomeMerce = null;
-			PriorityQueue<ElementoMagazzino> codaMerce = null;
-			boolean inSezioneMerce = false;
-			boolean inSezioneElemento = false;
+			String keyElementoRegistro = null;
+			PriorityQueue<ElementoMagazzino> codaElementoRegistro = new PriorityQueue<>();
+			ElementoMagazzino elementoMagazzinoCorrente = null;
+			boolean inSezioneElementoMagazzino = false;
+			boolean inSezioneElementoRegistro = true;
+			Merce merceCorrente = null; // Per tenere traccia della merce corrente
+			boolean inSezioneMerce = false; // Per indicare se si è all'interno di una sezione di una merce
+			ConfiguratoreMerce confMerce = new ConfiguratoreMerce();
+
 
 			while ((line = reader.readLine()) != null) {
-				if (line.equals("registro magazzino=")) {
-					inSezioneMerce = true;
-				} else if (inSezioneMerce && line.startsWith("~")) {
-					// Nuovo elemento del registro
-					if (nomeMerce != null && codaMerce != null) {
-						registro.put(nomeMerce, codaMerce);
+				if (inSezioneElementoRegistro && line.equals("~")) {
+					if (keyElementoRegistro != null && codaElementoRegistro != null) {
+						registro.put(keyElementoRegistro, codaElementoRegistro);
 					}
-					nomeMerce = null;
-					codaMerce = null;
-					inSezioneElemento = false;
-				} else if (inSezioneMerce && line.startsWith("nomeMerce=")) {
+					keyElementoRegistro = null;
+					codaElementoRegistro = null;
+					inSezioneElementoRegistro = false;
+				} else if (line.startsWith("chiaveMerce=")) {
 					// Nome della merce
-					nomeMerce = line.substring(line.indexOf('=') + 1);
-					codaMerce = new PriorityQueue<>();
-					inSezioneElemento = false;
-				} else if (inSezioneElemento && line.equals("---")) {
-					// Fine dell'elemento corrente
-					inSezioneElemento = false;
-				} else if (line.equals("merce=")) {
-					// Nuovo elemento del registro
-					ElementoMagazzino elementoMagazzino = new ElementoMagazzino(null, 0);
-					Merce merce = (Merce) creaIstanzaOggetto("Merce");
-					elementoMagazzino.setMerce(merce);
-					codaMerce.offer(elementoMagazzino);
-					inSezioneElemento = true;
-				} else if (inSezioneElemento) {
-					// Carica gli attributi dell'elemento del registro
-					ConfiguratoreManager confElemento = new ConfiguratoreElementoMagazzino();
-					confElemento.caricaIstanzaOggetto(codaMerce.peek(), line);
+					keyElementoRegistro = line.substring(line.indexOf('=') + 1);
+					if (registro.containsKey(keyElementoRegistro)) {
+						codaElementoRegistro = registro.get(keyElementoRegistro);
+					} else {
+						codaElementoRegistro = new PriorityQueue<>();
+					}
+					elementoMagazzinoCorrente = (ElementoMagazzino) confEleMag.creaIstanzaOggetto(keyElementoRegistro);
+					inSezioneElementoRegistro = true;
+				} else if (line.startsWith("merce=")) {
+					inSezioneElementoMagazzino=true;
+					elementoMagazzinoCorrente = confEleMag.letturaIstanza(line, merceCorrente, elementoMagazzinoCorrente, inSezioneMerce, reader, confMerce);
+					inSezioneMerce = true;
+				} else if(line.startsWith("quantita")) {
+					inSezioneMerce = false;
+					elementoMagazzinoCorrente = confEleMag.letturaIstanza(line, merceCorrente, elementoMagazzinoCorrente, inSezioneMerce, reader, confMerce);
+				} else if (inSezioneElementoMagazzino && line.equals("---")) {
+					//tra un ElementoMagazzino e l'altro c'è il separatore "---", 
+					//quindi si deve salvare l'elemento nella priorityQueue
+					
+					codaElementoRegistro.add(elementoMagazzinoCorrente);
+					elementoMagazzinoCorrente = (ElementoMagazzino) confEleMag.creaIstanzaOggetto(keyElementoRegistro);
+					inSezioneElementoMagazzino = false;
+				} else if(inSezioneElementoRegistro && inSezioneElementoMagazzino) {
+					elementoMagazzinoCorrente = confEleMag.letturaIstanza(line, merceCorrente, elementoMagazzinoCorrente, inSezioneMerce, reader, confMerce);
+				} else {
+					String[] parte = line.split("=");
+					if (parte.length == 2) {
+						String nomeAttributo = parte[0].trim();
+						String valoreAttributo = parte[1].trim();
+						setAttributiDatoOggetto(nomeAttributo, valoreAttributo, registro);
+					}
 				}
 			}
-
-			// Aggiungi l'ultimo elemento del registro alla mappa
-			if (nomeMerce != null && codaMerce != null) {
-				registro.put(nomeMerce, codaMerce);
-			}
-
 			reader.close();
 		} catch (IOException e) {
 			System.out.println("Impossibile caricare l'oggetto");
@@ -116,44 +127,8 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 		switch (nomeAttributo) {
 		case "registro magazzino":
 			break;
-		case "nomeMerce":
-			PriorityQueue<ElementoMagazzino> codaVuota = new PriorityQueue<ElementoMagazzino>();
-			((RegistroMagazzino) oggetto).getRegistro().put(valoreAttributo, codaVuota);
-			break;
 		}
 	}
-
-	public HashMap<String, PriorityQueue<ElementoMagazzino>> ausiliareSetAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, HashMap<String, PriorityQueue<ElementoMagazzino>> registro) {
-		String[] elementi = valoreAttributo.split("---");
-		for (String elemento : elementi) {
-			if (!elemento.trim().isEmpty()) {
-				String nomeMerce = "";
-				PriorityQueue<ElementoMagazzino> codaMerce = new PriorityQueue<>((em1, em2) ->
-				em1.getMerce().getScadenza().confrontoScadenza(em2.getMerce().getScadenza()));
-
-				String[] righe = elemento.split("\n");
-				ElementoMagazzino elementoMagazzino = new ElementoMagazzino(null, 0.0);
-				for (String riga : righe) {
-					if (!riga.trim().isEmpty()) {
-						String[] coppia = riga.split("=");
-						String nomeAttr = coppia[0].trim();
-						String valoreAttr = coppia[1].trim();
-
-						ConfiguratoreElementoMagazzino configuratoreElementoMagazzino = new ConfiguratoreElementoMagazzino();
-						configuratoreElementoMagazzino.setAttributiDatoOggetto(nomeAttr, valoreAttr, elementoMagazzino);
-
-						if (nomeAttr.equals("nomeMerce")) {
-							nomeMerce = valoreAttr;
-						}
-					}
-				}
-				codaMerce.add(elementoMagazzino);
-				registro.put(nomeMerce, codaMerce);
-			}
-		}
-		return registro;
-	}
-
 
 	@Override
 	public Object creaIstanzaOggetto(String nomeOggetto) {

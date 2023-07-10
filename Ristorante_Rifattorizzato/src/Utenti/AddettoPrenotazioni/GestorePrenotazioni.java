@@ -17,7 +17,7 @@ import Util.InputDati;
 import Util.GestioneFile.AggiornamentoCalendario;
 import Util.GestioneFile.CreazioneDirectory;
 import Util.GestioneFile.CreazioneFile;
-import Util.GestioneFile.CreazioneInsiemi;
+import Util.GestioneFile.CreazioneCollection;
 import Util.GestioneFile.ServizioFile;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRistorante;
 
@@ -80,9 +80,9 @@ public class GestorePrenotazioni {
 	public void aggiungiScelte(String pathCompletoFileRistorante, Prenotazione prenotazione, 
 			String pathDirectoryMenuCarta, String pathDirectoryMenuTematici) {
 
-		HashSet<Piatto> piattiMenuCarta = CreazioneInsiemi.creaMenuCarta(pathDirectoryMenuCarta);
+		HashSet<Piatto> piattiMenuCarta = CreazioneCollection.creaMenuCarta(pathDirectoryMenuCarta);
 
-		HashSet<MenuTematico> elencoMenuTematici = CreazioneInsiemi.creaMenuTematici(pathDirectoryMenuTematici);
+		HashSet<MenuTematico> elencoMenuTematici = CreazioneCollection.creaMenuTematici(pathDirectoryMenuTematici);
 
 		boolean risposta = false;
 		do {

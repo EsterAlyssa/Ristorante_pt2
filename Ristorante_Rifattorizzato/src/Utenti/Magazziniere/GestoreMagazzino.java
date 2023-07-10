@@ -1,4 +1,4 @@
-package Utenti;
+package Utenti.Magazziniere;
 
 import java.io.File;
 import java.util.HashMap;
@@ -11,10 +11,13 @@ import Giorno.GiornoView.GiornoView;
 import Magazzino.ElementoMagazzino;
 import Magazzino.ListaSpesa;
 import Magazzino.RegistroMagazzino;
+import Magazzino.MagazzinoView.RegistroMagazzinoView;
 import Magazzino.Merce.Merce;
+import Magazzino.Merce.MerceView.MerceView;
 import Prenotazioni.Prenotazione;
 import Ristorante.Giornata;
 import Ristorante.Ristorante;
+import Ristorante.ElementiRistorante.InsiemeExtra;
 import Ristorante.ElementiRistorante.MenuCarta;
 import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
@@ -23,6 +26,7 @@ import Util.InputDati;
 import Util.GestioneFile.ServizioFile;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreExtra;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreListaSpesa;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreManager;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreMenuTematico;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratorePiatto;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratorePrenotazione;
@@ -30,70 +34,23 @@ import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRegistroMagazzino;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRicetta;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRistorante;
 
-public class Magazziniere extends Utente {
+public class GestoreMagazzino {
 
-	private static String etichettaM = "magazziniere";
-	private static String[] voci = {"Aggiungi al magazzino i prodotti acquistati", 
-			"Preleva dal magazzino gli ingredienti da portare in cucina",
-			"Preleva bevande e generi extra da portare in sala", 
-			"Aggiungi al magazzino le merci inutilizzate", 
-			"Elimina dal magazzino gli scarti",
-			"Genera lista della spesa per il prossimo giorno",
-	"Visualizza registro magazzino"};
+	RegistroMagazzinoView registroMagazzinoView;
+	ConfiguratoreManager confRist;
+	ConfiguratoreManager confRegMag;
 
-	public Magazziniere(String nome) {
-		super(nome, etichettaM, voci);
-	}
-
-	@Override
-	public void eseguiMetodi(int scelta, String pathCompletoFileRistorante) {
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectory = "Registro Magazzino";
-		String pathRegistroMagazzino = pathDirectory + "/" + nomeDirectory;
-		// Controlla se la directory "Registro Magazzino" esiste, altrimenti la crea
-		ServizioFile.creaDirectory(pathRegistroMagazzino);
-
-		String nomeFileRegistroMagazzino = "registro magazzino.txt";
-		String pathFileRegistroMagazzino = pathRegistroMagazzino + "/" + nomeFileRegistroMagazzino;
-
-		// Controlla se il file esiste, altrimenti lo crea
-		if (!ServizioFile.controlloEsistenzaFile(pathFileRegistroMagazzino)) {
-			ServizioFile.creaFile(pathFileRegistroMagazzino);
-		}
-
-		Giorno giornoCorrente = Giorno.ritornaGiornoCorrente();
-
-		switch(scelta) {
-		case 1: 
-			aggiuntaProdottiAcquistati(pathCompletoFileRistorante, pathFileRegistroMagazzino);
-			break;
-		case 2:
-			prelievoIngredientiPerCucina(giornoCorrente, pathCompletoFileRistorante, pathFileRegistroMagazzino);
-			break;
-		case 3:
-			prelievoExtraPerTavoli(giornoCorrente, pathCompletoFileRistorante, pathFileRegistroMagazzino);
-			break;
-		case 4:
-			aggiuntaMerciInutilizzati(pathCompletoFileRistorante, pathFileRegistroMagazzino);
-			break;
-		case 5:
-			eliminazioneScarti(giornoCorrente, pathCompletoFileRistorante, pathFileRegistroMagazzino);
-			break;
-		case 6:
-			generaListaSpesa(giornoCorrente, pathCompletoFileRistorante, pathFileRegistroMagazzino);
-			break;
-		case 7:
-			visualizzaRegistroMagazzino(pathFileRegistroMagazzino);
-		}
+	public GestoreMagazzino() {
+		this.registroMagazzinoView = new RegistroMagazzinoView();
+		this.confRist = new ConfiguratoreRistorante(); 
+		this.confRegMag = new ConfiguratoreRegistroMagazzino();
 	}
 
 	public void aggiuntaProdottiAcquistati(String pathCompletoFileRistorante, String pathFileRegistroMagazzino) {
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		Ristorante ristorante = (Ristorante) confRist.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		HashSet<ElementoMagazzino> comprati = elementiMagazzinoComprati();
+		HashSet<ElementoMagazzino> comprati = registroMagazzinoView.elementiMagazzinoComprati();
 
-		ConfiguratoreRegistroMagazzino confRegMag = new ConfiguratoreRegistroMagazzino();
 		RegistroMagazzino registro = (RegistroMagazzino) confRegMag.caricaIstanzaOggettoDaFile(pathFileRegistroMagazzino);
 
 		registro.acquistatiI(comprati);
@@ -102,31 +59,9 @@ public class Magazziniere extends Utente {
 		confRegMag.salvaIstanzaOggetto(registro, pathFileRegistroMagazzino);
 	}
 
-	public HashSet<ElementoMagazzino> elementiMagazzinoComprati(){
-		HashSet<ElementoMagazzino> comprati = new HashSet<>();
+	public void prelievoIngredientiPerCucina(Giorno giornoCorrente, String pathCompletoFileRistorante, String pathFileRegistroMagazzino) {
 
-		String messaggioQuantita = "Inserisci quante merci hanno queste caratteristiche: ";
-		String messaggioAltreMerci = "Vuoi aggiungere altre merci? ";
-
-		boolean scelta = false;
-		do {
-			Merce merce = creaMerce();
-			double quantita = InputDati.leggiDoubleConMinimo(messaggioQuantita, 0.0);
-
-			ElementoMagazzino elemento = new ElementoMagazzino(merce, quantita);
-			comprati.add(elemento);
-
-			scelta = InputDati.yesOrNo(messaggioAltreMerci);
-		} while (scelta);
-
-		return comprati;
-	}
-
-	public void prelievoIngredientiPerCucina(Giorno giornoCorrente, String pathCompletoFileRistorante, 
-			String pathFileRegistroMagazzino) {
-
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		Ristorante ristorante = (Ristorante) confRist.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
 		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
 		String nomeDirectory = "Calendario";
@@ -210,7 +145,6 @@ public class Magazziniere extends Utente {
 			}
 		} //fine inizializzazione Giornata da file
 
-		ConfiguratoreRegistroMagazzino confRegMag = new ConfiguratoreRegistroMagazzino();
 		RegistroMagazzino registro = (RegistroMagazzino) confRegMag.caricaIstanzaOggettoDaFile(pathFileRegistroMagazzino);
 
 		ristorante.getRegistroMagazzino().inCucinaO(giornataCorrente);
@@ -220,11 +154,9 @@ public class Magazziniere extends Utente {
 		confRegMag.salvaIstanzaOggetto(registro, pathFileRegistroMagazzino);
 	}
 
-	public void prelievoExtraPerTavoli(Giorno giornoCorrente, String pathCompletoFileRistorante, 
-			String pathFileRegistroMagazzino) {
+	public void prelievoExtraPerTavoli(Giorno giornoCorrente, String pathCompletoFileRistorante, String pathFileRegistroMagazzino) {
 
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		Ristorante ristorante = (Ristorante) confRist.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
 		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
 		String nomeDirectory = "Calendario";
@@ -270,13 +202,12 @@ public class Magazziniere extends Utente {
 		String pathFileGeneriExtra = pathDirectoryInsiemiExtra + "/" + nomeFileGeneriExtra;
 
 		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
-		HashMap<String, Double> insiemeB = (HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileBevande);
-		ristorante.getInsiemeB().setInsiemeExtra(insiemeB);
+		InsiemeExtra insiemeB = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileBevande);
+		ristorante.getInsiemeB().setInsiemeExtra(insiemeB.getInsiemeExtra());
 
-		HashMap<String, Double> insiemeGE = (HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
-		ristorante.getInsiemeGE().setInsiemeExtra(insiemeGE);
+		InsiemeExtra insiemeGE = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
+		ristorante.getInsiemeGE().setInsiemeExtra(insiemeGE.getInsiemeExtra());
 
-		ConfiguratoreRegistroMagazzino confRegMag = new ConfiguratoreRegistroMagazzino();
 		RegistroMagazzino registro = (RegistroMagazzino) confRegMag.caricaIstanzaOggettoDaFile(pathFileRegistroMagazzino);
 
 		registro.extraO(ristorante, giornataCorrente);
@@ -286,8 +217,7 @@ public class Magazziniere extends Utente {
 	}
 
 	public void aggiuntaMerciInutilizzati(String pathCompletoFileRistorante, String pathFileRegistroMagazzino) {
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		Ristorante ristorante = (Ristorante) confRist.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
 		HashMap<Merce, Double> avanzi = new HashMap<>();
 
@@ -296,7 +226,7 @@ public class Magazziniere extends Utente {
 
 		boolean scelta = false;
 		do {
-			Merce merce = creaMerce();
+			Merce merce = MerceView.creaMerce();
 			double quantita = InputDati.leggiDoubleConMinimo(messaggioQuantita, 0.0);
 
 			avanzi.put(merce, quantita);
@@ -304,7 +234,6 @@ public class Magazziniere extends Utente {
 			scelta = InputDati.yesOrNo(messaggioAltreMerci);
 		} while (scelta);
 
-		ConfiguratoreRegistroMagazzino confRegMag = new ConfiguratoreRegistroMagazzino();
 		RegistroMagazzino registro = (RegistroMagazzino) confRegMag.caricaIstanzaOggettoDaFile(pathFileRegistroMagazzino);
 
 		registro.avanziI(avanzi);
@@ -312,50 +241,15 @@ public class Magazziniere extends Utente {
 		confRegMag.salvaIstanzaOggetto(registro, pathFileRegistroMagazzino);
 	}
 
-	private Merce creaMerce() {
-		String messaggioNome = "Inserisci il nome della merce: ";
-		String messaggioUnitaMisura = "Inserisci l'unita' di misura della merce: ";
-		String messaggioScadenza = "Inserisci la scadenza della merce: ";
-		String messaggioTipo = "Inserire il tipo della merce [ingrediente/bevanda/genere extra]: ";
-		String messaggioConsumoProCapite = "Inserire il consumo pro capite: ";
-		String messaggioErrTipo = "ATTENZIONE! Il tipo inserito non è valido. Riprovare";
+	public void eliminazioneScarti(Giorno giornoCorrente, String pathCompletoFileRistorante, String pathFileRegistroMagazzino) {
 
-		String nomeMerce = InputDati.leggiStringaNonVuota(messaggioNome);
-		String unitaMisura = InputDati.leggiStringaNonVuota(messaggioUnitaMisura);
-		System.out.println(messaggioScadenza);
-		Giorno scadenza = GiornoView.richiestaCreaGiorno();
-
-		String tipo = "";
-		boolean controllo = true;
-		do {
-			tipo = InputDati.leggiStringaNonVuota(messaggioTipo);
-			if (tipo.equalsIgnoreCase("ingrediente") || tipo.equalsIgnoreCase("bevanda") || tipo.equalsIgnoreCase("genere extra")) {
-				controllo = false;
-				break;
-			}
-			System.out.println(messaggioErrTipo);
-		} while (controllo);
-
-		double consumoProCapite = 0.0;
-		if (tipo == "bevanda" || tipo == "genere extra") {
-			consumoProCapite = InputDati.leggiDoubleConMinimo(messaggioConsumoProCapite, 0.0);
-		}
-
-		return Merce.creaMerceDaTipo(nomeMerce, tipo, unitaMisura, scadenza, consumoProCapite);
-	}
-
-	public void eliminazioneScarti(Giorno giornoCorrente, String pathCompletoFileRistorante, 
-			String pathFileRegistroMagazzino) {
-
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		Ristorante ristorante = (Ristorante) confRist.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
 		GiornoView giornoView = new GiornoView (giornoCorrente.getGiorno());
 		Giornata giornataCorrente = new Giornata(giornoView.descrizioneGiorno());
 
 		Merce merceNonDiQualita = dichiarazioneMerceDeteriorata();
 
-		ConfiguratoreRegistroMagazzino confRegMag = new ConfiguratoreRegistroMagazzino();
 		RegistroMagazzino registro = (RegistroMagazzino) confRegMag.caricaIstanzaOggettoDaFile(pathFileRegistroMagazzino);
 
 		registro.setFalseQualitaMerce(merceNonDiQualita);
@@ -368,16 +262,13 @@ public class Magazziniere extends Utente {
 		String messaggioDichiarazione = "Definisci la merce deteriorata: ";
 
 		System.out.println(messaggioDichiarazione);
-		return creaMerce();
+		return MerceView.creaMerce();
 	}
 
-	public void generaListaSpesa(Giorno giornoCorrente, String pathCompletoFileRistorante,
-			String pathFileRegistroMagazzino) {
+	public void generaListaSpesa(Giorno giornoCorrente, String pathCompletoFileRistorante, String pathFileRegistroMagazzino) {
 
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		Ristorante ristorante = (Ristorante) confRist.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		ConfiguratoreRegistroMagazzino confRegMag = new ConfiguratoreRegistroMagazzino();
 		RegistroMagazzino registroMagazzino = (RegistroMagazzino) confRegMag.caricaIstanzaOggettoDaFile(pathFileRegistroMagazzino);
 
 		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
@@ -454,11 +345,14 @@ public class Magazziniere extends Utente {
 				break;
 			case "Da comprare":
 				ConfiguratoreListaSpesa confLS = new ConfiguratoreListaSpesa();
-				File fileLS = (File) ServizioFile.getElencoFileTxt(f.getAbsolutePath()+"/"+nomeCartella);
-				ListaSpesa listaS = (ListaSpesa) confLS.caricaIstanzaOggettoDaFile(fileLS.getAbsolutePath());
-				listaSpesa = listaS;
-
-				giornataCorrente.setDaComprare(listaSpesa);
+				File fileLS = ServizioFile.trovaPrimoFileTxt(f.getAbsolutePath()+"/"+nomeCartella);
+				try {
+					ListaSpesa listaS = (ListaSpesa) confLS.caricaIstanzaOggettoDaFile(fileLS.getAbsolutePath());
+					listaSpesa = listaS;
+					giornataCorrente.setDaComprare(listaSpesa);
+				} catch (NullPointerException e) {
+					System.out.println("Non ci sono prenotazioni per il giorno seguente");
+				}
 			}
 		} //fine inizializzazione Giornata da file
 
@@ -471,11 +365,11 @@ public class Magazziniere extends Utente {
 		String pathFileGeneriExtra = pathDirectoryInsiemiExtra + "/" + nomeFileGeneriExtra;
 
 		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
-		HashMap<String, Double> insiemeB = ((HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileBevande));
-		ristorante.getInsiemeB().setInsiemeExtra(insiemeB);		
+		InsiemeExtra insiemeB = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileBevande);
+		ristorante.getInsiemeB().setInsiemeExtra(insiemeB.getInsiemeExtra());
 
-		HashMap<String, Double> insiemeGE = ((HashMap<String, Double>) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra));
-		ristorante.getInsiemeGE().setInsiemeExtra(insiemeGE);
+		InsiemeExtra insiemeGE = ((InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra));
+		ristorante.getInsiemeGE().setInsiemeExtra(insiemeGE.getInsiemeExtra());
 
 		String nomeDirectoryRicettario = "Ricettario";
 		String pathRicettario = pathDirectory + "/" + nomeDirectoryRicettario;
@@ -501,10 +395,4 @@ public class Magazziniere extends Utente {
 		}
 	}
 
-	public void visualizzaRegistroMagazzino(String pathFileRegistroMagazzino) {
-		ConfiguratoreRegistroMagazzino confRegMag = new ConfiguratoreRegistroMagazzino();
-		RegistroMagazzino registro = (RegistroMagazzino) confRegMag.caricaIstanzaOggettoDaFile(pathFileRegistroMagazzino);
-
-		System.out.println(registro.descrizioneRegistroMagazzino());
-	}
 }

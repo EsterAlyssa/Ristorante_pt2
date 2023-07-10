@@ -65,19 +65,6 @@ public abstract class Merce {
 	}
 
 
-	//metodo per "registrare" i prodotti acquistati che dovranno essere poi inseriti dal magazziniere nel magazzino
-	public static Merce creaMerceDaTipo (String nome, String tipo, String unitaMisura, Giorno scadenza, double consumoProCapite) {
-		switch(tipo) {
-		case "bevanda" :  
-			return new Bevanda (nome, scadenza, consumoProCapite);
-		case "genere extra" :
-			return new GenereExtra (nome, scadenza, consumoProCapite);
-		case "ingrediente" :
-			return new Ingrediente (nome, unitaMisura, scadenza); 
-		}
-		return null;
-	};
-
 	public static void gestioneDuplicati(HashMap<String, Double> noDuplicati, HashMap<String, Double> conDuplicati){
 		for (String merce : conDuplicati.keySet()) {
 			if (noDuplicati.keySet().contains(merce)) {

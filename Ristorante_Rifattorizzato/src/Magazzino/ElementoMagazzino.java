@@ -1,7 +1,7 @@
 package Magazzino;
 import Magazzino.Merce.Merce;
 
-public class ElementoMagazzino {
+public class ElementoMagazzino implements Comparable<ElementoMagazzino> {
 
 	private Merce merce;
 	private double quantita;
@@ -26,9 +26,15 @@ public class ElementoMagazzino {
 	public void setQuantita(double quantita) {
 		this.quantita = quantita;
 	}
-	
+
 	public void setFalseQualitaMerce() {
 		this.merce.setQualita(false);
+	}
+
+	@Override
+	public int compareTo(ElementoMagazzino altroElementoMagazzino) {
+		return this.getMerce().getScadenza().compareTo(
+				altroElementoMagazzino.getMerce().getScadenza());
 	}
 
 }

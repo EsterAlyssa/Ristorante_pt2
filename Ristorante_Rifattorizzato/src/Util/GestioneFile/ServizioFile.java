@@ -86,19 +86,27 @@ public class ServizioFile
 		return file.exists();
 	}
 
-	public static String trovaPrimoFileTxt(String directoryPath) {
+	public static File trovaPrimoFileTxt(String directoryPath) {
 		File directory = new File(directoryPath);
 		if (directory.exists() && directory.isDirectory()) {
 			File[] files = directory.listFiles();
 			if (files != null) {
 				for (File file : files) {
 					if (file.isFile() && file.getName().endsWith(".txt")) {
-						return getNomeFileSenzaEstensione(file.getName());
+						return file;
 					}
 				}
 			}
 		}
-		return null; // Restituisci null se non è stato possibile trovare il file
+		return null;
+	}
+
+	public static String trovaNomePrimoFileTxt(String directoryPath) {
+		File file = trovaPrimoFileTxt(directoryPath);
+		if (file != null) {
+			return getNomeFileSenzaEstensione(file.getName());
+		}
+		return "File non trovato";
 	}
 
 	//da' il numero di file .txt all'interno di una cartella
@@ -137,7 +145,7 @@ public class ServizioFile
 
 		return fileTxtList;
 	}
-	
+
 	public static List<File> getElencoDirectory(String directoryPath) {
 		List<File> fileDirectoryList = new ArrayList<>();
 

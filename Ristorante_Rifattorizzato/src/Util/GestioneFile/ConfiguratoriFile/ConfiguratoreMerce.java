@@ -112,4 +112,6 @@ public class ConfiguratoreMerce extends ConfiguratoreManager {
 		return merce;
 	}
 
+	
+	
 }

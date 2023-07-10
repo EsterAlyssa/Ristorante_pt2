@@ -15,6 +15,16 @@ public class CreazioneDirectory {
 		return pathCalendario;
 	}
 
+	public static String creaDirectoryRegistroMagazzino(String pathCompletoFileRistorante) {
+		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
+		String nomeDirectory = "Registro Magazzino";
+		String pathRegistroMagazzino = pathDirectory + "/" + nomeDirectory;
+		// Controlla se la directory "Registro Magazzino" esiste, altrimenti la crea
+		ServizioFile.creaDirectory(pathRegistroMagazzino);
+		
+		return pathRegistroMagazzino;
+	}
+	
 	public static String creaDirectoryGiornata(Giorno dataPrenotazione, String pathCalendario) {
 		GiornoView giornoView = new GiornoView (dataPrenotazione.getGiorno());
 		String nomeDirectoryGiornata = giornoView.descrizioneGiorno();

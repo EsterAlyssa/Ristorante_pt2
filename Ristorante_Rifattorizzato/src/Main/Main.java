@@ -1,8 +1,8 @@
 package Main;
 
 import Ristorante.Ristorante;
-import Utenti.Gestore;
 import Utenti.Utente;
+import Utenti.Gestore.Gestore;
 import Util.InputDati;
 import Util.GestioneFile.ServizioFile;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRistorante;
@@ -35,7 +35,7 @@ public class Main {
 
 	public static Ristorante accediRistorante(String appDirectoryPath) {
 		Ristorante ristoranteTrovato = null;
-		String nomeRistorante = ServizioFile.trovaPrimoFileTxt(appDirectoryPath);
+		String nomeRistorante = ServizioFile.trovaNomePrimoFileTxt(appDirectoryPath);
 		if (nomeRistorante != null) {
 			String percorsoCompleto = appDirectoryPath+ nomeRistorante + ".txt";
 			ConfiguratoreRistorante configuratoreRistorante = new ConfiguratoreRistorante();

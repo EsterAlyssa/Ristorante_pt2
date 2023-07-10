@@ -20,4 +20,15 @@ public class CreazioneFile {
 		
 		return pathPrenotazione;
 	}
+	
+	public static String creaFileRegistroMagazzino(String pathRegistroMagazzino) {
+		String nomeFileRegistroMagazzino = "registro magazzino.txt";
+		String pathFileRegistroMagazzino = pathRegistroMagazzino + "/" + nomeFileRegistroMagazzino;
+
+		// Controlla se il file esiste, altrimenti lo crea
+		if (!ServizioFile.controlloEsistenzaFile(pathFileRegistroMagazzino)) {
+			ServizioFile.creaFile(pathFileRegistroMagazzino);
+		}
+		return pathFileRegistroMagazzino;
+	}
 }

@@ -34,7 +34,7 @@ public class AggiornamentoCalendario {
 				String nomeCartella = f.getName();
 				switch (nomeCartella) {
 				case "Prenotazioni":
-					prenotazioni = CreazioneInsiemi.creaPrenotazioni(f.getPath());
+					prenotazioni = CreazioneCollection.creaPrenotazioni(f.getPath());
 
 					Giornata giornataVecchiaP = ristorante.getGiornata(Giorno.parseGiorno(file.getName()));
 					ristorante.getCalendario().remove(giornataVecchiaP);
@@ -42,7 +42,7 @@ public class AggiornamentoCalendario {
 					ristorante.getCalendario().add(giornataVecchiaP); //giornata vecchia che è diventata nuova
 					break;
 				case "Menu alla carta":
-					menuCarta = CreazioneInsiemi.creaMenuCarta(f.getPath());
+					menuCarta = CreazioneCollection.creaMenuCarta(f.getPath());
 
 					Periodo periodoMenuCarta = new Periodo(Giorno.parseGiorno(file.getName()));
 					MenuCarta menu = new MenuCarta(periodoMenuCarta);
@@ -54,7 +54,7 @@ public class AggiornamentoCalendario {
 					ristorante.getCalendario().add(giornataVecchiaMC); //giornata vecchia che è diventata nuova
 					break;
 				case "Menu Tematici":
-					menuTematici = CreazioneInsiemi.creaMenuTematici(f.getPath());
+					menuTematici = CreazioneCollection.creaMenuTematici(f.getPath());
 
 					Giornata giornataVecchiaMT = ristorante.getGiornata(Giorno.parseGiorno(file.getName()));
 					ristorante.getCalendario().remove(giornataVecchiaMT);

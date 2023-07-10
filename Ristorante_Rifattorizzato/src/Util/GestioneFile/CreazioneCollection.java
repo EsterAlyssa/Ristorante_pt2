@@ -11,7 +11,7 @@ import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreMenuTematico;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratorePiatto;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratorePrenotazione;
 
-public class CreazioneInsiemi {
+public class CreazioneCollection {
 
 	public static HashSet<Piatto> creaMenuCarta(String pathDirectoryMenuCarta) {
 		List<File> menuCarta = ServizioFile.getElencoFileTxt(pathDirectoryMenuCarta);
