@@ -1,4 +1,4 @@
 nome=Stelle
-caricoLavoroPersona=15
-numPosti=60
-caricoLavoroRistorante=1080.0
+caricoLavoroPersona=14
+numPosti=55
+caricoLavoroRistorante=924.0
