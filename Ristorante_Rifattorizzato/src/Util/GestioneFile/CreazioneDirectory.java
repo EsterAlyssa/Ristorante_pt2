@@ -71,7 +71,7 @@ public class CreazioneDirectory {
 	}
 
 	public static String creaSubDirectoryMenuTematici(String pathGiornata) {
-		String nomeDirectoryMenuTematici = "Menu Tematici";
+		String nomeDirectoryMenuTematici = "Menu tematici";
 		String pathDirectoryMenuTematici = pathGiornata + "/" + nomeDirectoryMenuTematici;
 		ServizioFile.creaDirectory(pathDirectoryMenuTematici);
 		return pathDirectoryMenuTematici;

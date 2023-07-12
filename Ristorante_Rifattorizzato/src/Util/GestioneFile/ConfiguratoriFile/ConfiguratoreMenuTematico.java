@@ -38,7 +38,6 @@ public class ConfiguratoreMenuTematico extends ConfiguratoreManager<MenuTematico
 				writer.append("---");
 				writer.newLine();
 			}
-
 		} catch (IOException e) {
 			System.out.println("Impossibile salvare l'oggetto menu tematico");
 			e.printStackTrace();
@@ -49,17 +48,25 @@ public class ConfiguratoreMenuTematico extends ConfiguratoreManager<MenuTematico
 	public MenuTematico caricaIstanzaOggettoDaFile(String pathFileOggetto) {
 		String nomeMenu = ServizioFile.getNomeFileSenzaEstensione(pathFileOggetto);
 		MenuTematico menuTematico = creaIstanzaOggetto(nomeMenu);
-		Piatto piattoCorrente = null; // Per tenere traccia del piatto corrente
-		boolean inSezionePiatto = false; // Per indicare se si è all'interno di una sezione di un piatto
-
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pathFileOggetto));
 			String line;
+
+			Piatto piattoCorrente = new Piatto(""); // Per tenere traccia del piatto corrente
+			boolean inSezionePiatto = false; // Per indicare se si è all'interno di una sezione di un piatto
+
+			// leggiamo le righe finchè non troviamo l'inizio del menu → per SceltaPrenotazione
+			while ((line = reader.readLine()) != null) {
+				if (line.startsWith("nomeMenuTematico=")) {
+					break;
+				}
+			}
+			
 			while ((line = reader.readLine()) != null) {
 				if (line.equals("---")) {
 					// Se si incontra il separatore, si aggiunge il piattoCorrente all'insieme MenuTematico
 					if (piattoCorrente != null) {
-						menuTematico.aggiungiPiatto(piattoCorrente);
+						menuTematico.getElenco().add(piattoCorrente);
 						piattoCorrente = null; //il piatto viene poi annullato perchè dovrà "lasciare posto" a un nuovo piatto
 					}
 					inSezionePiatto = false; // Segna la fine della sezione del piatto corrente
@@ -88,6 +95,7 @@ public class ConfiguratoreMenuTematico extends ConfiguratoreManager<MenuTematico
 		return menuTematico;
 	}
 
+
 	@Override
 	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, 
 			MenuTematico oggetto) {
@@ -111,7 +119,7 @@ public class ConfiguratoreMenuTematico extends ConfiguratoreManager<MenuTematico
 		case "elencoMenu":
 			break;
 		default:
-			System.out.println("Errore nel settaggio dei parametri");
+			System.out.println("Errore settaggio paramentri del menu tematico");
 			break;
 		}
 	}

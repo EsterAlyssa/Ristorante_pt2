@@ -36,9 +36,11 @@ public class Ingrediente extends Merce {
 
 			// dalla ricetta ricaviaamo quante porzioni soddisfa
 			int numPorzioniRicetta = ricetta.getNumPorzioni(); 
-			//coef. che va moltiplicato per ogni ingrediente
-			int coefficiente = (int) Math.ceil((double) prenotazione.elencoPiattiDaScelte().get(piatto) / numPorzioniRicetta); 
-
+			
+			double divisione = (double) prenotazione.elencoPiattiDaScelte().get(piatto)/
+					numPorzioniRicetta;
+			//coef. arrotondato per eccesso che va moltiplicato per ogni ingrediente
+			int coefficiente = (int) Math.ceil(divisione);
 
 			for (String ingrediente : ingredienti.keySet()) {
 				ingredienti.put(ingrediente, ingredienti.get(ingrediente) * coefficiente);

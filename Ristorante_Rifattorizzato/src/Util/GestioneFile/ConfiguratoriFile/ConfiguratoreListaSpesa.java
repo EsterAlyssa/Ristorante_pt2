@@ -33,7 +33,7 @@ public class ConfiguratoreListaSpesa extends ConfiguratoreManager<ListaSpesa>{
 		case "lista":
 			break;
 		default:
-			ConfiguratoreHashMapStringDouble conf = new ConfiguratoreHashMapStringDouble();
+			ConfiguratoreManager<HashMap<String, Double>> conf = new ConfiguratoreHashMapStringDouble();
 			conf.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, oggetto.getLista());
 			break;
 		}

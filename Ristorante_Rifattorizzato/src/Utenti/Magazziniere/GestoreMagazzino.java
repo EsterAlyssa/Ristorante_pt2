@@ -23,7 +23,7 @@ import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRegistroMagazzino;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRistorante;
 
 public class GestoreMagazzino {
-	
+
 	static final String MSG_QUANTITA_MERCI = "Inserisci quante merci hanno queste caratteristiche: ";
 	static final String MSG_ALTRE_MERCI = "Vuoi aggiungere altre merci? ";
 
@@ -70,7 +70,7 @@ public class GestoreMagazzino {
 
 	public void prelievoExtraPerTavoli(Giorno giornoCorrente, String pathCompletoFileRistorante, 
 			String pathFileRegistroMagazzino) {
-		
+
 		Ristorante ristorante = confRist.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 		String pathDirectoryCalendario = CreazioneDirectory.creaDirectoryCalendario(pathCompletoFileRistorante);
 		//aggiornamento di tutte le giornate del calendario
@@ -91,7 +91,7 @@ public class GestoreMagazzino {
 		Ristorante ristorante = confRist.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
 		HashMap<Merce, Double> avanzi = new HashMap<>();
-		
+
 		boolean scelta = false;
 		do {
 			Merce merce = MerceView.creaMerce();
@@ -111,7 +111,7 @@ public class GestoreMagazzino {
 
 	public void eliminazioneScarti(Giorno giornoCorrente, String pathCompletoFileRistorante, 
 			String pathFileRegistroMagazzino) {
-		
+
 		Ristorante ristorante = confRist.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
 		GiornoView giornoView = new GiornoView (giornoCorrente.getGiorno());
@@ -148,16 +148,26 @@ public class GestoreMagazzino {
 		giornataCorrente.creaListaSpesaIniziale(ristorante);
 
 		ListaSpesa lista = giornataCorrente.getDaComprare(); 
+		ListaSpesa listaAggiornata = new ListaSpesa();
+		double effettivoDaComprare = 0.0;
+
 		for (String nome : lista.getLista().keySet()) {
 			if (registroMagazzino.getRegistro().containsKey(nome)) {
-				double effettivoDaComprare = (registroMagazzino.ritornaQuantitaDatoNome(nome)) - (lista.getLista().get(nome)*1.1) ;
+				effettivoDaComprare = (registroMagazzino.ritornaQuantitaDatoNome(nome)) - (lista.getLista().get(nome)*1.1) ;
 				if (effettivoDaComprare < 0) {
 					effettivoDaComprare = 0.0 - effettivoDaComprare ;
+				} else {
+					effettivoDaComprare = 0.0;
 				}
-				lista.getLista().put(nome, effettivoDaComprare);
-			} 
+			} else {
+				effettivoDaComprare = (lista.getLista().get(nome)*1.1);
+			}
+			if (effettivoDaComprare != 0) {
+				listaAggiornata.getLista().put(nome, effettivoDaComprare);
+			}
 		}
-		confListaSpesa.salvaIstanzaOggetto(lista, pathFileListaSpesa);
+
+		confListaSpesa.salvaIstanzaOggetto(listaAggiornata, pathFileListaSpesa);
 	}
 
 }

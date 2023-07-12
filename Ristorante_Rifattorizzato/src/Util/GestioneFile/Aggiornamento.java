@@ -55,7 +55,7 @@ public class Aggiornamento {
 					giornataVecchiaMC.setMenuCarta(menu); //giornata nuova
 					ristorante.getCalendario().add(giornataVecchiaMC); //giornata vecchia che è diventata nuova
 					break;
-				case "Menu Tematici":
+				case "Menu tematici":
 					menuTematici = CreazioneOggetti.creaMenuTematici(f.getPath());
 					
 					Giornata giornataVecchiaMT = ristorante.getGiornata(Giorno.parseGiorno(file.getName()));

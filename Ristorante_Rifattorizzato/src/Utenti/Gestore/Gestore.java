@@ -12,7 +12,10 @@ import Ristorante.ElementiRistorante.InsiemeExtra;
 import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
 import Ristorante.ElementiRistorante.Ricetta;
+import Ristorante.ElementiRistorante.ElementiRistorantiView.ElencoMenuTematiciView;
+import Ristorante.ElementiRistorante.ElementiRistorantiView.MenuTematicoView;
 import Ristorante.ElementiRistorante.ElementiRistorantiView.PiattoView;
+import Ristorante.ElementiRistorante.ElementiRistorantiView.RicettaView;
 import Util.InputDati;
 import Util.GestioneFile.CreazioneDirectory;
 import Util.GestioneFile.CreazioneFile;
@@ -36,35 +39,20 @@ public class Gestore {
 	static final String MSG_NOME_RIMOZIONE_BEVANDA = "Inserisci il nome della bevanda da rimuovere: ";
 	static final String MSG_SI_RIMOZIONE_BEVANDA = "Bevanda rimossa con successo";
 	static final String MSG_ERR_NO_BEVANDA = "La bevanda non e' presente nell'insieme";
-	
+
 	static final String MSG_NOME_GENERE_EXTRA = "Inserisci il nome del genere extra da aggiungere: ";
 	static final String MSG_CONSUMO_GENERE_EXTRA = "Inserisci il consumo pro capite del genere extra da aggiungere: ";
 
 	static final String MSG_NOME_RIMOZIONE_GENERE_EXTRA = "Inserisci il nome del genere extra da rimuovere: ";
 	static final String MSG_SI_RIMOZIONE_GE = "Genere extra rimosso con successo";
 	static final String MSG_ERR_NO_GE = "Il genere extra non e' presente nell'insieme";
-	
-	static final String MSG_NOME_INGREDIENTE = "Inserisci il nome dell'ingrediente da aggiungere: ";
-	static final String MSG_DOSE_INGREDIENTE = "Inserisci la dose dell'ingrediente da aggiungere: ";
 
-	static final String MSG_NOME_RICETTA = "Inserisci il nome della ricetta da creare: ";
-	static final String MSG_NUM_PORZIONI_RICETTA = "Inserisci il numero delle porzioni della ricetta da creare: ";
-	static final String MSG_CARICO_LAVORO_RICETTA = "Inserisci il carico di lavoro per persona della ricetta da creare: ";
-
-	static final String MSG_ALTRI_INGREDIENTI_RICETTA = "Vuoi inserire altri ingredienti? ";
-
-	static final String MSG_ALTRI_GIORNI_PIATTO = "Vuoi aggiungere altri giorni validi? ";
+	static final String MSG_NOME_T_AGGIUNTA_GIORNI = "Inserisci il nome del menu tematico a cui aggiungere giorni di validita': ";
+	static final String MSG_ALTRI_GIORNI_PIATTO_E_MENU_T = "Vuoi aggiungere altri giorni validi? ";
 
 	static final String MSG_NOME_RICERCA_PIATTO = "Inserisci il nome del piatto da cercare: ";
 	static final String MSG_SI_CORRISPONDENZA = "Esiste una corrispondenza tra il piatto cercato e una ricetta.";
 	static final String MSG_ERR_NO_CORRISPONDENZA = "ATTENZIONE! Non esiste una ricetta con questo nome.";
-
-	static final String MSG_NOME_MENU_T = "Inserisci il nome del menu tematico da creare: ";
-	static final String MSG_NOME_PIATTO_MENU_T = "Inserisci il nome del piatto da aggiungere al menu tematico: ";
-	static final String MSG_ERR_VALIDITA_PIATTO_MENU_T = "ATTENZIONE! Il piatto scelto non è valido per i giorni selezionati.";
-	static final String MSG_ERR_CARICO_LAVORO_PIATTO_MENU_T = "ATTENZIONE! Con questo piatto il carico di lavoro è troppo alto.";
-	static final String MSG_ERR_NO_PIATTO = "Non è stato trovato nessun piatto con questo nome";
-	static final String MSG_ALTRI_PIATTI_MENU_T = "Vuoi inserire altri piatti? ";
 
 	private ConfiguratoreManager<Ristorante> confRistorante;
 	private ConfiguratoreManager<InsiemeExtra> confInsEx;
@@ -171,32 +159,17 @@ public class Gestore {
 		confInsEx.salvaIstanzaOggetto(insiemeGE, pathFileInsiemeGeneriExtra);
 	}
 
-	private void aggiungiIngredienti(Ricetta ricetta) {
-
-		String nomeIngrediente = InputDati.leggiStringaNonVuota(MSG_NOME_INGREDIENTE);
-		double doseIngrediente = InputDati.leggiDoubleConMinimo(MSG_DOSE_INGREDIENTE, 0);
-
-		ricetta.aggiungiIngrediente(nomeIngrediente, doseIngrediente);		
-	}
-
 	public void creaRicetta(String pathCompletoFileRistorante) {
 		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 		String pathDirectoryRicettario = CreazioneDirectory.creaDirectoryRicettario(pathCompletoFileRistorante);
 
-		String nomeRicetta = InputDati.leggiStringaNonVuota(MSG_NOME_RICETTA);
-		int numPorzioni = InputDati.leggiInteroPositivo(MSG_NUM_PORZIONI_RICETTA);
-		double caricoLavoroPorzione = InputDati.leggiDoubleConMinimo(MSG_CARICO_LAVORO_RICETTA, 0);
+		HashSet<Ricetta> ricettario = CreazioneOggetti.creaRicettario(pathDirectoryRicettario);
+		ristorante.setRicettario(ricettario);
 
-		Ricetta nuova = new Ricetta(nomeRicetta, numPorzioni, caricoLavoroPorzione);
-		boolean scelta = true;
-		do {
-			aggiungiIngredienti(nuova);
-			scelta = InputDati.yesOrNo(MSG_ALTRI_INGREDIENTI_RICETTA);
-		} while (scelta);
+		Ricetta nuovaRicetta = RicettaView.creaRicetta(ristorante);
 
-		ristorante.aggiungiRicetta(nuova);
-		String pathFileRicetta = CreazioneFile.creaFileRicetta(pathDirectoryRicettario, nomeRicetta);
-		confRicetta.salvaIstanzaOggetto(nuova, pathFileRicetta);
+		String pathFileRicetta = CreazioneFile.creaFileRicetta(pathDirectoryRicettario, nuovaRicetta.getNome());
+		confRicetta.salvaIstanzaOggetto(nuovaRicetta, pathFileRicetta);
 	}
 
 	public void corrispondenzaPiattoRicetta(String pathCompletoFileRistorante) {
@@ -223,11 +196,11 @@ public class Gestore {
 				System.out.printf("Periodo di validità del piatto %s:\n", piatto.getNome());
 				PeriodoView periodoView = new PeriodoView(piatto.getValidita());
 				periodoView.mostraDescrizionePeriodo();
-				
-				boolean scelta = InputDati.yesOrNo(MSG_ALTRI_GIORNI_PIATTO);
+
+				boolean scelta = InputDati.yesOrNo(MSG_ALTRI_GIORNI_PIATTO_E_MENU_T);
 				while (scelta) {
 					aggiungiValiditaPiatto(pathCompletoFileRistorante, piatto);
-					scelta = InputDati.yesOrNo(MSG_ALTRI_GIORNI_PIATTO);
+					scelta = InputDati.yesOrNo(MSG_ALTRI_GIORNI_PIATTO_E_MENU_T);
 				}
 				confPiatto.salvaIstanzaOggetto(piatto, pathFilePiatto);
 			}
@@ -238,7 +211,7 @@ public class Gestore {
 	private void aggiungiValiditaPiatto (String pathCompletoFileRistorante, Piatto piatto) {
 		PiattoView piattoView = new PiattoView (piatto);
 		piattoView.mostraDescrizioneNomePiatto();
-		
+
 		Periodo validita = PeriodoView.creaPeriodoValidita();
 		Periodo newValidita = Periodo.unisciPeriodi(validita, piatto.getValidita());
 		piatto.setValidita(newValidita);
@@ -256,6 +229,7 @@ public class Gestore {
 			confPiatto.salvaIstanzaOggetto(piatto, pathPiattoMenuCarta);
 		}
 	}
+
 
 	public void verificaCorrispondenzaPiattoRicetta(String pathCompletoFileRistorante){
 		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
@@ -276,41 +250,16 @@ public class Gestore {
 	public void creaMenuTematico(VisualizzatoreGestione visualizzatoreGestione, String pathCompletoFileRistorante) {
 		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		String pathDirectoryMenuTematici = CreazioneDirectory.creaSubDirectoryMenuTematici(pathCompletoFileRistorante);
+		String pathDirectoryMenuTematici = CreazioneDirectory.creaDirectoryMenuTematici(pathCompletoFileRistorante);
 		String pathDirectoryPiatti = CreazioneDirectory.creaDirectoryPiatti(pathCompletoFileRistorante);
 
 		HashSet<Piatto> piatti = CreazioneOggetti.creaPiatti(pathDirectoryPiatti);
 		ristorante.setPiatti(piatti);
 
-		String nomeMenuT = InputDati.leggiStringaNonVuota(MSG_NOME_MENU_T);
-		Periodo validitaMenuT = PeriodoView.creaPeriodoValidita();
-		MenuTematico nuovo = new MenuTematico(nomeMenuT, validitaMenuT);
-		boolean scelta = true;
-		do {
-			visualizzatoreGestione.visualizzaNomiRicettario(pathCompletoFileRistorante);
-			String nomePiatto = InputDati.leggiStringaNonVuota(MSG_NOME_PIATTO_MENU_T);
-			Piatto piattoTrovato = Piatto.trovaPiattoDaNome(nomePiatto, ristorante.getPiatti());
-			if (piattoTrovato != null) {
-				double CLP = piattoTrovato.getCaricoLavoro();
-				double CLM = nuovo.getCaricoLavoro();
-				double CLPersona = ristorante.getCaricoLavoroPersona();
-				if ((CLP+CLM) <= (4/3)*CLPersona) {
-					if (piattoTrovato.getValidita().getPeriodoValidita().containsAll(nuovo.getValidita().getPeriodoValidita())) {
-						nuovo.aggiungiPiatto(piattoTrovato);
-						scelta = InputDati.yesOrNo(MSG_ALTRI_PIATTI_MENU_T);
-					} else {
-						System.out.println(MSG_ERR_VALIDITA_PIATTO_MENU_T);
-					}
-				} else {
-					System.out.println(MSG_ERR_CARICO_LAVORO_PIATTO_MENU_T);
-				}
-			} else {
-				System.out.println(MSG_ERR_NO_PIATTO);
-			}
-		} while (scelta);
-		ristorante.aggiungiMenuTematico(nuovo);
+		MenuTematico nuovo = MenuTematicoView.creaMenuTematico(visualizzatoreGestione, pathCompletoFileRistorante, 
+				ristorante);
 
-		String pathFileMenuTematico = CreazioneFile.creaFileMenuTematico(pathDirectoryMenuTematici, nomeMenuT);
+		String pathFileMenuTematico = CreazioneFile.creaFileMenuTematico(pathDirectoryMenuTematici, nuovo.getNome());
 		//salviamo il file nella cartella contenente tutti i menu tematici
 		confMenuT.salvaIstanzaOggetto(nuovo, pathFileMenuTematico);
 
@@ -320,7 +269,7 @@ public class Gestore {
 		for (Giorno giorno : nuovo.getValidita().getPeriodoValidita()) {
 			String pathDirectoryGiornata = CreazioneDirectory.creaDirectoryGiornata(giorno, pathDirectoryCalendario);
 			String pathSubDirectoryMenuTematici = CreazioneDirectory.creaSubDirectoryMenuTematici(pathDirectoryGiornata);
-			String pathFileMenuT = CreazioneFile.creaFileMenuTematico(pathSubDirectoryMenuTematici, nomeMenuT);
+			String pathFileMenuT = CreazioneFile.creaFileMenuTematico(pathSubDirectoryMenuTematici, nuovo.getNome());
 			//salva il file del piatto nella cartella del menu tematico di ogni giorno in cui è valido
 			confMenuT.salvaIstanzaOggetto(nuovo, pathFileMenuT);
 		}
@@ -333,6 +282,64 @@ public class Gestore {
 		HashSet<MenuTematico> menuT = CreazioneOggetti.creaMenuTematici(pathDirectoryMenuTematici);
 		ristorante.setMenuTematici(menuT);
 		return menuT;
+	}
+
+	public void aggiuntaPeriodoValiditaMenuTematico(String pathCompletoFileRistorante) {
+		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+
+		String pathDirectoryMenuTematici = CreazioneDirectory.creaDirectoryMenuTematici(pathCompletoFileRistorante);
+		String pathDirectoryPiatti = CreazioneDirectory.creaDirectoryPiatti(pathCompletoFileRistorante);
+
+		HashSet<MenuTematico> menuTRistorante = ottieniMenuTematici(pathCompletoFileRistorante);
+		ristorante.setMenuTematici(menuTRistorante);
+
+		ElencoMenuTematiciView elencoMenuTematiciView = new ElencoMenuTematiciView(menuTRistorante);
+		elencoMenuTematiciView.mostraDescrizioneNome_PeriodMenuTematici();
+
+		boolean scelta = false;
+
+		String nomeMenuT = InputDati.leggiStringaNonVuota(MSG_NOME_T_AGGIUNTA_GIORNI);
+		MenuTematico menuTematicoScelto = MenuTematico.trovaMenuTDaNome(nomeMenuT, ristorante.getMenuTematici());
+		MenuTematicoView menuTematicoSceltoView = new MenuTematicoView (menuTematicoScelto);
+		do {			
+			menuTematicoSceltoView.aggiungiValiditaMenuTematico();
+			menuTematicoScelto = menuTematicoSceltoView.getMenuTematico();
+			scelta = InputDati.yesOrNo(MSG_ALTRI_GIORNI_PIATTO_E_MENU_T);
+		} while(scelta);
+
+		//salvataggio menu tematici
+		String pathFileMenuTematico = CreazioneFile.creaFileMenuTematico(pathDirectoryMenuTematici, menuTematicoScelto.getNome());
+		//salviamo il file nella cartella contenente tutti i menu tematici
+		confMenuT.salvaIstanzaOggetto(menuTematicoScelto, pathFileMenuTematico);
+
+		//salviamo il file nella cartella della giornata contenente tutti i menu tematici
+		String pathDirectoryCalendario = CreazioneDirectory.creaDirectoryCalendario(pathCompletoFileRistorante);
+
+		for (Giorno giorno : menuTematicoScelto.getValidita().getPeriodoValidita()) {
+			String pathDirectoryGiornata = CreazioneDirectory.creaDirectoryGiornata(giorno, pathDirectoryCalendario);
+			String pathSubDirectoryMenuTematici = CreazioneDirectory.creaSubDirectoryMenuTematici(pathDirectoryGiornata);
+			String pathFileMenuT = CreazioneFile.creaFileMenuTematico(pathSubDirectoryMenuTematici, menuTematicoScelto.getNome());
+			//salva il file del piatto nella cartella del menu tematico di ogni giorno in cui è valido
+			confMenuT.salvaIstanzaOggetto(menuTematicoScelto, pathFileMenuT);
+		}
+
+		//salvataggio file piatti
+		//salvataggio nella cartella Piatti 
+		for (Piatto piatto : menuTematicoScelto.getElenco()) {
+			String pathFilePiattoMenuTematico = CreazioneFile.creaFilePiatto(piatto, pathDirectoryPiatti);
+			confPiatto.salvaIstanzaOggetto(piatto, pathFilePiattoMenuTematico);
+		}
+
+		//salvataggio dei file piatti nelle cartelle dei menu alla carta per ogni giorno del calendario in cui è valido un menuTematico
+		for (Giorno giorno : menuTematicoScelto.getValidita().getPeriodoValidita()) {
+			String pathDirectoryGiornata = CreazioneDirectory.creaDirectoryGiornata(giorno, pathDirectoryCalendario);
+			String pathSubDirectoryMenuCarta = CreazioneDirectory.creaSubDirectoryMenuCarta(pathDirectoryGiornata);
+			for (Piatto piatto : menuTematicoScelto.getElenco()) {
+				String pathFilePiattoMenuT = CreazioneFile.creaFilePiatto(piatto, pathSubDirectoryMenuCarta);
+				//salva il file del piatto nella cartella del menu alla carta di ogni giorno in cui è valido
+				confPiatto.salvaIstanzaOggetto(piatto, pathFilePiattoMenuT);
+			}
+		}
 	}
 
 }

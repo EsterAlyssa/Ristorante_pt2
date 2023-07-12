@@ -4,19 +4,18 @@ import Ristorante.ElementiRistorante.MenuCarta;
 
 public class MenuCartaView extends MenuView {
 	
-	
 	public MenuCartaView(MenuCarta menuCarta) {
 		super(menuCarta);
 	}
 	
-	public String descrizioneMenuCarta() {
+	public String descrizioneMenuCartaNomiPiatti() {
 		String daTornare = "Menu alla carta:\n";
 		daTornare += super.descrizioneNomiPiattiMenu();
 		return daTornare;
 	}
 	
-	public void mostraDescrizioneMenuCarta() {
-		System.out.println(descrizioneMenuCarta());
+	public void mostraDescrizioneMenuCartaNomiPiatti() {
+		System.out.println(descrizioneMenuCartaNomiPiatti());
 	}
 
 	

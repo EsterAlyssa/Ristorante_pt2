@@ -122,6 +122,12 @@ public class VisualizzatoreGestione {
 		ElencoMenuTematiciView elencoMenuTematiciView = new ElencoMenuTematiciView(menuTRistorante);
 		elencoMenuTematiciView.mostraDescrizioneNomeMenuTematici();
 	}
+	
+	public void visualizzaNomi_PeriodoMenuTematici(Gestore gestore, String pathCompletoFileRistorante) {
+		HashSet<MenuTematico> menuTRistorante = gestore.ottieniMenuTematici(pathCompletoFileRistorante);
+		ElencoMenuTematiciView elencoMenuTematiciView = new ElencoMenuTematiciView(menuTRistorante);
+		elencoMenuTematiciView.mostraDescrizioneNome_PeriodMenuTematici();
+	}
 
 	public void visualizzaPiatti(String pathCompletoFileRistorante) {
 		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);

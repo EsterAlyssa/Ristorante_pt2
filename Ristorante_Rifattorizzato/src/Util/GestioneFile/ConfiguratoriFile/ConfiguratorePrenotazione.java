@@ -10,6 +10,7 @@ import Giorno.Giorno;
 import Giorno.GiornoView.GiornoView;
 import Prenotazioni.Prenotazione;
 import Prenotazioni.SceltaPrenotazione;
+import Ristorante.ElementiRistorante.MenuTematico;
 import Util.GestioneFile.ServizioFile;
 
 public class ConfiguratorePrenotazione extends ConfiguratoreManager<Prenotazione>{
@@ -40,6 +41,8 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager<Prenotazione
 				writer.newLine();
 				confScelta.scriviParametriNelFile(scelta, writer);
 				writer.newLine();
+				writer.write("_-_-_-");
+				writer.newLine();
 			}
 		} catch (IOException e) {
 			System.out.println("Impossibile salvare l'oggetto prenotazione");
@@ -57,7 +60,6 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager<Prenotazione
 		case "numCoperti":
 			oggetto.setNumCoperti(Integer.parseInt(valoreAttributo));
 			break;
-			// probabile errore
 		case "data":
 			Giorno giorno = Giorno.parseGiorno(valoreAttributo);
 			oggetto.setData(giorno);
@@ -76,6 +78,7 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager<Prenotazione
 		Prenotazione pren = new Prenotazione(nomePrenotazione);
 		SceltaPrenotazione sceltaCorrente = null; // Per tenere traccia della scelta corrente
 		boolean inSezioneScelta = false; // Per indicare se si è all'interno di una sezione di una scelta
+		boolean inMenuTematico = false;
 		ConfiguratoreManager<SceltaPrenotazione> confScelta = new ConfiguratoreSceltaPrenotazione();
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pathFileOggetto));
@@ -85,11 +88,22 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager<Prenotazione
 				if (line.equals("~")) {
 					// Se si incontra il separatore, si aggiunge sceltaCorrente all'insieme MenuTematico
 					if (sceltaCorrente != null) {
+						if (sceltaCorrente instanceof MenuTematico) {
+							inMenuTematico = false;
+						} 
 						pren.aggiungiScelta(sceltaCorrente, quantita);
 						sceltaCorrente = null; //la scelta viene poi annullato perchè dovrà "lasciare posto" a quella nuova
 						quantita = 0;
 					}
 					inSezioneScelta = false; // Segna la fine della sezione della scelta corrente
+				} else if (line.equals("_-_-_-")){
+					if (sceltaCorrente != null) {
+						pren.aggiungiScelta(sceltaCorrente, quantita);
+						sceltaCorrente = null; //la scelta viene poi annullato perchè dovrà "lasciare posto" a quella nuova
+						quantita = 0;
+					}
+					inSezioneScelta = false; // Segna la fine della sezione della scelta corrente
+
 				} else if (line.startsWith("quantitaPrenotate")) {
 					// Inizia una nuova sezione della scelta
 					quantita = Integer.parseInt(line.substring(line.indexOf('=') + 1));
@@ -98,6 +112,25 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager<Prenotazione
 					line = reader.readLine();//la seconda linea dice la "categoria" della scelta (Piatto o menu)
 					sceltaCorrente = confScelta.creaIstanzaOggetto(line);
 					inSezioneScelta = true;
+					if (sceltaCorrente instanceof MenuTematico) {
+						inMenuTematico = true;
+					}
+				} else if (inMenuTematico) {
+					ConfiguratoreMenuTematico confMenuT = new ConfiguratoreMenuTematico();
+					sceltaCorrente = confMenuT.caricaIstanzaOggettoDaFile(pathFileOggetto);
+
+					while ((line = reader.readLine()) != null) {
+						if (line.startsWith("_-_-_-")) {
+							if (sceltaCorrente != null) {
+								inMenuTematico = false;
+								pren.aggiungiScelta(sceltaCorrente, quantita);
+								sceltaCorrente = null; //la scelta viene poi annullato perchè dovrà "lasciare posto" a quella nuova
+								quantita = 0;
+							}
+							inSezioneScelta = false; // Segna la fine della sezione della scelta corrente
+							break;
+						}
+					}
 				} else if (inSezioneScelta) {
 					// Se si è all'interno di una sezione di scelta, carica gli attributi
 					confScelta.caricaIstanzaOggetto(sceltaCorrente, line);

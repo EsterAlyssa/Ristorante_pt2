@@ -23,7 +23,7 @@ import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRistorante;
 
 public class GestorePrenotazioni {
 
-	static final String MSG_ERR_MIN_SCELTE = "Vanno inseriti almeno altre %d scelte";
+	static final String MSG_ERR_MIN_SCELTE = "Vanno inserite almeno altre %d scelte.\n";
 	static final String MSG_RICHIESTA_ALTRE_SCELTE = "Vuoi inserire altri elementi in questa prenotazione?";
 	static final String MSG_NUM_SCELTA = "Inserire per quante persone vale la scelta: ";
 	static final String MSG_NOME_SCELTA = "Inserire il nome del menu tematico o del piatto scelto: ";
@@ -84,7 +84,7 @@ public class GestorePrenotazioni {
 		boolean risposta = false;
 		do {
 			menuCartaView.mostraDescrizioneNomiPiattiMenu();
-			menuTematiciView.mostraDescrizioneMenuTematici();
+			menuTematiciView.mostraDescrizioneNomeMenuTematiciNomePiatti();;
 			
 			String nomeScelta = InputDati.leggiStringaNonVuota(MSG_NOME_SCELTA);
 			int numScelta = InputDati.leggiInteroConMinimo(MSG_NUM_SCELTA, 1);

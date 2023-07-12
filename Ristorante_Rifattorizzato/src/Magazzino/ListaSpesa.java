@@ -8,7 +8,7 @@ public class ListaSpesa {
 	public ListaSpesa() {
 		this.lista = new HashMap<>();
 	}
-
+	
 	public HashMap<String, Double> getLista() {
 		return lista;
 	}

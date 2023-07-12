@@ -19,7 +19,7 @@ public class ConfiguratoreExtra extends ConfiguratoreManager<InsiemeExtra>{
 			writer.write("Insieme Extra=");
 			writer.newLine();
 			HashMap<String, Double> hashOggetto = oggetto.getInsiemeExtra();
-			ConfiguratoreHashMapStringDouble confIns = new ConfiguratoreHashMapStringDouble();
+			ConfiguratoreManager<HashMap<String, Double>> confIns = new ConfiguratoreHashMapStringDouble();
 			confIns.scriviParametriNelFile(hashOggetto, writer);
 			writer.flush();
 		} catch (IOException e) {
@@ -31,7 +31,7 @@ public class ConfiguratoreExtra extends ConfiguratoreManager<InsiemeExtra>{
 	@Override
 	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, 
 			InsiemeExtra oggetto) {
-		ConfiguratoreHashMapStringDouble confIns = new ConfiguratoreHashMapStringDouble();
+		ConfiguratoreManager<HashMap<String, Double>> confIns = new ConfiguratoreHashMapStringDouble();
 		confIns.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, oggetto.getInsiemeExtra());
 	}
 

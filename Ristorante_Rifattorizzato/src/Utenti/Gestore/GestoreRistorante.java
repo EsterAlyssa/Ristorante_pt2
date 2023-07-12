@@ -26,7 +26,8 @@ public class GestoreRistorante extends Utente{
 			"Crea un menu tematico", 
 			"Visualizza tutti i menu tematici (solo i nomi)", 
 			"Visualizza tutti i menu tematici",
-			"Visualizza un menu tematico"
+			"Visualizza un menu tematico",
+			"Aggiungi giorno di validita' a un menu tematico"
 	};
 
 	public GestoreRistorante(String nome) {
@@ -94,6 +95,9 @@ public class GestoreRistorante extends Utente{
 			break;
 		case 19:
 			visualizzatoreGestione.visualizzaMenuTematico(gestore, pathCompletoFileRistorante); 
+			break;
+		case 20:
+			gestore.aggiuntaPeriodoValiditaMenuTematico(pathCompletoFileRistorante);
 			break;
 		}
 	}

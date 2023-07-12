@@ -2,6 +2,7 @@ package Ristorante.ElementiRistorante;
 
 import java.util.HashSet;
 
+import Giorno.Giorno;
 import Giorno.Periodo;
 import Prenotazioni.SceltaPrenotazione;
 
@@ -58,4 +59,8 @@ public class MenuTematico extends Menu implements SceltaPrenotazione{
 		return this.getElenco();
 	}
 
+	public void aggiungiGiornoValido(Giorno giorno) {
+		this.getValidita().periodoValidita.add(giorno);
+	}
+	
 }

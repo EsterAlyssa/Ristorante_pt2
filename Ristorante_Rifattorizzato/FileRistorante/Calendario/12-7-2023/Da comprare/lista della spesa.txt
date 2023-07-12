@@ -1,0 +1,8 @@
+lista= 
+besciamella=6,60;
+vino=8,80;
+pasta=8,80;
+ragu=8,00;
+pane=13,20;
+pollo=2,20;
+acqua=8,80;

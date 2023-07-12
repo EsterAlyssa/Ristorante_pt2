@@ -18,7 +18,7 @@ public class ElencoMenuTematiciView {
 		for(MenuTematico menuTematico : elencoMenuTematici) {
 			daTornare += i+")";
 			MenuTematicoView menuTematicoView = new MenuTematicoView(menuTematico);
-			daTornare += menuTematicoView.descrizioneNomeMenuTematico();
+			daTornare += menuTematicoView.descrizioneNomeMenuTematico() + "\n";
 			i++;
 		}
 		return daTornare;
@@ -29,12 +29,12 @@ public class ElencoMenuTematiciView {
 	}
 	
 	public String descrizioneMenuTematici() {
-		String daTornare = "Elenco Menu Tematici:\n";
+		String daTornare = "Elenco Menu tematici:\n";
 		int i=1;
 		for(MenuTematico menuTematico : elencoMenuTematici) {
 			daTornare += i+")";
 			MenuTematicoView menuTematicoView = new MenuTematicoView(menuTematico);
-			daTornare += menuTematicoView.descrizioneMenuTematico();
+			daTornare += menuTematicoView.descrizioneMenuTematico() + "\n";
 			i++;
 		}
 		return daTornare;
@@ -44,4 +44,35 @@ public class ElencoMenuTematiciView {
 		System.out.println(descrizioneMenuTematici());
 	}
 	
+	public String descrizioneNome_PeriodoMenuTematici() {
+		String daTornare = "";
+		int i=1;
+		for(MenuTematico menuTematico : elencoMenuTematici) {
+			daTornare += i+")";
+			MenuTematicoView menuTematicoView = new MenuTematicoView(menuTematico);
+			daTornare += menuTematicoView.descrizioneNome_PeriodoMenuTematico() + "\n";
+			i++;
+		}
+		return daTornare;
+	}
+	
+	public void mostraDescrizioneNome_PeriodMenuTematici() {
+		System.out.println(descrizioneNome_PeriodoMenuTematici());
+	}
+	
+	public String descrizioneNomeMenuTematiciNomePiatti() {
+		String daTornare = "";
+		int i=1;
+		for(MenuTematico menuTematico : elencoMenuTematici) {
+			daTornare += i+")";
+			MenuTematicoView menuTematicoView = new MenuTematicoView(menuTematico);
+			daTornare += menuTematicoView.descrizioneMenuTematicoNomiPiatti()+ "\n";
+			i++;
+		}
+		return daTornare;
+	}
+	
+	public void mostraDescrizioneNomeMenuTematiciNomePiatti() {
+		System.out.println(descrizioneNomeMenuTematiciNomePiatti());
+	}
 }
