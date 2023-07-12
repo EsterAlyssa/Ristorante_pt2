@@ -1,27 +1,20 @@
 package Ristorante.ElementiRistorante.ElementiRistorantiView;
 
-import Ristorante.ElementiRistorante.Menu;
 import Ristorante.ElementiRistorante.MenuTematico;
 
 public class MenuTematicoView extends MenuView{
 
+	private MenuTematico menuTematico;
+	
 	public MenuTematicoView(MenuTematico menuTematico) {
 		super(menuTematico);
+		this.menuTematico = menuTematico;
 	}
 	
-	@Override
-	public Menu getMenu() {
-		if (getMenu() instanceof MenuTematico) 
-			return (MenuTematico) getMenu();
-		else 
-			return null;
-	}
-
 	public String descrizioneMenuTematico() {
-	    MenuTematico menuTematico = (MenuTematico) getMenu();
 	    String daTornare = "Menu Tematico: " + menuTematico.getNome() +
 	            "\nCarico di lavoro del menu tematico: " + menuTematico.getCaricoLavoro();
-	    daTornare += super.descrizioneMenu();
+	    daTornare += "\n" + super.descrizioneMenu();
 	    return daTornare;
 	}
 	
@@ -29,8 +22,18 @@ public class MenuTematicoView extends MenuView{
 		System.out.println(descrizioneMenuTematico());
 	}
 	
+	public String descrizioneMenuTematicoNomiPiatti() {
+	    String daTornare = "Menu Tematico: " + menuTematico.getNome() +
+	            "\nCarico di lavoro del menu tematico: " + menuTematico.getCaricoLavoro();
+	    daTornare += "\n" + super.descrizioneNomiPiattiMenu();
+	    return daTornare;
+	}
+	
+	public void mostraDescrizioneMenuTematicoNomiPiatti() {
+		System.out.println(descrizioneMenuTematico());
+	}
+	
 	public String descrizioneNomeMenuTematico() {		
-		MenuTematico menuTematico = (MenuTematico) getMenu();
 		return "Menu tematico: " + menuTematico.getNome();
 	}
 	

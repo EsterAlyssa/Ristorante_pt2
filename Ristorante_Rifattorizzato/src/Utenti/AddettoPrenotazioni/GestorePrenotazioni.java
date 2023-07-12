@@ -44,9 +44,9 @@ public class GestorePrenotazioni {
 
 		String pathCalendario = CreazioneDirectory.creaDirectoryCalendario(pathCompletoFileRistorante);
 		String pathGiornata = CreazioneDirectory.creaDirectoryGiornata(dataPrenotazione, pathCalendario);
-		String pathDirectoryPrenotazioni = CreazioneDirectory.creaDirectoryPrenotazioni(pathGiornata);
-		String pathDirectoryMenuCarta = CreazioneDirectory.creaDirectoryMenuCarta(pathGiornata);
-		String pathDirectoryMenuTematici = CreazioneDirectory.creaDirectoryMenuTematici(pathGiornata);
+		String pathDirectoryPrenotazioni = CreazioneDirectory.creaSubDirectoryPrenotazioni(pathGiornata);
+		String pathDirectoryMenuCarta = CreazioneDirectory.creaSubDirectoryMenuCarta(pathGiornata);
+		String pathDirectoryMenuTematici = CreazioneDirectory.creaSubDirectoryMenuTematici(pathGiornata);
 
 		aggiungiScelte(pathCompletoFileRistorante, prenotazione, pathDirectoryMenuCarta, pathDirectoryMenuTematici);
 

@@ -38,10 +38,10 @@ public class RegistroMagazzinoView {
 			PriorityQueue<ElementoMagazzino> codaMerce = registro.getRegistro().get(nome);
 			for (ElementoMagazzino elemento : codaMerce) {
 				ElementoMagazzinoView elementoMagazzinoView = new ElementoMagazzinoView(elemento);
-				elementoMagazzinoView.descrizioneElementoMagazzino();
-				daTornare += "\n";
+				daTornare += elementoMagazzinoView.descrizioneElementoMagazzino();
+				daTornare += "\n\n";
 			}
-			daTornare +="---\n";
+			daTornare +="---\n\n";
 		}
 		return daTornare;
 	}

@@ -17,8 +17,8 @@ public class ElencoMenuTematiciView {
 		int i=1;
 		for(MenuTematico menuTematico : elencoMenuTematici) {
 			daTornare += i+")";
-			MenuView menuTematicoView = new MenuTematicoView(menuTematico);
-			daTornare += menuTematicoView.descrizioneNomiPiattiMenu();
+			MenuTematicoView menuTematicoView = new MenuTematicoView(menuTematico);
+			daTornare += menuTematicoView.descrizioneNomeMenuTematico();
 			i++;
 		}
 		return daTornare;
@@ -29,12 +29,12 @@ public class ElencoMenuTematiciView {
 	}
 	
 	public String descrizioneMenuTematici() {
-		String daTornare = "";
+		String daTornare = "Elenco Menu Tematici:\n";
 		int i=1;
 		for(MenuTematico menuTematico : elencoMenuTematici) {
 			daTornare += i+")";
-			MenuView menuTematicoView = new MenuTematicoView(menuTematico);
-			daTornare += menuTematicoView.descrizioneMenu();
+			MenuTematicoView menuTematicoView = new MenuTematicoView(menuTematico);
+			daTornare += menuTematicoView.descrizioneMenuTematico();
 			i++;
 		}
 		return daTornare;

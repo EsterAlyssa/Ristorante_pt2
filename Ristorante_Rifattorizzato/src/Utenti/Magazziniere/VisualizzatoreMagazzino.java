@@ -30,7 +30,7 @@ public class VisualizzatoreMagazzino {
 	public void visualizzaListaSpesa(String pathCompletoFileRistorante, Giorno giornoCorrente) {
 		String pathDirectoryCalendario = CreazioneDirectory.creaDirectoryCalendario(pathCompletoFileRistorante);
 		String pathDirectoryGiornata = CreazioneDirectory.creaDirectoryGiornata(giornoCorrente, pathDirectoryCalendario);			
-		String pathDirectoryDaComprare = CreazioneDirectory.creaDirectoryDaComprare(pathDirectoryGiornata);
+		String pathDirectoryDaComprare = CreazioneDirectory.creaSubDirectoryDaComprare(pathDirectoryGiornata);
 		String pathFileListaSpesa = CreazioneFile.creaFileListaSpesa(pathDirectoryDaComprare);
 		
 		ListaSpesa lista = confLisSpe.caricaIstanzaOggettoDaFile(pathFileListaSpesa);

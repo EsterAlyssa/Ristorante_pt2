@@ -33,7 +33,7 @@ public class PiattiView {
 		for(Piatto piatto : elencoPiatti) {
 			daTornare += i+")";
 			PiattoView piattoView = new PiattoView(piatto);
-			daTornare += piattoView.descrizioneNomePiatto();
+			daTornare += piattoView.descrizioneNomePiatto() + "\n";
 			i++;
 		}
 		return daTornare;

@@ -247,7 +247,7 @@ public class Gestore {
 
 		for (Giorno giorno : piatto.getValidita().getPeriodoValidita()) {
 			String pathDirectoryGiornata = CreazioneDirectory.creaDirectoryGiornata(giorno, pathDirectoryCalendario);
-			String nomeDirectoryMenuCarta = CreazioneDirectory.creaDirectoryMenuCarta(pathDirectoryGiornata);
+			String nomeDirectoryMenuCarta = CreazioneDirectory.creaSubDirectoryMenuCarta(pathDirectoryGiornata);
 
 			//crea il file del piatto nella cartella dei menu alla carta
 			String pathPiattoMenuCarta = CreazioneFile.creaFilePiatto(piatto, nomeDirectoryMenuCarta);
@@ -276,7 +276,7 @@ public class Gestore {
 	public void creaMenuTematico(VisualizzatoreGestione visualizzatoreGestione, String pathCompletoFileRistorante) {
 		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		String pathDirectoryMenuTematici = CreazioneDirectory.creaDirectoryMenuTematici(pathCompletoFileRistorante);
+		String pathDirectoryMenuTematici = CreazioneDirectory.creaSubDirectoryMenuTematici(pathCompletoFileRistorante);
 		String pathDirectoryPiatti = CreazioneDirectory.creaDirectoryPiatti(pathCompletoFileRistorante);
 
 		HashSet<Piatto> piatti = CreazioneOggetti.creaPiatti(pathDirectoryPiatti);
@@ -319,7 +319,7 @@ public class Gestore {
 
 		for (Giorno giorno : nuovo.getValidita().getPeriodoValidita()) {
 			String pathDirectoryGiornata = CreazioneDirectory.creaDirectoryGiornata(giorno, pathDirectoryCalendario);
-			String pathSubDirectoryMenuTematici = CreazioneDirectory.creaDirectoryMenuTematici(pathDirectoryGiornata);
+			String pathSubDirectoryMenuTematici = CreazioneDirectory.creaSubDirectoryMenuTematici(pathDirectoryGiornata);
 			String pathFileMenuT = CreazioneFile.creaFileMenuTematico(pathSubDirectoryMenuTematici, nomeMenuT);
 			//salva il file del piatto nella cartella del menu tematico di ogni giorno in cui è valido
 			confMenuT.salvaIstanzaOggetto(nuovo, pathFileMenuT);

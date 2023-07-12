@@ -56,6 +56,11 @@ public class CreazioneDirectory {
 		
 		return pathPiatti;
 	}
+	
+	public static String creaDirectoryMenuTematici (String pathCompletoFileRistorante) {
+		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
+		return creaSubDirectoryMenuTematici(pathDirectory);
+	}
 
 	public static String creaDirectoryGiornata(Giorno dataPrenotazione, String pathCalendario) {
 		GiornoView giornoView = new GiornoView (dataPrenotazione.getGiorno());
@@ -65,28 +70,28 @@ public class CreazioneDirectory {
 		return pathGiornata;
 	}
 
-	public static String creaDirectoryMenuTematici(String pathGiornata) {
+	public static String creaSubDirectoryMenuTematici(String pathGiornata) {
 		String nomeDirectoryMenuTematici = "Menu Tematici";
 		String pathDirectoryMenuTematici = pathGiornata + "/" + nomeDirectoryMenuTematici;
 		ServizioFile.creaDirectory(pathDirectoryMenuTematici);
 		return pathDirectoryMenuTematici;
 	}
 
-	public static String creaDirectoryMenuCarta(String pathGiornata) {
+	public static String creaSubDirectoryMenuCarta(String pathGiornata) {
 		String nomeDirectoryMenuCarta = "Menu alla carta";
 		String pathDirectoryMenuCarta = pathGiornata + "/" + nomeDirectoryMenuCarta;
 		ServizioFile.creaDirectory(pathDirectoryMenuCarta);
 		return pathDirectoryMenuCarta;
 	}
 
-	public static String creaDirectoryPrenotazioni(String pathGiornata) {
+	public static String creaSubDirectoryPrenotazioni(String pathGiornata) {
 		String nomeDirectoryPrenotazioni = "Prenotazioni";
 		String pathDirectoryPrenotazioni = pathGiornata + "/" + nomeDirectoryPrenotazioni;
 		ServizioFile.creaDirectory(pathDirectoryPrenotazioni);
 		return pathDirectoryPrenotazioni;
 	}
 
-	public static String creaDirectoryDaComprare(String pathDirectoryGiornata) {
+	public static String creaSubDirectoryDaComprare(String pathDirectoryGiornata) {
 		String nomeDirectoryDaComprare = "Da comprare";
 		String pathDirectoryDaComprare = pathDirectoryGiornata + "/" + nomeDirectoryDaComprare;
 

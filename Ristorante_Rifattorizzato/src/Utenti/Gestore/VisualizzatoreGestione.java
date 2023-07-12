@@ -10,7 +10,6 @@ import Ristorante.ElementiRistorante.Ricetta;
 import Ristorante.ElementiRistorante.ElementiRistorantiView.ElencoMenuTematiciView;
 import Ristorante.ElementiRistorante.ElementiRistorantiView.InsiemeExtraView;
 import Ristorante.ElementiRistorante.ElementiRistorantiView.MenuTematicoView;
-import Ristorante.ElementiRistorante.ElementiRistorantiView.MenuView;
 import Ristorante.ElementiRistorante.ElementiRistorantiView.PiattiView;
 import Ristorante.ElementiRistorante.ElementiRistorantiView.RicettaView;
 import Ristorante.ElementiRistorante.ElementiRistorantiView.RicettarioView;
@@ -39,7 +38,7 @@ public class VisualizzatoreGestione {
 	public void visualizzaRistorante(String pathCompletoFileRistorante) {
 		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 		RistoranteView ristoranteView = new RistoranteView(ristorante.getNome());
-		ristoranteView.descrizioneRistorante();
+		ristoranteView.mostraDescrizioneRistorante();
 	}
 
 	public void visualizzaInsiemeBevande(String pathCompletoFileRistorante) {
@@ -155,8 +154,8 @@ public class VisualizzatoreGestione {
 			String ricerca = InputDati.leggiStringaNonVuota(MSG_NOME_MENU_T);	
 			MenuTematico menuTematico = MenuTematico.trovaMenuTDaNome(ricerca, ristorante.getMenuTematici());
 			if (menuTematico != null) {
-				MenuView menuTematicoView = new MenuTematicoView(menuTematico);
-				menuTematicoView.descrizioneMenu();
+				MenuTematicoView menuTematicoView = new MenuTematicoView(menuTematico);
+				menuTematicoView.mostraDescrizioneMenuTematico();
 				trovato = false;
 			} else {
 				System.out.println(MSG_ERR_NOME_MENU_T);

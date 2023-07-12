@@ -11,10 +11,6 @@ public abstract class MenuView {
 		this.menu = menu;
 	}
 	
-	public Menu getMenu() {
-        return menu;
-    }
-	
 	public String descrizioneMenu() {
 		String daTornare = "";
 		PiattiView piattiView = new PiattiView(menu.getElenco());
