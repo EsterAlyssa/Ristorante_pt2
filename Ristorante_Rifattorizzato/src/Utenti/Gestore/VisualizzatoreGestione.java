@@ -1,229 +1,167 @@
 package Utenti.Gestore;
 
-import java.io.File;
 import java.util.HashSet;
-import java.util.List;
 
-import Giorno.GiornoView.PeriodoView;
 import Ristorante.Ristorante;
 import Ristorante.ElementiRistorante.InsiemeExtra;
 import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
 import Ristorante.ElementiRistorante.Ricetta;
+import Ristorante.ElementiRistorante.ElementiRistorantiView.ElencoMenuTematiciView;
+import Ristorante.ElementiRistorante.ElementiRistorantiView.InsiemeExtraView;
+import Ristorante.ElementiRistorante.ElementiRistorantiView.MenuTematicoView;
+import Ristorante.ElementiRistorante.ElementiRistorantiView.MenuView;
+import Ristorante.ElementiRistorante.ElementiRistorantiView.PiattiView;
+import Ristorante.ElementiRistorante.ElementiRistorantiView.RicettaView;
+import Ristorante.ElementiRistorante.ElementiRistorantiView.RicettarioView;
+import Ristorante.RistoranteView.RistoranteView;
 import Util.InputDati;
-import Util.GestioneFile.ServizioFile;
-import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreExtra;
-import Util.GestioneFile.ConfiguratoriFile.ConfiguratorePiatto;
-import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRicetta;
+import Util.GestioneFile.CreazioneDirectory;
+import Util.GestioneFile.CreazioneFile;
+import Util.GestioneFile.CreazioneOggetti;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreManager;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRistorante;
 
 public class VisualizzatoreGestione {
+	static final String MSG_NOME_RICETTA = "Inserisci il nome della ricetta da visualizzare: ";
+	static final String MSG_ERR_RICETTA = "Non esiste una ricetta con questo nome.";
+	static final String MSG_NOME_NUOVA_RICETTA = "Inserisci di nuovo il nome della ricetta: ";
+
+	static final String MSG_NOME_MENU_T = "Inserisci il nome del menu tematico da visualizzare: ";
+	static final String MSG_ERR_NOME_MENU_T= "ATTENZIONE! Il menu inserito non esiste";
+
+	private ConfiguratoreManager<Ristorante> confRistorante;
+
+	public VisualizzatoreGestione() {
+		this.confRistorante = new ConfiguratoreRistorante();
+	}
 
 	public void visualizzaRistorante(String pathCompletoFileRistorante) {
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
-
-		System.out.printf("Nome del ristorante: %s\n", ristorante.getNome());
-		System.out.printf("Numeri di posti a sedere nel ristorante: %d\n", ristorante.getNumPosti());
-		System.out.printf("Carico di lavoro per persona: %d\n", ristorante.getCaricoLavoroPersona());
-		System.out.printf("Carico di lavoro sostenibile dal ristorante: %.2f\n", ristorante.getCaricoLavoroRistorante());
+		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		RistoranteView ristoranteView = new RistoranteView(ristorante.getNome());
+		ristoranteView.descrizioneRistorante();
 	}
 
 	public void visualizzaInsiemeBevande(String pathCompletoFileRistorante) {
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectory = "Insiemi extra";
-		String pathInsiemiExtra = pathDirectory + "/" + nomeDirectory;
-		String nomeFileBevande = "insieme bevande.txt";
-		String pathFileBevande = pathInsiemiExtra + "/" + nomeFileBevande;
+		String pathDirectoryInsiemiExtra = CreazioneDirectory.creaDirectoryInsiemiExtra(pathCompletoFileRistorante);
+		String pathFileBevande = CreazioneFile.creaFileInsiemeBevande(pathDirectoryInsiemiExtra);
 
-		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
-		InsiemeExtra insiemeB = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileBevande);
+		InsiemeExtra insiemeB = CreazioneOggetti.creaInsiemeExtra(pathFileBevande);
+		ristorante.setInsiemeB(insiemeB);
 
-		ristorante.setInsiemeB(insiemeB);	
-
-		for (String elemento : insiemeB.getInsiemeExtra().keySet()) {
-			System.out.printf("bevanda: %s\tconsumo pro capite: %.2f\n", elemento, insiemeB.getInsiemeExtra().get(elemento));
-		}
+		InsiemeExtraView insiemeExtraView = new InsiemeExtraView(insiemeB);
+		insiemeExtraView.mostraDescrizioneInsiemeExtra();
 	}
 
 	public void visualizzaInsiemeGeneriExtra(String pathCompletoFileRistorante) {
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectory = "Insiemi extra";
-		String pathInsiemiExtra = pathDirectory + "/" + nomeDirectory;
-		String nomeFileGeneriExtra = "insieme generi extra.txt";
-		String pathFileGeneriExtra = pathInsiemiExtra + "/" + nomeFileGeneriExtra;
+		String pathDirectoryInsiemiExtra = CreazioneDirectory.creaDirectoryInsiemiExtra(pathCompletoFileRistorante);
+		String pathFileGeneriExtra = CreazioneFile.creaFileInsiemeGeneriExtra(pathDirectoryInsiemiExtra);
 
-		ConfiguratoreExtra confIns = new ConfiguratoreExtra();
-		InsiemeExtra insiemeGE = (InsiemeExtra) confIns.caricaIstanzaOggettoDaFile(pathFileGeneriExtra);
-
+		InsiemeExtra insiemeGE = CreazioneOggetti.creaInsiemeExtra(pathFileGeneriExtra);
 		ristorante.setInsiemeGE(insiemeGE);
 
-		for (String elemento : ristorante.getInsiemeGE().getInsiemeExtra().keySet()) {
-			System.out.printf("genere extra: %s\tconsumo pro capite: %.2f\n", elemento, ristorante.getInsiemeGE().getInsiemeExtra().get(elemento));
-		}
+		InsiemeExtraView insiemeExtraView = new InsiemeExtraView(insiemeGE);
+		insiemeExtraView.mostraDescrizioneInsiemeExtra();
 	}
 
 	public void visualizzaRicetta(String pathCompletoFileRistorante) {
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		String msgRichiestaRicetta = "Inserisci il nome della ricetta da visualizzare: ";
-		String msgNoRicetta = "Non esiste una ricetta con questo nome.";
-		String msgRichiestaNuovaRicetta = "Inserisci di nuovo il nome della ricetta: ";
-
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectory = "Ricettario";
-		String pathRicettario = pathDirectory + "/" + nomeDirectory;
-
-		ConfiguratoreRicetta confRic = new ConfiguratoreRicetta();
-
-		List<File> elencoRicette = ServizioFile.getElencoFileTxt(pathRicettario);
-		HashSet<Ricetta> ricettario = new HashSet<>();
-		for (File file : elencoRicette) {
-			Ricetta ricetta = (Ricetta) confRic.caricaIstanzaOggettoDaFile(file.getPath());
-			ricettario.add(ricetta);
-		}
+		String pathDirectoryRicettario = CreazioneDirectory.creaDirectoryRicettario(pathCompletoFileRistorante);
+		HashSet<Ricetta> ricettario = CreazioneOggetti.creaRicettario(pathDirectoryRicettario);
 		ristorante.setRicettario(ricettario);
 
-		visualizzaRicettario(pathCompletoFileRistorante);
+		visualizzaNomiRicettario(pathCompletoFileRistorante);
 
-		String ricettaScelta = InputDati.leggiStringaNonVuota(msgRichiestaRicetta);
+		String ricettaScelta = InputDati.leggiStringaNonVuota(MSG_NOME_RICETTA);
 		boolean trovata = true;
 		do {
 			Ricetta ricettaTrovata = Ricetta.trovaRicetta(ricettaScelta, ristorante.getRicettario());
+			RicettaView ricettaTrovataView = new RicettaView (ricettaTrovata);
 			if (ricettaTrovata != null) {
 				//ritornare la ricetta
-				System.out.println(ricettaTrovata.descrizioneRicetta());
+				ricettaTrovataView.mostraDescrizioneRicetta();
 				trovata = false;
 			} else {
 				//la ricetta non è nel ricettario
-				System.out.println(msgNoRicetta);
-				ricettaScelta = InputDati.leggiStringaNonVuota(msgRichiestaNuovaRicetta);
+				System.out.println(MSG_ERR_RICETTA);
+				ricettaScelta = InputDati.leggiStringaNonVuota(MSG_NOME_NUOVA_RICETTA);
 			}
 		} while (trovata);
 	}
 
-	public void visualizzaRicettario(String pathCompletoFileRistorante) {
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+	public void visualizzaNomiRicettario(String pathCompletoFileRistorante) {
+		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectory = "Ricettario";
-		String pathRicettario = pathDirectory + "/" + nomeDirectory;
+		String pathDirectoryRicettario = CreazioneDirectory.creaDirectoryRicettario(pathCompletoFileRistorante);
+		HashSet<Ricetta> ricettario = CreazioneOggetti.creaRicettario(pathDirectoryRicettario);
 
-		ConfiguratoreRicetta confRic = new ConfiguratoreRicetta();
-
-		List<File> elencoRicette = ServizioFile.getElencoFileTxt(pathRicettario+"/");
-		HashSet<Ricetta> ricettario = new HashSet<>();
-		for (File file : elencoRicette) {
-			Ricetta ricetta = (Ricetta) confRic.caricaIstanzaOggettoDaFile(file.getPath());
-			ricettario.add(ricetta);
-		}
+		RicettarioView ricettarioView = new RicettarioView(ricettario);
+		ricettarioView.mostraDescrizioneNomiRicettario();
 
 		ristorante.setRicettario(ricettario);
-
-		int i = 1;
-		for (Ricetta ric : ristorante.getRicettario()) {
-			System.out.printf("%d: %s\n", i, ric.getNome());
-			i++;
-		}
 	}
 
 	public void visualizzaInfoRicette (String pathCompletoFileRistorante) {
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectory = "Ricettario";
-		String pathRicettario = pathDirectory + "/" + nomeDirectory;
+		String pathDirectoryRicettario = CreazioneDirectory.creaDirectoryRicettario(pathCompletoFileRistorante);
+		HashSet<Ricetta> ricettario = CreazioneOggetti.creaRicettario(pathDirectoryRicettario);
 
-		ConfiguratoreRicetta confRic = new ConfiguratoreRicetta();
-
-		List<File> elencoRicette = ServizioFile.getElencoFileTxt(pathRicettario);
-		HashSet<Ricetta> ricettario = new HashSet<>();
-		for (File file : elencoRicette) {
-			Ricetta ricetta = (Ricetta) confRic.caricaIstanzaOggettoDaFile(file.getPath());
-			ricettario.add(ricetta);
-		}
+		RicettarioView ricettarioView = new RicettarioView (ricettario);
+		ricettarioView.mostraDescrizioneRicettario();
 
 		ristorante.setRicettario(ricettario);
-
-		for (Ricetta ric : ristorante.getRicettario()) {
-			System.out.println(ric.descrizioneRicetta());
-		}
 	}
 
 	public void visualizzaNomiMenuTematici(Gestore gestore, String pathCompletoFileRistorante) {
 		HashSet<MenuTematico> menuTRistorante = gestore.ottieniMenuTematici(pathCompletoFileRistorante);
-
-		int i = 1;
-		for (MenuTematico menu : menuTRistorante) {
-			System.out.printf("%d) %s\n", i, menu.getNome());
-			i++;
-		}
+		ElencoMenuTematiciView elencoMenuTematiciView = new ElencoMenuTematiciView(menuTRistorante);
+		elencoMenuTematiciView.mostraDescrizioneNomeMenuTematici();
 	}
 
 	public void visualizzaPiatti(String pathCompletoFileRistorante) {
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectoryPiatti = "Piatti";
-		String pathPiatti = pathDirectory + "/" + nomeDirectoryPiatti;
+		String pathDirectoryPiatti = CreazioneDirectory.creaDirectoryPiatti(pathCompletoFileRistorante);
+		HashSet<Piatto> piatti = CreazioneOggetti.creaPiatti(pathDirectoryPiatti);
 
-		ConfiguratorePiatto confPiat = new ConfiguratorePiatto();
+		ristorante.setPiatti(piatti);
 
-		List<File> elencoPiatti = ServizioFile.getElencoFileTxt(pathPiatti);
-		for (File file : elencoPiatti) {
-			Piatto piatto = (Piatto) confPiat.caricaIstanzaOggettoDaFile(file.getAbsolutePath());
-			ristorante.aggiungiPiatto(piatto);
-		}
-
-		HashSet<Piatto> piatti = ristorante.getPiatti();
-
-		for (Piatto piatto : piatti) {
-			System.out.printf("Nome piatto: %s", piatto.getNome());
-			PeriodoView periodoView = new PeriodoView(piatto.getValidita());
-			periodoView.descrizionePeriodo();
-		}
+		PiattiView piattiView = new PiattiView (piatti);
+		piattiView.mostraDescrizionePiatti();
 	}
 
 	public void visualizzaInfoMenuTematici(Gestore gestore, String pathCompletoFileRistorante) {
 		HashSet<MenuTematico> menuTRistorante = gestore.ottieniMenuTematici(pathCompletoFileRistorante);
-		for (MenuTematico menu : menuTRistorante) {
-			System.out.println(menu.descrizioneMenuTematico());
-		}
+		ElencoMenuTematiciView elencoMenuTematiciView = new ElencoMenuTematiciView(menuTRistorante);
+		elencoMenuTematiciView.mostraDescrizioneMenuTematici();
 	}
 
 	public void visualizzaMenuTematico(Gestore gestore, String pathCompletoFileRistorante) {
-		ConfiguratoreRistorante conf = new ConfiguratoreRistorante();
-		Ristorante ristorante = (Ristorante) conf.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
+		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
 		HashSet<MenuTematico> menuTRistorante = gestore.ottieniMenuTematici(pathCompletoFileRistorante);
 		ristorante.setMenuTematici(menuTRistorante);
 
 		visualizzaNomiMenuTematici(gestore, pathCompletoFileRistorante);
 
-		String msgRichiesta = "Inserisci il nome del menu tematico da visualizzare: ";
-		String msgErrMenu= "ATTENZIONE! Il menu inserito non esiste";
-
 		boolean trovato = true;
 		do {
-			String ricerca = InputDati.leggiStringaNonVuota(msgRichiesta);	
-			MenuTematico menu = MenuTematico.trovaMenuTDaNome(ricerca, ristorante.getMenuTematici());
-			if (menu != null) {
-				System.out.println(menu.descrizioneMenuTematico());
+			String ricerca = InputDati.leggiStringaNonVuota(MSG_NOME_MENU_T);	
+			MenuTematico menuTematico = MenuTematico.trovaMenuTDaNome(ricerca, ristorante.getMenuTematici());
+			if (menuTematico != null) {
+				MenuView menuTematicoView = new MenuTematicoView(menuTematico);
+				menuTematicoView.descrizioneMenu();
 				trovato = false;
 			} else {
-				System.out.println(msgErrMenu);
+				System.out.println(MSG_ERR_NOME_MENU_T);
 			}
-		} while (trovato);
+		} while (trovato);		
 	}
 
 }

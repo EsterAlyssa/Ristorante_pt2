@@ -12,26 +12,26 @@ import Prenotazioni.Prenotazione;
 import Prenotazioni.SceltaPrenotazione;
 import Util.GestioneFile.ServizioFile;
 
-public class ConfiguratorePrenotazione extends ConfiguratoreManager{
+public class ConfiguratorePrenotazione extends ConfiguratoreManager<Prenotazione>{
 
 	public ConfiguratorePrenotazione() {
 		super();
 	}
 
-	void scriviParametriNelFile(Object prenotazione, BufferedWriter writer) {        
+	void scriviParametriNelFile(Prenotazione prenotazione, BufferedWriter writer) {        
 		try {
-			writer.write("cliente=" + ((Prenotazione) prenotazione).getCliente());
+			writer.write("cliente=" + prenotazione.getCliente());
 			writer.newLine();
-			writer.write("numCoperti=" + ((Prenotazione) prenotazione).getNumCoperti());
+			writer.write("numCoperti=" + prenotazione.getNumCoperti());
 			writer.newLine();
-			GiornoView giornoView = new GiornoView (((Prenotazione) prenotazione).getData().getGiorno());
+			GiornoView giornoView = new GiornoView (prenotazione.getData().getGiorno());
 			writer.write("data=" + giornoView.descrizioneGiorno());
 			writer.newLine();
 
-			HashMap<SceltaPrenotazione, Integer> elenco = ((Prenotazione) prenotazione).getElenco();
+			HashMap<SceltaPrenotazione, Integer> elenco = prenotazione.getElenco();
 			writer.write("elenco= ");
 			writer.newLine();
-			ConfiguratoreManager confScelta = new ConfiguratoreSceltaPrenotazione();
+			ConfiguratoreManager<SceltaPrenotazione> confScelta = new ConfiguratoreSceltaPrenotazione();
 			for (SceltaPrenotazione scelta : elenco.keySet()) {
 				writer.append('~');
 				writer.newLine();
@@ -47,21 +47,20 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 		}
 	}
 
-
 	@Override
-	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
+	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Prenotazione oggetto) {
 		// Imposta l'attributo nell'oggetto menu carta utilizzando i metodi setter corrispondenti
 		switch (nomeAttributo) {
 		case "cliente":
-			((Prenotazione)oggetto).setCliente(valoreAttributo);
+			oggetto.setCliente(valoreAttributo);
 			break;
 		case "numCoperti":
-			((Prenotazione)oggetto).setNumCoperti(Integer.parseInt(valoreAttributo));
+			oggetto.setNumCoperti(Integer.parseInt(valoreAttributo));
 			break;
 			// probabile errore
 		case "data":
 			Giorno giorno = Giorno.parseGiorno(valoreAttributo);
-			((Prenotazione)oggetto).setData(giorno);
+			oggetto.setData(giorno);
 			break;
 		case "elenco":
 			break;
@@ -71,15 +70,13 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 		}
 	}
 
-	//da aggiustare per la prenotazione
 	@Override
-	public Object caricaIstanzaOggettoDaFile(String pathFileOggetto) {
+	public Prenotazione caricaIstanzaOggettoDaFile(String pathFileOggetto) {
 		String nomePrenotazione = ServizioFile.getNomeFileSenzaEstensione(pathFileOggetto);
 		Prenotazione pren = new Prenotazione(nomePrenotazione);
 		SceltaPrenotazione sceltaCorrente = null; // Per tenere traccia della scelta corrente
 		boolean inSezioneScelta = false; // Per indicare se si è all'interno di una sezione di una scelta
-		ConfiguratoreManager confScelta = new ConfiguratoreSceltaPrenotazione();
-
+		ConfiguratoreManager<SceltaPrenotazione> confScelta = new ConfiguratoreSceltaPrenotazione();
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pathFileOggetto));
 			String line;
@@ -99,7 +96,7 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 					//si leggono due linee
 					line = reader.readLine();//la prima linea è un a capo separatore
 					line = reader.readLine();//la seconda linea dice la "categoria" della scelta (Piatto o menu)
-					sceltaCorrente = (SceltaPrenotazione) confScelta.creaIstanzaOggetto(line);
+					sceltaCorrente = confScelta.creaIstanzaOggetto(line);
 					inSezioneScelta = true;
 				} else if (inSezioneScelta) {
 					// Se si è all'interno di una sezione di scelta, carica gli attributi
@@ -122,7 +119,7 @@ public class ConfiguratorePrenotazione extends ConfiguratoreManager{
 	}
 
 	@Override
-	public Object creaIstanzaOggetto(String nomeOggetto) {
+	public Prenotazione creaIstanzaOggetto(String nomeOggetto) {
 		return new Prenotazione(nomeOggetto);
 	}
 }

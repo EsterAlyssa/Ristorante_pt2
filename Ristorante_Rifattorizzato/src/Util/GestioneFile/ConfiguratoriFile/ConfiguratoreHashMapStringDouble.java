@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class ConfiguratoreHashMapStringDouble extends ConfiguratoreManager {
+public class ConfiguratoreHashMapStringDouble extends ConfiguratoreManager<HashMap<String, Double>> {
 
 
 	public ConfiguratoreHashMapStringDouble() {
@@ -14,11 +14,11 @@ public class ConfiguratoreHashMapStringDouble extends ConfiguratoreManager {
 	}
 
 	@Override
-	void scriviParametriNelFile(Object oggettoMappa, BufferedWriter writer) {
+	void scriviParametriNelFile(HashMap<String, Double> oggettoMappa, BufferedWriter writer) {
 		try {
-			HashMap<String, Double> mappa = (HashMap<String, Double>) oggettoMappa;
-			for (String nomeProdotto : mappa.keySet()) {
-				writer.write(nomeProdotto + "=" + mappa.get(nomeProdotto) + ";");
+			for (String nomeProdotto : oggettoMappa.keySet()) {
+				String stringaFormattata = String.format("%s=%.2f;", nomeProdotto, oggettoMappa.get(nomeProdotto));
+				writer.write(stringaFormattata);
 				writer.newLine();
 				writer.flush();
 			}
@@ -29,20 +29,22 @@ public class ConfiguratoreHashMapStringDouble extends ConfiguratoreManager {
 	}
 
 	@Override
-	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
-		double valore = Double.parseDouble(valoreAttributo.replace(";", ""));
-		((HashMap<String, Double>) oggetto).put(nomeAttributo, valore);
+	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, 
+			HashMap<String, Double> oggetto) {
+		String valoreFormattato = valoreAttributo.replace(";", "");
+		valoreFormattato = valoreFormattato.replace(",", ".");
+		double valore = Double.parseDouble(valoreFormattato);
+		oggetto.put(nomeAttributo, valore);
 	}
 
 
 	@Override
-	public Object creaIstanzaOggetto(String nomeOggetto) {
-		HashMap<String, Double> mappa = new HashMap<>();
-		return mappa;
+	public HashMap<String, Double> creaIstanzaOggetto(String nomeOggetto) {
+		return new HashMap<>();
 	}
 
 	@Override
-	public Object caricaIstanzaOggettoDaFile(String pathFileOggetto) {
+	public HashMap<String, Double> caricaIstanzaOggettoDaFile(String pathFileOggetto) {
 		HashMap<String, Double> mappaCaricata = new HashMap<>();
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pathFileOggetto));

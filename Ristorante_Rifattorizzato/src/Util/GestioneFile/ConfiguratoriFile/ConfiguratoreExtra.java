@@ -7,18 +7,18 @@ import java.util.HashMap;
 import Ristorante.ElementiRistorante.InsiemeExtra;
 
 
-public class ConfiguratoreExtra extends ConfiguratoreManager{
+public class ConfiguratoreExtra extends ConfiguratoreManager<InsiemeExtra>{
 
 	public ConfiguratoreExtra() {
 		super();
 	}
 
 	@Override
-	void scriviParametriNelFile(Object oggetto, BufferedWriter writer) {
+	void scriviParametriNelFile(InsiemeExtra oggetto, BufferedWriter writer) {
 		try {
 			writer.write("Insieme Extra=");
 			writer.newLine();
-			HashMap<String, Double> hashOggetto = ((InsiemeExtra) oggetto).getInsiemeExtra();
+			HashMap<String, Double> hashOggetto = oggetto.getInsiemeExtra();
 			ConfiguratoreHashMapStringDouble confIns = new ConfiguratoreHashMapStringDouble();
 			confIns.scriviParametriNelFile(hashOggetto, writer);
 			writer.flush();
@@ -29,13 +29,14 @@ public class ConfiguratoreExtra extends ConfiguratoreManager{
 	}
 
 	@Override
-	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
+	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, 
+			InsiemeExtra oggetto) {
 		ConfiguratoreHashMapStringDouble confIns = new ConfiguratoreHashMapStringDouble();
-		confIns.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, ((InsiemeExtra) oggetto).getInsiemeExtra());
+		confIns.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, oggetto.getInsiemeExtra());
 	}
 
 	@Override
-	public Object creaIstanzaOggetto(String nomeOggetto) {
+	public InsiemeExtra creaIstanzaOggetto(String nomeOggetto) {
 		return new InsiemeExtra();
 	}
 

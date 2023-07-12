@@ -18,6 +18,7 @@ public class Ristorante {
 	private int caricoLavoroPersona;
 	private int numPosti;
 	private double caricoLavoroRistorante; 
+	
 	private TreeSet<Giornata> calendario;
 
 	private InsiemeExtra insiemeGE;

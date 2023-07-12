@@ -6,19 +6,19 @@ import java.util.HashMap;
 
 import Magazzino.ListaSpesa;
 
-public class ConfiguratoreListaSpesa extends ConfiguratoreManager{
+public class ConfiguratoreListaSpesa extends ConfiguratoreManager<ListaSpesa>{
 
 	public ConfiguratoreListaSpesa() {
 		super();
 	}
 
 	@Override
-	void scriviParametriNelFile(Object listaSpesa, BufferedWriter writer) {
+	void scriviParametriNelFile(ListaSpesa listaSpesa, BufferedWriter writer) {
 		try {
-			HashMap<String, Double> lista = ((ListaSpesa) listaSpesa).getLista();
+			HashMap<String, Double> lista = listaSpesa.getLista();
 			writer.write("lista= ");
 			writer.newLine();
-			ConfiguratoreManager conf = new ConfiguratoreHashMapStringDouble();
+			ConfiguratoreManager<HashMap<String, Double>> conf = new ConfiguratoreHashMapStringDouble();
 			conf.scriviParametriNelFile(lista, writer);
 		} catch (IOException e) {
 			System.out.println("Impossibile salvare l'oggetto lista spesa");
@@ -27,22 +27,20 @@ public class ConfiguratoreListaSpesa extends ConfiguratoreManager{
 	}
 
 	@Override
-	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
+	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, 
+			ListaSpesa oggetto) {
 		switch (nomeAttributo) {
 		case "lista":
-			HashMap<String, Double> mapLista = new HashMap<>();
-			ConfiguratoreHashMapStringDouble conf = new ConfiguratoreHashMapStringDouble();
-			conf.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, mapLista);
-			((ListaSpesa) oggetto).setLista(mapLista);
 			break;
 		default:
-			System.out.println("Attributo non riconosciuto: " + nomeAttributo);
+			ConfiguratoreHashMapStringDouble conf = new ConfiguratoreHashMapStringDouble();
+			conf.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, oggetto.getLista());
 			break;
 		}
 	}
 
 	@Override
-	public Object creaIstanzaOggetto(String nomeOggetto) {
+	public ListaSpesa creaIstanzaOggetto(String nomeOggetto) {
 		return new ListaSpesa();
 	}
 }

@@ -14,6 +14,7 @@ public interface SceltaPrenotazione {
 		}
 		return null;
 	}
+	
 	public String getNome();
 	public HashSet<Piatto> getPiatti();
 	public double getCaricoLavoro();

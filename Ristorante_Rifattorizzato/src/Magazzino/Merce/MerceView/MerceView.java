@@ -15,9 +15,15 @@ public class MerceView {
 	static final String MSG_TIPO = "Inserire il tipo della merce [ingrediente/bevanda/genere extra]: ";
 	static final String MSG_CONSUMO_PRO_CAPITE = "Inserire il consumo pro capite: ";
 	static final String MSG_ERR_TIPO = "ATTENZIONE! Il tipo inserito non è valido. Riprovare";
+	static final String MSG_MERCE_DETERIORATA = "Definisci la merce deteriorata: ";
+	
+	private Merce merce;
+	
+	public MerceView(Merce merce) {
+		this.merce = merce;
+	}
 
 	public static Merce creaMerce() {
-		
 		String nomeMerce = InputDati.leggiStringaNonVuota(MSG_NOME);
 		String unitaMisura = InputDati.leggiStringaNonVuota(MSG_UNITA_MISURA);
 		System.out.println(MSG_SCADENZA);
@@ -38,7 +44,6 @@ public class MerceView {
 		if (tipo == "bevanda" || tipo == "genere extra") {
 			consumoProCapite = InputDati.leggiDoubleConMinimo(MSG_CONSUMO_PRO_CAPITE, 0.0);
 		}
-	
 		return creaMerceDaTipo(nomeMerce, tipo, unitaMisura, scadenza, consumoProCapite);
 	}
 	
@@ -53,5 +58,23 @@ public class MerceView {
 			return new Ingrediente (nome, unitaMisura, scadenza); 
 		}
 		return null;
+	}
+
+	public static Merce dichiarazioneMerceDeteriorata() {
+		System.out.println(MSG_MERCE_DETERIORATA);
+		return creaMerce();
 	};
+	
+	public String descrizioneMerce() {
+		GiornoView giornoView = new GiornoView(merce.getScadenza().getGiorno());
+		String daTornare = "Nome: " + merce.getNome() +
+				"\nSottocategoria: " + merce.getClass().getSimpleName() + 
+				"\nUnita' di misura: " + merce.getUnitaMisura() +
+				"\nScadenza: " + giornoView.descrizioneGiorno();
+		return daTornare;
+	}
+	
+	public void mostraDescrizioneMerce() {
+		System.out.println(descrizioneMerce());
+	}
 }

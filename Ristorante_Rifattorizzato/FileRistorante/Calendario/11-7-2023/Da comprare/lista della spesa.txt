@@ -1,0 +1,8 @@
+lista= 
+carote=8,70;
+vino=6,60;
+ragu=1,40;
+tagliatelle=1,40;
+pomodoro=19,35;
+pane=9,90;
+acqua=6,60;

@@ -66,7 +66,7 @@ public class GestoreRistorante extends Utente{
 			gestore.creaRicetta(pathCompletoFileRistorante);
 			break;
 		case 10:
-			visualizzatoreGestione.visualizzaRicettario(pathCompletoFileRistorante);
+			visualizzatoreGestione.visualizzaNomiRicettario(pathCompletoFileRistorante);
 			break;
 		case 11: 
 			visualizzatoreGestione.visualizzaRicetta(pathCompletoFileRistorante);
@@ -75,7 +75,7 @@ public class GestoreRistorante extends Utente{
 			visualizzatoreGestione.visualizzaInfoRicette(pathCompletoFileRistorante);
 			break;
 		case 13:
-			gestore.corrispondenzaPiattoRicetta(this, pathCompletoFileRistorante); //aggiungere piatto al menu alla carta di quel giorno
+			gestore.corrispondenzaPiattoRicetta(pathCompletoFileRistorante); //aggiungere piatto al menu alla carta di quel giorno
 			break;
 		case 14:
 			visualizzatoreGestione.visualizzaPiatti(pathCompletoFileRistorante);

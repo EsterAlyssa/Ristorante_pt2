@@ -6,12 +6,12 @@ import Giorno.Periodo;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-public class ConfiguratorePeriodo extends ConfiguratoreManager{
+public class ConfiguratorePeriodo extends ConfiguratoreManager<Periodo>{
 
 	@Override
-	void scriviParametriNelFile(Object oggetto, BufferedWriter writer) {
-		for (Giorno giorno : ((Periodo)oggetto).getPeriodoValidita()) {
-			ConfiguratoreGiorno configuratoreGiorno = new ConfiguratoreGiorno();
+	void scriviParametriNelFile(Periodo oggetto, BufferedWriter writer) {
+		for (Giorno giorno : oggetto.getPeriodoValidita()) {
+			ConfiguratoreManager<Giorno> configuratoreGiorno = new ConfiguratoreGiorno();
 			configuratoreGiorno.scriviParametriNelFile(giorno, writer);
 			try {
 				writer.append(';');
@@ -23,16 +23,17 @@ public class ConfiguratorePeriodo extends ConfiguratoreManager{
 	}
 
 	@Override
-	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
+	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, 
+			Periodo oggetto) {
 		String[] giorni = valoreAttributo.split(";");
 		for (String giornoStr : giorni) {
 			Giorno giorno = Giorno.parseGiorno(giornoStr.trim());
-			((Periodo) oggetto).getPeriodoValidita().add(giorno);
+			oggetto.getPeriodoValidita().add(giorno);
 		}
 	}
 
 	@Override
-	public Object creaIstanzaOggetto(String nomeOggetto) {
+	public Periodo creaIstanzaOggetto(String nomeOggetto) {
 		return new Periodo();
 	}
 }

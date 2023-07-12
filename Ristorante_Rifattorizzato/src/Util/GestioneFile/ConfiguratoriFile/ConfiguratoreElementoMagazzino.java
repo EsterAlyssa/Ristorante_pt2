@@ -9,25 +9,24 @@ import Magazzino.ElementoMagazzino;
 import Magazzino.Merce.Merce;
 import Util.GestioneFile.ServizioFile;
 
-public class ConfiguratoreElementoMagazzino extends ConfiguratoreManager{
+public class ConfiguratoreElementoMagazzino extends ConfiguratoreManager<ElementoMagazzino>{
 
 	public ConfiguratoreElementoMagazzino() {
 		super();
 	}
 
 	@Override
-	void scriviParametriNelFile(Object oggetto, BufferedWriter writer) {
+	public void scriviParametriNelFile(ElementoMagazzino oggetto, BufferedWriter writer) {
 		try {
-			ElementoMagazzino elementoMagazzino = (ElementoMagazzino) oggetto;
-			Merce merce = elementoMagazzino.getMerce();
+			Merce merce = oggetto.getMerce();
 			writer.write("merce= ");
 			writer.newLine();
 
-			ConfiguratoreMerce configuratoreMerce = new ConfiguratoreMerce();
+			ConfiguratoreManager<Merce> configuratoreMerce = new ConfiguratoreMerce();
 			configuratoreMerce.scriviParametriNelFile(merce, writer);
 
 			writer.newLine();
-			writer.write("quantita=" + elementoMagazzino.getQuantita());
+			writer.write("quantita=" + oggetto.getQuantita());
 		} catch (IOException e) {
 			System.out.println("Impossibile salvare l'oggetto Elemento Magazzino");
 			e.printStackTrace();
@@ -35,12 +34,12 @@ public class ConfiguratoreElementoMagazzino extends ConfiguratoreManager{
 	}
 
 	@Override
-	public Object caricaIstanzaOggettoDaFile(String pathFileOggetto) {
+	public ElementoMagazzino caricaIstanzaOggettoDaFile(String pathFileOggetto) {
 		String nomeElementoMagazzino = ServizioFile.getNomeFileSenzaEstensione(pathFileOggetto);
-		ElementoMagazzino elementoMagazzino = (ElementoMagazzino) creaIstanzaOggetto(nomeElementoMagazzino);
+		ElementoMagazzino elementoMagazzino = creaIstanzaOggetto(nomeElementoMagazzino);
 		Merce merceCorrente = null; // Per tenere traccia della merce corrente
 		boolean inSezioneMerce = false; // Per indicare se si è all'interno di una sezione di una merce
-		ConfiguratoreMerce confMerce = new ConfiguratoreMerce();
+		ConfiguratoreManager<Merce> confMerce = new ConfiguratoreMerce();
 
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pathFileOggetto));
@@ -55,8 +54,10 @@ public class ConfiguratoreElementoMagazzino extends ConfiguratoreManager{
 		return elementoMagazzino;
 	}
 
-	public ElementoMagazzino letturaIstanza(String line, Merce merceCorrente, ElementoMagazzino elementoMagazzino, 
-			boolean inSezioneMerce, BufferedReader reader, ConfiguratoreMerce confMerce) {
+	public ElementoMagazzino letturaIstanza(String line, Merce merceCorrente, 
+			ElementoMagazzino elementoMagazzino, boolean inSezioneMerce, 
+			BufferedReader reader, ConfiguratoreManager<Merce> confMerce) {
+		
 		if (line.startsWith("merce=")) {
 			// Si aggiunge la merceCorrente all'elementoMagazzino
 			if (merceCorrente != null) {
@@ -64,7 +65,7 @@ public class ConfiguratoreElementoMagazzino extends ConfiguratoreManager{
 				merceCorrente = null; //la merce viene poi annullato perchè dovrà "lasciare posto" a una nuova merce
 			}
 			inSezioneMerce = false; // Segna la fine della sezione della merce corrente
-		
+
 			// Inizia una nuova sezione di merce
 			// Si legge la linea dopo per sapere il tipo di merce
 			String tipo = "";
@@ -74,13 +75,13 @@ public class ConfiguratoreElementoMagazzino extends ConfiguratoreManager{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			merceCorrente = (Merce) confMerce.creaIstanzaOggetto(tipo);
+			merceCorrente = confMerce.creaIstanzaOggetto(tipo);
 			elementoMagazzino.setMerce(merceCorrente);
 			inSezioneMerce = true;
 		} else if (inSezioneMerce) {
 			// Se si è all'interno di una sezione di merce, carica gli attributi
 			merceCorrente = elementoMagazzino.getMerce();
-			merceCorrente = (Merce) confMerce.caricaIstanzaOggetto(merceCorrente, line);
+			merceCorrente = confMerce.caricaIstanzaOggetto(merceCorrente, line);
 			elementoMagazzino.setMerce(merceCorrente);
 		} else {
 			// Altrimenti, gestisci gli attributi generici dell'elemento magazzino
@@ -93,12 +94,12 @@ public class ConfiguratoreElementoMagazzino extends ConfiguratoreManager{
 		}
 		return elementoMagazzino;
 	}
-	
+
 	@Override
-	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object elementoMagazzino) {
+	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, ElementoMagazzino elementoMagazzino) {
 		switch (nomeAttributo) {
 		case "quantita":
-			((ElementoMagazzino) elementoMagazzino).setQuantita(Double.parseDouble(valoreAttributo));
+			elementoMagazzino.setQuantita(Double.parseDouble(valoreAttributo));
 			break;
 		default: 
 			System.out.println("Errore nel settaggio dei parametri");
@@ -106,9 +107,8 @@ public class ConfiguratoreElementoMagazzino extends ConfiguratoreManager{
 		}
 	}
 
-
 	@Override
-	public Object creaIstanzaOggetto(String nomeOggetto) {
+	public ElementoMagazzino creaIstanzaOggetto(String nomeOggetto) {
 		return new ElementoMagazzino(null, 0.0);
 	}
 }

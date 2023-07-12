@@ -11,17 +11,16 @@ import Magazzino.ElementoMagazzino;
 import Magazzino.Merce.*;
 import Magazzino.RegistroMagazzino;
 
-public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
+public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager<RegistroMagazzino> {
 
 	public ConfiguratoreRegistroMagazzino() {
 		super();
 	}
 
 	@Override
-	void scriviParametriNelFile(Object oggetto, BufferedWriter writer) {
+	void scriviParametriNelFile(RegistroMagazzino oggetto, BufferedWriter writer) {
 		try {
-			RegistroMagazzino registroMagazzino = (RegistroMagazzino) oggetto;
-			HashMap<String, PriorityQueue<ElementoMagazzino>> registro = registroMagazzino.getRegistro();
+			HashMap<String, PriorityQueue<ElementoMagazzino>> registro = oggetto.getRegistro();
 
 			writer.write("registro magazzino= ");
 			writer.newLine();
@@ -36,7 +35,7 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 
 				for (ElementoMagazzino elemento : codaMerce) {
 
-					ConfiguratoreElementoMagazzino configuratoreElementoMagazzino = new ConfiguratoreElementoMagazzino();
+					ConfiguratoreManager<ElementoMagazzino> configuratoreElementoMagazzino = new ConfiguratoreElementoMagazzino();
 					configuratoreElementoMagazzino.scriviParametriNelFile(elemento, writer);
 					writer.newLine();
 					writer.write("---");
@@ -52,7 +51,7 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 	}
 
 	@Override
-	public Object caricaIstanzaOggettoDaFile(String pathFileOggetto) {
+	public RegistroMagazzino caricaIstanzaOggettoDaFile(String pathFileOggetto) {
 		RegistroMagazzino registroMagazzino = new RegistroMagazzino();
 		HashMap<String, PriorityQueue<ElementoMagazzino>> registro = new HashMap<>();
 		ConfiguratoreElementoMagazzino confEleMag = new ConfiguratoreElementoMagazzino();
@@ -67,8 +66,7 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 			boolean inSezioneElementoRegistro = true;
 			Merce merceCorrente = null; // Per tenere traccia della merce corrente
 			boolean inSezioneMerce = false; // Per indicare se si è all'interno di una sezione di una merce
-			ConfiguratoreMerce confMerce = new ConfiguratoreMerce();
-
+			ConfiguratoreManager<Merce> confMerce = new ConfiguratoreMerce();
 
 			while ((line = reader.readLine()) != null) {
 				if (inSezioneElementoRegistro && line.equals("~")) {
@@ -86,7 +84,7 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 					} else {
 						codaElementoRegistro = new PriorityQueue<>();
 					}
-					elementoMagazzinoCorrente = (ElementoMagazzino) confEleMag.creaIstanzaOggetto(keyElementoRegistro);
+					elementoMagazzinoCorrente = confEleMag.creaIstanzaOggetto(keyElementoRegistro);
 					inSezioneElementoRegistro = true;
 				} else if (line.startsWith("merce=")) {
 					inSezioneElementoMagazzino=true;
@@ -98,9 +96,9 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 				} else if (inSezioneElementoMagazzino && line.equals("---")) {
 					//tra un ElementoMagazzino e l'altro c'è il separatore "---", 
 					//quindi si deve salvare l'elemento nella priorityQueue
-					
+
 					codaElementoRegistro.add(elementoMagazzinoCorrente);
-					elementoMagazzinoCorrente = (ElementoMagazzino) confEleMag.creaIstanzaOggetto(keyElementoRegistro);
+					elementoMagazzinoCorrente = confEleMag.creaIstanzaOggetto(keyElementoRegistro);
 					inSezioneElementoMagazzino = false;
 				} else if(inSezioneElementoRegistro && inSezioneElementoMagazzino) {
 					elementoMagazzinoCorrente = confEleMag.letturaIstanza(line, merceCorrente, elementoMagazzinoCorrente, inSezioneMerce, reader, confMerce);
@@ -109,7 +107,7 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 					if (parte.length == 2) {
 						String nomeAttributo = parte[0].trim();
 						String valoreAttributo = parte[1].trim();
-						setAttributiDatoOggetto(nomeAttributo, valoreAttributo, registro);
+						setAttributiDatoOggetto(nomeAttributo, valoreAttributo, registroMagazzino);
 					}
 				}
 			}
@@ -123,7 +121,7 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 	}
 
 	@Override
-	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
+	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, RegistroMagazzino oggetto) {
 		switch (nomeAttributo) {
 		case "registro magazzino":
 			break;
@@ -131,7 +129,7 @@ public class ConfiguratoreRegistroMagazzino extends ConfiguratoreManager {
 	}
 
 	@Override
-	public Object creaIstanzaOggetto(String nomeOggetto) {
+	public RegistroMagazzino creaIstanzaOggetto(String nomeOggetto) {
 		return new RegistroMagazzino();
 	}
 }

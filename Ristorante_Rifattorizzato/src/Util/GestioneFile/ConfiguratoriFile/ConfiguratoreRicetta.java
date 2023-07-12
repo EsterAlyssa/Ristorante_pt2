@@ -6,27 +6,26 @@ import java.util.HashMap;
 
 import Ristorante.ElementiRistorante.Ricetta;
 
-public class ConfiguratoreRicetta extends ConfiguratoreManager {
+public class ConfiguratoreRicetta extends ConfiguratoreManager<Ricetta> {
 
 	public ConfiguratoreRicetta() {
 		super();
 	}
 
 	@Override
-	void scriviParametriNelFile(Object ricetta, BufferedWriter writer) {
+	void scriviParametriNelFile(Ricetta ricetta, BufferedWriter writer) {
 		try {
-			Ricetta r = (Ricetta) ricetta;
-			writer.write("nome=" + r.getNome());
+			writer.write("nome=" + ricetta.getNome());
 			writer.newLine();
-			writer.write("numPorzioni=" + r.getNumPorzioni());
+			writer.write("numPorzioni=" + ricetta.getNumPorzioni());
 			writer.newLine();
-			writer.write("caricoLavoroPorzione=" + r.getCaricoLavoroPorzione());
+			writer.write("caricoLavoroPorzione=" + ricetta.getCaricoLavoroPorzione());
 			writer.newLine();
 			writer.write("ingredienti=");
 			writer.newLine();
-			HashMap<String, Double> ingredienti = r.getIngredienti();
+			HashMap<String, Double> ingredienti = ricetta.getIngredienti();
 
-			ConfiguratoreHashMapStringDouble conf = new ConfiguratoreHashMapStringDouble();
+			ConfiguratoreManager<HashMap<String, Double>> conf = new ConfiguratoreHashMapStringDouble();
 			conf.scriviParametriNelFile(ingredienti, writer);
 		} catch (IOException e) {
 			System.out.println("Impossibile salvare l'oggetto ricetta");
@@ -35,17 +34,17 @@ public class ConfiguratoreRicetta extends ConfiguratoreManager {
 	}
 
 	@Override
-	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
+	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Ricetta oggetto) {
 		// Imposta l'attributo nell'oggetto ricetta utilizzando i metodi setter corrispondenti
 		switch (nomeAttributo) {
 		case "nome":
-			((Ricetta) oggetto).setNome(valoreAttributo);
+			oggetto.setNome(valoreAttributo);
 			break;
 		case "numPorzioni":
-			((Ricetta) oggetto).setNumPorzioni(Integer.parseInt(valoreAttributo));
+			oggetto.setNumPorzioni(Integer.parseInt(valoreAttributo));
 			break;
 		case "caricoLavoroPorzione":
-			((Ricetta) oggetto).setCaricoLavoroPorzione(Double.parseDouble(valoreAttributo));
+			oggetto.setCaricoLavoroPorzione(Double.parseDouble(valoreAttributo));
 			break;
 		case "ingredienti":
 			//questa linea è ingredienti= quindi non dovrebbe salvare valori, solo far capire che
@@ -53,14 +52,14 @@ public class ConfiguratoreRicetta extends ConfiguratoreManager {
 			break;
 		default:
 			// Il valoreAttributo contiene gli ingredienti nel formato "nomeIngrediente=dose", separatore ";"
-			ConfiguratoreHashMapStringDouble conf = new ConfiguratoreHashMapStringDouble();
-			conf.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, ((Ricetta)oggetto).getIngredienti());
+			ConfiguratoreManager<HashMap<String, Double>> conf = new ConfiguratoreHashMapStringDouble();
+			conf.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, oggetto.getIngredienti());
 			break;
 		}
 	}
 
 	@Override
-	public Object creaIstanzaOggetto(String nomeOggetto) {
+	public Ricetta creaIstanzaOggetto(String nomeOggetto) {
 		return new Ricetta(nomeOggetto);
 	}
 

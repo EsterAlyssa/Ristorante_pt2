@@ -52,14 +52,6 @@ public class MenuTematico extends Menu implements SceltaPrenotazione{
 		// Se il menu non viene trovato si ritorna null
 		return null;
 	}
-	
-	public String descrizioneMenuTematico() {
-		String stringa = "Menu Tematico: "+ nomeMenuTematico + "\nCarico di lavoro del menu tematico: " + caricoLavoroMenuTematico + "\nPiatti:\n";
-		for (Piatto piatto : getElenco()) {
-			stringa += piatto.getNome() + "\n";
-		}
-		return stringa;
-	}
 
 	@Override
 	public HashSet<Piatto> getPiatti() {

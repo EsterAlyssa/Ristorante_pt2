@@ -63,7 +63,6 @@ public class ServizioFile
 		return null; // Restituisci null se non è stato possibile trovare il file
 	}
 
-
 	public static boolean creaDirectory(String nomeDirectory) {
 		File directory = new File(nomeDirectory);
 

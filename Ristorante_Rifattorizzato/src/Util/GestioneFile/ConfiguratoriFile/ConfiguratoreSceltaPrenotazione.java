@@ -7,28 +7,27 @@ import Prenotazioni.SceltaPrenotazione;
 import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
 
-public class ConfiguratoreSceltaPrenotazione extends ConfiguratoreManager {
+public class ConfiguratoreSceltaPrenotazione extends ConfiguratoreManager<SceltaPrenotazione> {
 
 	public ConfiguratoreSceltaPrenotazione() {
 		super();
 	}
 
 	@Override
-	void scriviParametriNelFile(Object sceltaPrenotazione, BufferedWriter writer) {
+	void scriviParametriNelFile(SceltaPrenotazione sceltaPrenotazione, BufferedWriter writer) {
 		try {
-			SceltaPrenotazione sceltaPren = (SceltaPrenotazione) sceltaPrenotazione;
-			if (sceltaPren instanceof MenuTematico) {
-				ConfiguratoreManager confMenuT = new ConfiguratoreMenuTematico();
+			if (sceltaPrenotazione instanceof MenuTematico) {
+				ConfiguratoreManager<MenuTematico> confMenuT = new ConfiguratoreMenuTematico();
 				writer.write("MenuTematico= ");
 				writer.newLine();
-				confMenuT.scriviParametriNelFile(sceltaPren, writer);
+				confMenuT.scriviParametriNelFile((MenuTematico) sceltaPrenotazione, writer);
 			};
 
-			if (sceltaPren instanceof Piatto) {
-				ConfiguratoreManager confPiat = new ConfiguratorePiatto();
+			if (sceltaPrenotazione instanceof Piatto) {
+				ConfiguratoreManager<Piatto> confPiat = new ConfiguratorePiatto();
 				writer.write("Piatto= ");
 				writer.newLine();
-				confPiat.scriviParametriNelFile(sceltaPren, writer);
+				confPiat.scriviParametriNelFile((Piatto) sceltaPrenotazione, writer);
 			}
 			else {
 				System.out.println("Errore! L'oggetto non è una possibile scelta per le prenotazioni");
@@ -39,19 +38,19 @@ public class ConfiguratoreSceltaPrenotazione extends ConfiguratoreManager {
 	}
 
 	@Override
-	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
+	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, 
+			SceltaPrenotazione oggetto) {
 		if (nomeAttributo.contains("MenuTematico")) {
-			ConfiguratoreManager confMenuT = new ConfiguratoreMenuTematico();
-			confMenuT.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, oggetto);
+			ConfiguratoreManager<MenuTematico> confMenuT = new ConfiguratoreMenuTematico();
+			confMenuT.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, (MenuTematico) oggetto);
 		} else {
-			ConfiguratoreManager confPiat = new ConfiguratorePiatto();
-			confPiat.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, oggetto);
+			ConfiguratoreManager<Piatto> confPiat = new ConfiguratorePiatto();
+			confPiat.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, (Piatto) oggetto);
 		}
-
 	}
 
 	@Override
-	public Object creaIstanzaOggetto(String nomeOggetto) {
+	public SceltaPrenotazione creaIstanzaOggetto(String nomeOggetto) {
 		if (nomeOggetto.contains("Piatto")) {
 			return new Piatto(nomeOggetto); 
 		} else {

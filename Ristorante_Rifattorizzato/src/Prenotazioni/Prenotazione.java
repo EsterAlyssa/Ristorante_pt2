@@ -72,10 +72,6 @@ public class Prenotazione {
 		return mapPiatti;
 	}
 	
-	public String descrizionePrenotazione() {
-		return "Prenotazione di " + cliente + ", per " + numCoperti + " persone";
-	}
-	
 }
 
 

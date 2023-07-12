@@ -2,8 +2,6 @@ package Ristorante.ElementiRistorante;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import Util.Formattazione;
-
 public class Ricetta {
 
 	private String nome;
@@ -71,15 +69,5 @@ public class Ricetta {
 		// Se la ricetta non viene trovata si ritorna null
 		return null;
 	}
-
-	public String descrizioneRicetta() {
-		String descrizione = "Ricetta: "+ nome + "\nNumero di porzioni previste: " + numPorzioni + "\nIngredienti:\n";
-		for (String nome : ingredienti.keySet()) {
-			descrizione += "- " + nome + ", dose: " + Formattazione.ritornaDoubleFormattato(ingredienti.get(nome)) + "\n";
-		}
-		descrizione += "Carico di lavoro per porzione: " + Formattazione.ritornaDoubleFormattato(caricoLavoroPorzione) + "\n";
-		return descrizione;
-	}
-
 
 }

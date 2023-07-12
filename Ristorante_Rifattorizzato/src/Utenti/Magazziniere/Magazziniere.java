@@ -16,8 +16,9 @@ public class Magazziniere extends Utente {
 			"Preleva bevande e generi extra da portare in sala", 
 			"Aggiungi al magazzino le merci inutilizzate", 
 			"Elimina dal magazzino gli scarti",
-			"Genera lista della spesa per il prossimo giorno",
-			"Visualizza registro magazzino"
+			"Visualizza registro magazzino",
+			"Genera lista della spesa per il giorno corrente",
+			"Visualizza la lista della spesa per il giorno corrente"
 	};
 
 	public Magazziniere(String nome) {
@@ -30,7 +31,7 @@ public class Magazziniere extends Utente {
 	public void eseguiMetodi(int scelta, String pathCompletoFileRistorante) {
 		String pathDirectoryRegistroMagazzino = CreazioneDirectory.creaDirectoryRegistroMagazzino(pathCompletoFileRistorante);
 		String pathFileRegistroMagazzino = CreazioneFile.creaFileRegistroMagazzino(pathDirectoryRegistroMagazzino);
-		
+
 		Giorno giornoCorrente = Giorno.ritornaGiornoCorrente();
 
 		switch(scelta) {
@@ -50,14 +51,18 @@ public class Magazziniere extends Utente {
 			gestoreMagazzino.eliminazioneScarti(giornoCorrente, pathCompletoFileRistorante, pathFileRegistroMagazzino);
 			break;
 		case 6:
-			gestoreMagazzino.generaListaSpesa(giornoCorrente, pathCompletoFileRistorante, pathFileRegistroMagazzino);
+			visualizzatoreMagazzino.visualizzaRegistroMagazzino(pathFileRegistroMagazzino);
 			break;
 		case 7:
-			visualizzatoreMagazzino.visualizzaRegistroMagazzino(pathFileRegistroMagazzino);
+			gestoreMagazzino.generaListaSpesa(giornoCorrente, pathCompletoFileRistorante, pathFileRegistroMagazzino);
+			break;
+		case 8: 
+			visualizzatoreMagazzino.visualizzaListaSpesa(pathCompletoFileRistorante, giornoCorrente);
+			break;
 		}
 	}
 
-	
 
-	
+
+
 }

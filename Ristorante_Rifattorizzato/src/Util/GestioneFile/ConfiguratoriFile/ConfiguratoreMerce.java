@@ -8,34 +8,33 @@ import java.io.IOException;
 import Giorno.GiornoView.GiornoView;
 import Magazzino.Merce.*;
 
-public class ConfiguratoreMerce extends ConfiguratoreManager {
+public class ConfiguratoreMerce extends ConfiguratoreManager<Merce> {
 
 	public ConfiguratoreMerce() {
 		super();
 	}
 
 	@Override
-	void scriviParametriNelFile(Object oggetto, BufferedWriter writer) {
+	void scriviParametriNelFile(Merce oggetto, BufferedWriter writer) {
 		try {
-			Merce merce = (Merce) oggetto;
-			if (merce instanceof Ingrediente) {
+			if (oggetto instanceof Ingrediente) {
 				writer.write("Sotto-categoria=Ingrediente");
-			} else if (merce instanceof Bevanda) {
+			} else if (oggetto instanceof Bevanda) {
 				writer.write("Sotto-categoria=Bevanda");
-			} else if (merce instanceof GenereExtra) {
+			} else if (oggetto instanceof GenereExtra) {
 				writer.write("Sotto-categoria=GenereExtra");
 			}
 			writer.newLine();
 
-			if (merce != null) {
-				writer.write("nomeMerce=" + merce.getNome());
+			if (oggetto != null) {
+				writer.write("nomeMerce=" + oggetto.getNome());
 				writer.newLine();
-				writer.write("unitaMisura=" + merce.getUnitaMisura());
+				writer.write("unitaMisura=" + oggetto.getUnitaMisura());
 				writer.newLine();
-				GiornoView giornoView = new GiornoView (merce.getScadenza().getGiorno());
+				GiornoView giornoView = new GiornoView (oggetto.getScadenza().getGiorno());
 				writer.write("scadenza=" + giornoView.descrizioneGiorno());
 				writer.newLine();
-				writer.write("qualita=" + merce.getQualita());
+				writer.write("qualita=" + oggetto.getQualita());
 			}
 		} catch (IOException e) {
 			System.out.println("Impossibile salvare l'oggetto merce");
@@ -44,7 +43,7 @@ public class ConfiguratoreMerce extends ConfiguratoreManager {
 	}
 
 	@Override
-	public Object caricaIstanzaOggettoDaFile(String pathFileOggetto) {
+	public Merce caricaIstanzaOggettoDaFile(String pathFileOggetto) {
 		Merce oggettoCaricato = null;
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pathFileOggetto));
@@ -55,10 +54,10 @@ public class ConfiguratoreMerce extends ConfiguratoreManager {
 					tipo = line.substring(16).trim(); // Estrarre il tipo dalla riga
 					// Determina la classe specifica in base al tipo e crea un'istanza appropriata
 					if (tipo != null) {
-						oggettoCaricato = (Merce) creaIstanzaOggetto(tipo);
+						oggettoCaricato = creaIstanzaOggetto(tipo);
 					}
 				}
-				oggettoCaricato = (Merce) caricaIstanzaOggetto(oggettoCaricato, line);
+				oggettoCaricato = caricaIstanzaOggetto(oggettoCaricato, line);
 			}
 			reader.close();
 		} catch (IOException e) {
@@ -68,22 +67,22 @@ public class ConfiguratoreMerce extends ConfiguratoreManager {
 	}
 
 	@Override
-	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object merce) {
+	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Merce merce) {
 		if (merce != null) {
 			switch (nomeAttributo) {
 			case "merce":
 				break;
 			case "nomeMerce":
-				((Merce) merce).setNome(valoreAttributo);
+				merce.setNome(valoreAttributo);
 				break;
 			case "unitaMisura":
-				((Merce) merce).setUnitaMisura(valoreAttributo);
+				merce.setUnitaMisura(valoreAttributo);
 				break;
 			case "scadenza":
-				((Merce) merce).setScadenza(Giorno.Giorno.parseGiorno(valoreAttributo));
+				merce.setScadenza(Giorno.Giorno.parseGiorno(valoreAttributo));
 				break;
 			case "qualita":
-				((Merce) merce).setQualita(Boolean.parseBoolean(valoreAttributo));
+				merce.setQualita(Boolean.parseBoolean(valoreAttributo));
 				break;
 			default:
 				System.out.println("Attributo non riconosciuto");
@@ -93,7 +92,7 @@ public class ConfiguratoreMerce extends ConfiguratoreManager {
 	}
 
 	@Override
-	public Object creaIstanzaOggetto(String nomeOggetto) {
+	public Merce creaIstanzaOggetto(String nomeOggetto) {
 		Merce merce = null;
 		switch (nomeOggetto) {
 		case "Ingrediente":
@@ -112,6 +111,4 @@ public class ConfiguratoreMerce extends ConfiguratoreManager {
 		return merce;
 	}
 
-	
-	
 }

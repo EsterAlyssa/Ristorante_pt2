@@ -8,21 +8,21 @@ import java.io.IOException;
 
 import Util.GestioneFile.ServizioFile;
 
-public abstract class ConfiguratoreManager {
+public abstract class ConfiguratoreManager<T> {
 
-	public void salvaIstanzaOggetto(Object oggetto, String pathFile) {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathFile))) {
-			// Scrittura dei parametri nel file
-			scriviParametriNelFile(oggetto, writer);
-		} catch (IOException e) {
-			System.out.println("Impossibile salvare l'oggetto");
-		}
+	public void salvaIstanzaOggetto(T oggetto, String pathFile) {
+	    try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathFile))) {
+	        // Scrittura dei parametri nel file
+	        scriviParametriNelFile(oggetto, writer);
+	    } catch (IOException e) {
+	        System.out.println("Impossibile salvare l'oggetto");
+	    }
 	}
 
-	abstract void scriviParametriNelFile(Object oggetto, BufferedWriter writer);
+	abstract void scriviParametriNelFile(T oggetto, BufferedWriter writer);
 
-	public Object caricaIstanzaOggettoDaFile(String pathFileOggetto) {
-		Object oggettoCaricato = null;
+	public T caricaIstanzaOggettoDaFile(String pathFileOggetto) {
+		T oggettoCaricato = null;
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pathFileOggetto));
 			String nomeOggetto = ServizioFile.getNomeFileSenzaEstensione(pathFileOggetto);
@@ -38,8 +38,7 @@ public abstract class ConfiguratoreManager {
 		return oggettoCaricato;
 	}
 
-
-	public Object caricaIstanzaOggetto(Object oggetto, String line) {
+	public T caricaIstanzaOggetto(T oggetto, String line) {
 		String[] parte = line.split("=");
 		if (parte.length==2) {
 			String nomeAttributo = parte[0].trim();
@@ -50,7 +49,8 @@ public abstract class ConfiguratoreManager {
 		return oggetto;
 	}
 
-	public abstract void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto);
-	public abstract Object creaIstanzaOggetto(String nomeOggetto);
+	public abstract void setAttributiDatoOggetto(String nomeAttributo, 
+			String valoreAttributo, T oggetto);
+	public abstract T creaIstanzaOggetto(String nomeOggetto);
 
 }

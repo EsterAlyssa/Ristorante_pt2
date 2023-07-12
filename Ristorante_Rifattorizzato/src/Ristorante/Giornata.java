@@ -88,11 +88,9 @@ public class Giornata implements Comparable<Giornata> {
 			//gestione dei duplicati che toglie i duplicati
 			Merce.gestioneDuplicati(noDuplicati, conDuplicati);
 		}
-
 		//settiamo la lista della spesa dalla lista senza duplicati → non tiene conto delle merci già presenti nel magazzino
 		daComprare.setLista(noDuplicati);
 	}
-
 
 	//metodo che ci ritorna il numero totale dei coperti della giornata → <= num posti a sedere del ristorane
 	public int numCopertiPrenotati () {
@@ -101,14 +99,6 @@ public class Giornata implements Comparable<Giornata> {
 			num += pren.getNumCoperti();
 		}
 		return num;
-	}
-
-	public String descrizionePrenotazioni() {
-		String daStampare="Prenotazioni:\n";
-		for (Prenotazione pren : prenotazioni) {
-			daStampare += pren.descrizionePrenotazione() + "\n"; 
-		}
-		return daStampare;
 	}
 
 	@Override

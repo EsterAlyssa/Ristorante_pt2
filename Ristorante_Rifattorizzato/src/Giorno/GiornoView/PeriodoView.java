@@ -8,8 +8,8 @@ public class PeriodoView {
 
 	private Periodo periodo;
 
-	final static String MSG_PERIODO = "Inserisci il periodo di validita': ";
-	final static String MSG_PIU_GIORNI = "\nVuoi inserire altri giorni di validita'? ";
+	static final String MSG_PERIODO = "Inserisci il periodo di validita': ";
+	static final String MSG_PIU_GIORNI = "\nVuoi inserire altri giorni di validita'? ";
 
 	public PeriodoView(Periodo periodo) {
 		this.periodo = periodo;
@@ -39,7 +39,6 @@ public class PeriodoView {
 	}
 
 	public void mostraDescrizionePeriodo() {
-		String descrizione = descrizionePeriodo();
-		System.out.println(descrizione);
+		System.out.println(descrizionePeriodo());
 	}
 }

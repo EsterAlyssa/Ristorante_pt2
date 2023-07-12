@@ -1,5 +1,7 @@
 package Ristorante.ElementiRistorante;
 
+import java.util.HashSet;
+
 import Giorno.Periodo;
 
 public class MenuCarta extends Menu {
@@ -12,14 +14,9 @@ public class MenuCarta extends Menu {
 		super();
 	}
 	
-	public String descrizioneMenuCarta() {
-		String stringa = "Menu alla carta:\nPiatti:\n";
-		for (Piatto piatto : super.getElenco()) {
-			stringa += piatto.getNome() + "\n";
-		}
-		return stringa;
+	public MenuCarta(HashSet<Piatto> elencoPiatti) {
+		super();
+		this.setElenco(elencoPiatti);
 	}
-
-	
 	
 }

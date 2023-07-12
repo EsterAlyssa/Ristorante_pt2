@@ -6,22 +6,22 @@ import java.io.IOException;
 import Ristorante.Ristorante;
 
 
-public class ConfiguratoreRistorante extends ConfiguratoreManager {
+public class ConfiguratoreRistorante extends ConfiguratoreManager<Ristorante> {
 
 	public ConfiguratoreRistorante() {
 		super();
 	}
 
 	@Override
-	void scriviParametriNelFile(Object ristorante, BufferedWriter writer){
+	void scriviParametriNelFile(Ristorante ristorante, BufferedWriter writer){
 		try {
-			writer.write("nome="+((Ristorante) ristorante).getNome());
+			writer.write("nome="+ ristorante.getNome());
 			writer.newLine();
-			writer.write("caricoLavoroPersona="+((Ristorante) ristorante).getCaricoLavoroPersona());
+			writer.write("caricoLavoroPersona="+ ristorante.getCaricoLavoroPersona());
 			writer.newLine();
-			writer.write("numPosti="+((Ristorante) ristorante).getNumPosti());
+			writer.write("numPosti="+ ristorante.getNumPosti());
 			writer.newLine();
-			writer.write("caricoLavoroRistorante="+((Ristorante) ristorante).getCaricoLavoroRistorante());	
+			writer.write("caricoLavoroRistorante="+ ristorante.getCaricoLavoroRistorante());	
 		} catch (IOException e) {
 			System.out.println("Impossibile salvare l'oggetto ristorante");
 			e.printStackTrace();
@@ -29,20 +29,20 @@ public class ConfiguratoreRistorante extends ConfiguratoreManager {
 	}
 
 	@Override
-	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
+	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Ristorante oggetto) {
 		// Imposta l'attributo nell'oggetto singleton utilizzando i metodi setter corrispondenti
 		switch (nomeAttributo) {
 		case "nome":
-			((Ristorante) oggetto).setNome(valoreAttributo);
+			oggetto.setNome(valoreAttributo);
 			break;
 		case "caricoLavoroPersona":
-			((Ristorante) oggetto).setCaricoLavoroPersona(Integer.parseInt(valoreAttributo));
+			oggetto.setCaricoLavoroPersona(Integer.parseInt(valoreAttributo));
 			break;
 		case "numPosti":
-			((Ristorante) oggetto).setNumPosti(Integer.parseInt(valoreAttributo));
+			oggetto.setNumPosti(Integer.parseInt(valoreAttributo));
 			break;
 		case "caricoLavoroRistorante":
-			((Ristorante) oggetto).setCaricoLavoroRistorante(Double.parseDouble(valoreAttributo));
+			oggetto.setCaricoLavoroRistorante(Double.parseDouble(valoreAttributo));
 			break;
 		default:
 			System.out.println("Errore nel settaggio dei parametri");
@@ -51,7 +51,7 @@ public class ConfiguratoreRistorante extends ConfiguratoreManager {
 	}
 
 	@Override
-	public Object creaIstanzaOggetto(String nomeOggetto) {	
+	public Ristorante creaIstanzaOggetto(String nomeOggetto) {	
 		return Ristorante.getInstance(nomeOggetto);
 	}
 

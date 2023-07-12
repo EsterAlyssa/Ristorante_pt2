@@ -3,25 +3,26 @@ package Util.GestioneFile.ConfiguratoriFile;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+import Giorno.Periodo;
 import Ristorante.ElementiRistorante.Piatto;
 
-public class ConfiguratorePiatto extends ConfiguratoreManager{
+public class ConfiguratorePiatto extends ConfiguratoreManager<Piatto>{
 
 	public ConfiguratorePiatto() {
 		super();
 	}
 
 	@Override
-	void scriviParametriNelFile(Object piatto, BufferedWriter writer) {
+	void scriviParametriNelFile(Piatto piatto, BufferedWriter writer) {
 		try {
-			writer.write("nomePiatto="+((Piatto) piatto).getNome());
+			writer.write("nomePiatto="+ piatto.getNome());
 			writer.newLine();
-			writer.write("caricoLavoroPiatto="+((Piatto) piatto).getCaricoLavoro());
+			writer.write("caricoLavoroPiatto="+piatto.getCaricoLavoro());
 			writer.newLine();
 			writer.write("validitaPiatto=");
 			writer.newLine();
-			ConfiguratorePeriodo confP = new ConfiguratorePeriodo();
-			confP.scriviParametriNelFile(((Piatto)piatto).getValidita(), writer);
+			ConfiguratoreManager<Periodo> confP = new ConfiguratorePeriodo();
+			confP.scriviParametriNelFile(piatto.getValidita(), writer);
 			writer.flush();
 		} catch (IOException e) {
 			System.out.println("Impossibile salvare l'oggetto piatto");
@@ -30,14 +31,15 @@ public class ConfiguratorePiatto extends ConfiguratoreManager{
 	}
 
 	@Override
-	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, Object oggetto) {
+	public void setAttributiDatoOggetto(String nomeAttributo, String valoreAttributo, 
+			Piatto oggetto) {
 		// Imposta l'attributo nell'oggetto singleton utilizzando i metodi setter corrispondenti
 		switch (nomeAttributo) {
 		case "nomePiatto":
-			((Piatto) oggetto).setNome(valoreAttributo);
+			oggetto.setNome(valoreAttributo);
 			break;
 		case "caricoLavoroPiatto":
-			((Piatto) oggetto).setCaricoLavoro(Double.parseDouble(valoreAttributo));
+			oggetto.setCaricoLavoro(Double.parseDouble(valoreAttributo));
 			break;
 		case "validitaMenu":
 			//questa linea è validitaPiatto= quindi non dovrebbe salvare valori, solo far capire che
@@ -45,8 +47,8 @@ public class ConfiguratorePiatto extends ConfiguratoreManager{
 			break;
 		case "giorno":
 			// Il valoreAttributo contiene i giorni nel formato "gg-mm-aaaa;"
-			ConfiguratorePeriodo confP = new ConfiguratorePeriodo();
-			confP.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, ((Piatto)oggetto).getValidita());
+			ConfiguratoreManager<Periodo> confP = new ConfiguratorePeriodo();
+			confP.setAttributiDatoOggetto(nomeAttributo, valoreAttributo, oggetto.getValidita());
 			break;
 		default:
 			System.out.println("Attributo non riconosciuto");
@@ -55,7 +57,7 @@ public class ConfiguratorePiatto extends ConfiguratoreManager{
 	}
 
 	@Override
-	public Object creaIstanzaOggetto(String nomeOggetto) {
+	public Piatto creaIstanzaOggetto(String nomeOggetto) {
 		return new Piatto(nomeOggetto);
 	}
 
