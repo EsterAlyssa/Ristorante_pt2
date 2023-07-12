@@ -1,0 +1,15 @@
+nomeMenuTematico=terra+
+validitaMenu=
+giorno=12-7-2023;
+giorno=13-7-2023;
+giorno=19-7-2023;
+caricoLavoroMenuTematico=3.0
+elencoMenu= 
+
+nomePiatto=lasagne
+caricoLavoroPiatto=3.0
+validitaPiatto=
+giorno=12-7-2023;
+giorno=13-7-2023;
+giorno=19-7-2023;
+---

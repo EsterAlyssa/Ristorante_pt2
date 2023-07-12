@@ -1,0 +1,8 @@
+nome=lasagne
+numPorzioni=2
+caricoLavoroPorzione=3.0
+ingredienti=
+besciamella=3,00;
+pasta=4,00;
+ragu=5,00;
+pomodoro=4,00;
