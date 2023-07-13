@@ -21,7 +21,7 @@ public class Main {
 		Utente.mostraMenuRuoli(appDirectoryPath+ristorante.getNome()+".txt");
 	}
 
-	private static Ristorante creaRistorante() {
+	public static Ristorante creaRistorante() {
 		String messaggioBenvenuto = "Benvenuto! Inserisci il nome del ristorante: ";
 		String nomeRistorante = InputDati.leggiStringaNonVuota(messaggioBenvenuto);
 		String percorsoCompleto = appDirectoryPath+nomeRistorante + ".txt";
