@@ -38,11 +38,13 @@ public class Ricetta {
 	public void setIngredienti(HashMap<String, Double> ingredienti) {
 		this.ingredienti = ingredienti;
 	}
-	
+
 	public void aggiungiIngrediente(String nome, double dose) {
-		this.ingredienti.put(nome, dose);
+		if (nome!="" && dose>0) {
+			this.ingredienti.put(nome, dose);
+		}
 	}
-	
+
 	public int getNumPorzioni() {
 		return numPorzioni;
 	}

@@ -166,10 +166,11 @@ public class Gestore {
 		HashSet<Ricetta> ricettario = CreazioneOggetti.creaRicettario(pathDirectoryRicettario);
 		ristorante.setRicettario(ricettario);
 
-		Ricetta nuovaRicetta = RicettaView.creaRicetta(ristorante);
 
+		Ricetta nuovaRicetta = RicettaView.creaRicetta(ristorante);
 		String pathFileRicetta = CreazioneFile.creaFileRicetta(pathDirectoryRicettario, nuovaRicetta.getNome());
 		confRicetta.salvaIstanzaOggetto(nuovaRicetta, pathFileRicetta);
+
 	}
 
 	public void corrispondenzaPiattoRicetta(String pathCompletoFileRistorante) {

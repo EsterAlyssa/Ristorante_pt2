@@ -179,7 +179,7 @@ public class InputDati
 		do
 		{
 			valoreLetto = leggiDouble(messaggio);
-			if (valoreLetto >= minimo)
+			if (valoreLetto > minimo)
 				finito = true;
 			else
 				System.out.println(ERRORE_MINIMO + minimo);

@@ -80,7 +80,7 @@ public class Aggiornamento {
 		} 
 	}
 
-	public static void aggiornamentoInsiemiExtra(String pathCompletoFileRistorante, Ristorante ristorante) {
+	public static void aggiornamentoInsiemiExtra(Ristorante ristorante, String pathCompletoFileRistorante) {
 		String pathDirectoryInsiemiExtra = CreazioneDirectory.creaDirectoryInsiemiExtra(pathCompletoFileRistorante);
 		String pathFileBevande = CreazioneFile.creaFileInsiemeBevande(pathDirectoryInsiemiExtra);
 		String pathFileGeneriExtra = CreazioneFile.creaFileInsiemeGeneriExtra(pathDirectoryInsiemiExtra);
@@ -92,7 +92,7 @@ public class Aggiornamento {
 		ristorante.getInsiemeGE().setInsiemeExtra(insiemeGE.getInsiemeExtra());
 	}
 	
-	public static void aggiornamentoRicettario(String pathCompletoFileRistorante, Ristorante ristorante) {
+	public static void aggiornamentoRicettario(Ristorante ristorante, String pathCompletoFileRistorante) {
 		String pathDirectoryRicettario = CreazioneDirectory.creaDirectoryRicettario(pathCompletoFileRistorante);
 		HashSet<Ricetta> ricettario = CreazioneOggetti.creaRicettario(pathDirectoryRicettario);
 		
@@ -100,4 +100,5 @@ public class Aggiornamento {
 			ristorante.aggiungiRicetta(ricetta);
 		}
 	}
+	
 }

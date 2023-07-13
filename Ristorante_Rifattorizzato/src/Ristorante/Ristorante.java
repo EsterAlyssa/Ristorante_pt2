@@ -18,7 +18,7 @@ public class Ristorante {
 	private int caricoLavoroPersona;
 	private int numPosti;
 	private double caricoLavoroRistorante; 
-	
+
 	private TreeSet<Giornata> calendario;
 
 	private InsiemeExtra insiemeGE;
@@ -118,28 +118,38 @@ public class Ristorante {
 		this.insiemeB = insiemeB;
 	}
 
-	public void aggiungiBevanda(String nome, double consumoProCapite) {
-		this.insiemeB.aggiungiElementoExtra(nome, consumoProCapite);
+	public void aggiungiBevanda(String nomeB, double consumoProCapiteB) {
+		if (nomeB != "" && consumoProCapiteB > 0.0) {
+			this.insiemeB.aggiungiElementoExtra(nomeB, consumoProCapiteB);
+		}
 	}
 
 	public boolean rimuoviBevanda(String nome) {
-		return insiemeB.rimuoviElementoExtra(nome);
+		if (nome != "") {
+			return insiemeB.rimuoviElementoExtra(nome);
+		}
+		return false;
 	}
 
 	public void aggiungiGenereExtra(String nomeGE, double consumoProCapiteGE) {
-		insiemeGE.aggiungiElementoExtra(nomeGE, consumoProCapiteGE);
+		if (nomeGE != "" && consumoProCapiteGE>0) {
+			insiemeGE.aggiungiElementoExtra(nomeGE, consumoProCapiteGE);
+		}
 	}
 
 	public boolean rimuoviGenereExtra(String nome) {
-		return insiemeGE.rimuoviElementoExtra(nome);
+		if (nome != "") {
+			return insiemeGE.rimuoviElementoExtra(nome);
+		}
+		return false;
 	}
 
 	public void setRicettario(HashSet<Ricetta> ricettario) {
 		this.ricettario = ricettario;
 	}
 
-	public void aggiungiRicetta(Ricetta ricetta) {
-		this.ricettario.add(ricetta);
+	public boolean aggiungiRicetta(Ricetta ricetta) {
+		return this.ricettario.add(ricetta);
 	}
 
 	public HashSet<Piatto> getPiatti() {
