@@ -39,9 +39,13 @@ public class MenuTematico extends Menu implements SceltaPrenotazione{
 		this.caricoLavoroMenuTematico = caricoLavoro;
 	}
 
-	public void aggiungiPiatto (Piatto piatto) {
-		this.caricoLavoroMenuTematico += piatto.getCaricoLavoro();
-		super.aggiungiPiatto(piatto);
+	public boolean aggiungiPiatto (Piatto piatto) {
+		if (super.aggiungiPiatto(piatto)) {
+			this.caricoLavoroMenuTematico += piatto.getCaricoLavoro();
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public static MenuTematico trovaMenuTDaNome(String menu, HashSet<MenuTematico> menuTematici) {
@@ -59,8 +63,8 @@ public class MenuTematico extends Menu implements SceltaPrenotazione{
 		return this.getElenco();
 	}
 
-	public void aggiungiGiornoValido(Giorno giorno) {
-		this.getValidita().periodoValidita.add(giorno);
+	public boolean aggiungiGiornoValido(Giorno giorno) {
+		return this.getValidita().aggiungiGiorno(giorno);
 	}
 	
 }

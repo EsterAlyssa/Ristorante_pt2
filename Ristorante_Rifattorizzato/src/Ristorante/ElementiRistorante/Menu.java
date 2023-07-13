@@ -8,13 +8,13 @@ public abstract class Menu {
 
 	private HashSet<Piatto> elencoMenu;
 	private Periodo validitaMenu;
-	
-	
+
+
 	public Menu(Periodo validitaMenu) {
 		this.elencoMenu =  new HashSet<>();
 		this.validitaMenu = validitaMenu;
 	}
-	
+
 	public Menu() {
 		this.elencoMenu =  new HashSet<>();
 		this.validitaMenu = new Periodo();
@@ -36,8 +36,12 @@ public abstract class Menu {
 	public void setValidita(Periodo validitaMenu) {
 		this.validitaMenu = validitaMenu;
 	}
-	
-	public void aggiungiPiatto(Piatto piatto) {
-		this.elencoMenu.add(piatto);
+
+	public boolean aggiungiPiatto(Piatto piatto) {
+		if (piatto.getNome()!="" && piatto.getCaricoLavoro()>0) {
+			return this.elencoMenu.add(piatto);
+		} else {
+			return false;
+		}
 	}
 }

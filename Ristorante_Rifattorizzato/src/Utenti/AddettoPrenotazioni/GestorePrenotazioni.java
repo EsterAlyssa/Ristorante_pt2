@@ -58,7 +58,8 @@ public class GestorePrenotazioni {
 
 		for (Giornata giornata : calendario) {
 			if (giornata.getGiorno().compareTo(dataPrenotazione)==0) {
-				if (controlloVincoli(giornata.numCopertiPrenotati(), postiRimasti, prenotazione, ristorante.getCaricoLavoroRistorante())) {
+				if (controlloVincoli(giornata.numCopertiPrenotati(), postiRimasti, prenotazione, 
+						ristorante.getCaricoLavoroRistorante())) {
 					giornata.getPrenotazioni().add(prenotazione);
 
 					CreazioneFile.creaFilePrenotazione(prenotazione, pathDirectoryPrenotazioni);
@@ -85,18 +86,15 @@ public class GestorePrenotazioni {
 		do {
 			menuCartaView.mostraDescrizioneNomiPiattiMenu();
 			menuTematiciView.mostraDescrizioneNomeMenuTematiciNomePiatti();;
-			
+
 			String nomeScelta = InputDati.leggiStringaNonVuota(MSG_NOME_SCELTA);
 			int numScelta = InputDati.leggiInteroConMinimo(MSG_NUM_SCELTA, 1);
 
-			//*aggiungi SceltaPrenotazione all'hashmap della prenotazione*
 			HashSet<SceltaPrenotazione> insiemeTotale = new HashSet<>(elencoMenuTematici);
 			insiemeTotale.addAll(menuCarta.getElenco());
 
 			SceltaPrenotazione scelta = SceltaPrenotazione.trovaDaNome(nomeScelta, insiemeTotale);
-			if (scelta!=null) {
-				prenotazione.aggiungiScelta(scelta, numScelta);	
-			}
+			prenotazione.aggiungiScelta(scelta, numScelta);	
 
 			risposta = InputDati.yesOrNo(MSG_RICHIESTA_ALTRE_SCELTE);
 			piattiMinDaInserire -= numScelta;

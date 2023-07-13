@@ -75,7 +75,7 @@ public class GestoreMagazzino {
 		String pathDirectoryCalendario = CreazioneDirectory.creaDirectoryCalendario(pathCompletoFileRistorante);
 		//aggiornamento di tutte le giornate del calendario
 		Aggiornamento.aggiornamentoCalendario(ristorante, pathDirectoryCalendario);
-		Aggiornamento.aggiornamentoInsiemiExtra(pathCompletoFileRistorante, ristorante);
+		Aggiornamento.aggiornamentoInsiemiExtra(ristorante, pathCompletoFileRistorante);
 
 		Giornata giornataCorrente = ristorante.getGiornata(giornoCorrente);
 
@@ -141,8 +141,8 @@ public class GestoreMagazzino {
 		String pathFileListaSpesa = CreazioneFile.creaFileListaSpesa(pathDirectoryDaComprare);
 
 		Aggiornamento.aggiornamentoCalendario(ristorante, pathDirectoryCalendario);
-		Aggiornamento.aggiornamentoInsiemiExtra(pathCompletoFileRistorante, ristorante);
-		Aggiornamento.aggiornamentoRicettario(pathCompletoFileRistorante, ristorante);
+		Aggiornamento.aggiornamentoInsiemiExtra(ristorante, pathCompletoFileRistorante);
+		Aggiornamento.aggiornamentoRicettario(ristorante, pathCompletoFileRistorante);
 
 		Giornata giornataCorrente = ristorante.getGiornata(giornoCorrente);
 		giornataCorrente.creaListaSpesaIniziale(ristorante);

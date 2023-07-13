@@ -81,6 +81,12 @@ public class Ristorante {
 		this.caricoLavoroRistorante = caricoLavoroRistorante;
 	}
 
+	public void impostaParametri(int numPosti, int caricoLavoroPersona) {
+		this.numPosti = numPosti;
+		this.caricoLavoroPersona = caricoLavoroPersona;
+		this.caricoLavoroRistorante = 1.2 * (caricoLavoroPersona * numPosti);
+	}
+
 	public TreeSet<Giornata> getCalendario() {
 		return calendario;
 	}
@@ -149,7 +155,12 @@ public class Ristorante {
 	}
 
 	public boolean aggiungiRicetta(Ricetta ricetta) {
-		return this.ricettario.add(ricetta);
+		if (ricetta.getNome()!="" && ricetta.getCaricoLavoroPorzione()>0 
+				&& ricetta.getNumPorzioni()>0 && !ricetta.getIngredienti().isEmpty()){
+			return this.ricettario.add(ricetta);
+		} else {
+			return false;
+		}
 	}
 
 	public HashSet<Piatto> getPiatti() {
@@ -160,8 +171,8 @@ public class Ristorante {
 		this.piatti = piatti;
 	}
 
-	public void aggiungiPiatto(Piatto piatto) {
-		this.piatti.add(piatto);
+	public boolean aggiungiPiatto(Piatto piatto) {
+		return this.piatti.add(piatto);
 	}
 
 	public HashSet<MenuTematico> getMenuTematici() {
@@ -172,8 +183,12 @@ public class Ristorante {
 		this.menuTematici = menuTematici;
 	}
 
-	public void aggiungiMenuTematico (MenuTematico menu) {
-		this.menuTematici.add(menu);
+	public boolean aggiungiMenuTematico (MenuTematico menu) {
+		if (menu.getNome()!="" && !menu.getValidita().periodoValidita.isEmpty()) {
+			return this.menuTematici.add(menu);
+		}
+		else 
+			return false;
 	}
 
 	public RegistroMagazzino getRegistroMagazzino() {

@@ -13,12 +13,14 @@ import Ristorante.ElementiRistorante.MenuTematico;
 import Ristorante.ElementiRistorante.Piatto;
 import Ristorante.ElementiRistorante.Ricetta;
 import Magazzino.ListaSpesa;
+import Magazzino.RegistroMagazzino;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreMenuTematico;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratorePiatto;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratorePrenotazione;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRicetta;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreExtra;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreListaSpesa;
+import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreRegistroMagazzino;
 import Util.GestioneFile.ConfiguratoriFile.ConfiguratoreManager;
 
 public class CreazioneOggetti {
@@ -85,5 +87,13 @@ public class CreazioneOggetti {
 		return calendarioNoParam;
 	}
 	
+	public static RegistroMagazzino creaRegistroMagazzino(String pathFileRegistroMagazzino) {
+		File fileRegMag = ServizioFile.trovaPrimoFileTxt(pathFileRegistroMagazzino);
+		RegistroMagazzino registroMagazzino = new RegistroMagazzino();
+		ConfiguratoreManager<RegistroMagazzino> confRegMag = new ConfiguratoreRegistroMagazzino();
+		registroMagazzino = confRegMag.caricaIstanzaOggettoDaFile(fileRegMag.getPath());
+		
+		return registroMagazzino;	
+	}
 	
 }

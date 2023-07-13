@@ -11,7 +11,7 @@ import Main.Main;
 import Ristorante.Ristorante;
 import Util.GestioneFile.ServizioFile;
 
-class Test_InizializzazioneRistorante {
+public class TestInizializzazioneRistorante {
 
 	@Test
 	public void testCreaFileRistorante() {
@@ -31,14 +31,15 @@ class Test_InizializzazioneRistorante {
 		// Attributi inseriti su file
 		int caricoLavoroPersona=14;	
 		int numPosti=55;
+		double caricoLavoroRistorante = 924.0;
 
 		Ristorante ristorante = Ristorante.getInstance(nomeRistorante);
-		ristorante.setCaricoLavoroPersona(caricoLavoroPersona);
-		ristorante.setNumPosti(numPosti);
-
+		ristorante.impostaParametri(numPosti, caricoLavoroPersona);
+		
 		assertEquals(nomeRistorante, ristorante.getNome());
 		assertEquals(caricoLavoroPersona, ristorante.getCaricoLavoroPersona());
 		assertEquals(numPosti, ristorante.getNumPosti());
+		assertEquals(caricoLavoroRistorante, ristorante.getCaricoLavoroRistorante(), 0.01);
 	}
 
 
@@ -57,11 +58,11 @@ class Test_InizializzazioneRistorante {
 
 	@Test
 	public void testAccediRistoranteNonEsistente() {
-		String percorsoCompleto = "./FileRistorante/";
+		String percorsoCompleto = "./FileRistoranteNonEsistente/";
 		
-		String nomeRistoranteTrovato = ServizioFile.trovaNomePrimoFileTxt(percorsoCompleto);
+		Ristorante ristorante = Main.accediRistorante(percorsoCompleto);
 		
-		assertNull(nomeRistoranteTrovato);
+		assertNull(ristorante);
 	}
 
 }

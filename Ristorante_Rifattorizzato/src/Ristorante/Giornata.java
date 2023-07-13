@@ -36,6 +36,14 @@ public class Giornata implements Comparable<Giornata> {
 		this.menuTematici =  new HashSet<>();
 	}
 
+	public Giornata(Giorno giorno) {
+		this.giorno = giorno;
+		this.prenotazioni = new HashSet<>();
+		this.daComprare = new ListaSpesa();;
+		this.menuCarta = new MenuCarta();
+		this.menuTematici =  new HashSet<>();
+	}
+
 	public Giorno getGiorno() {
 		return giorno;
 	}
@@ -104,5 +112,15 @@ public class Giornata implements Comparable<Giornata> {
 	@Override
 	public int compareTo(Giornata altraGiornata) {
 		return this.giorno.compareTo(altraGiornata.getGiorno());
+	}
+
+	public boolean aggiungiPrenotazione(Prenotazione prenotazione) {
+		if (prenotazione.getCliente()!="" && prenotazione.getData()!=null 
+				&& prenotazione.getNumCoperti()>0 && !prenotazione.getElenco().isEmpty()){
+			if (prenotazione.getData().compareTo(giorno)==0) {
+				return this.prenotazioni.add(prenotazione);
+			}
+		}
+		return false; 
 	}
 }

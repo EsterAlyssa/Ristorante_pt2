@@ -100,7 +100,7 @@ public class CreazioneFile {
 		return pathFileRicetta;
 	}
 
-	public static String trovaFilePiatto(String pathDirectoryPiatti, Ricetta ricetta) {
+	public static String ottieniPathFilePiatto(String pathDirectoryPiatti, Ricetta ricetta) {
 		String nomeFilePiatto = ricetta.getNome() + ".txt";
 		String pathFilePiatto = pathDirectoryPiatti + "/" + nomeFilePiatto;
 

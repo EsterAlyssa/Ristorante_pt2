@@ -1,6 +1,5 @@
 package Test;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -8,8 +7,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import Ristorante.Ristorante;
+import Util.GestioneFile.Aggiornamento;
 
-class Test_Bevande {
+public class TestBevande {
 
 	@Test
 	public void testAggiuntaBevanda() {
@@ -56,7 +56,10 @@ class Test_Bevande {
 	@Test
 	public void testRimozioneBevanda() {
 		String nomeRistorante = "Stelle";
+		String percorsoCompleto = "./FileRistorante/Stelle.txt";
+
 		Ristorante ristorante = Ristorante.getInstance(nomeRistorante);
+		Aggiornamento.aggiornamentoInsiemiExtra(ristorante, percorsoCompleto);
 		
 		String nome = "nome_bevanda" ;
 		
@@ -69,7 +72,10 @@ class Test_Bevande {
 	@Test
 	public void testRimozioneBevandaNomeVuoto() {
 		String nomeRistorante = "Stelle";
+		String percorsoCompleto = "./FileRistorante/Stelle.txt";
+
 		Ristorante ristorante = Ristorante.getInstance(nomeRistorante);
+		Aggiornamento.aggiornamentoInsiemiExtra(ristorante, percorsoCompleto);
 		
 		String nome = "" ;
 		

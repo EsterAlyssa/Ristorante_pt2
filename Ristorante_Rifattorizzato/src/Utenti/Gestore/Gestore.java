@@ -17,6 +17,7 @@ import Ristorante.ElementiRistorante.ElementiRistorantiView.MenuTematicoView;
 import Ristorante.ElementiRistorante.ElementiRistorantiView.PiattoView;
 import Ristorante.ElementiRistorante.ElementiRistorantiView.RicettaView;
 import Util.InputDati;
+import Util.GestioneFile.Aggiornamento;
 import Util.GestioneFile.CreazioneDirectory;
 import Util.GestioneFile.CreazioneFile;
 import Util.GestioneFile.CreazioneOggetti;
@@ -50,6 +51,9 @@ public class Gestore {
 	static final String MSG_NOME_T_AGGIUNTA_GIORNI = "Inserisci il nome del menu tematico a cui aggiungere giorni di validita': ";
 	static final String MSG_ALTRI_GIORNI_PIATTO_E_MENU_T = "Vuoi aggiungere altri giorni validi? ";
 
+	static final String MSG_SUCCESSO_AGGIUNTA_PIATTO = "Piatto aggiunto con successo ";
+	static final String MSG_ERR_AGGIUNTA_PIATTO = "ATTENZIONE! Il piatto non e' stato aggiunto perche' gia' presente ";
+
 	static final String MSG_NOME_RICERCA_PIATTO = "Inserisci il nome del piatto da cercare: ";
 	static final String MSG_SI_CORRISPONDENZA = "Esiste una corrispondenza tra il piatto cercato e una ricetta.";
 	static final String MSG_ERR_NO_CORRISPONDENZA = "ATTENZIONE! Non esiste una ricetta con questo nome.";
@@ -75,9 +79,7 @@ public class Gestore {
 		ConfiguratoreManager<Ristorante> confRistorante = new ConfiguratoreRistorante();
 		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
-		ristorante.setCaricoLavoroPersona(caricoLavoroPersona);
-		ristorante.setNumPosti(numPosti);
-		ristorante.setCaricoLavoroRistorante(1.2 * (ristorante.getCaricoLavoroPersona() * ristorante.getNumPosti()));
+		ristorante.impostaParametri(numPosti, caricoLavoroPersona);
 
 		confRistorante.salvaIstanzaOggetto(ristorante, pathCompletoFileRistorante);
 	}
@@ -185,7 +187,7 @@ public class Gestore {
 			Ricetta ricetta = confRicetta.caricaIstanzaOggettoDaFile(ricettaFile.getPath());
 
 			Piatto piatto = new Piatto(ricetta.getNome(), ricetta.getCaricoLavoroPorzione());
-			String pathFilePiatto = CreazioneFile.trovaFilePiatto(pathDirectoryPiatti, ricetta);
+			String pathFilePiatto = CreazioneFile.ottieniPathFilePiatto(pathDirectoryPiatti, ricetta);
 
 			// Controlla se il file nomeFilePiatto + ".txt" esiste, altrimenti lo crea
 			if (!ServizioFile.controlloEsistenzaFile(pathFilePiatto)) {
@@ -205,7 +207,11 @@ public class Gestore {
 				}
 				confPiatto.salvaIstanzaOggetto(piatto, pathFilePiatto);
 			}
-			ristorante.aggiungiPiatto(piatto);
+			if (ristorante.aggiungiPiatto(piatto)) {
+				System.out.println(MSG_SUCCESSO_AGGIUNTA_PIATTO);
+			} else {
+				System.out.println(MSG_ERR_AGGIUNTA_PIATTO);
+			}
 		}
 	}
 
@@ -252,10 +258,8 @@ public class Gestore {
 		Ristorante ristorante = confRistorante.caricaIstanzaOggettoDaFile(pathCompletoFileRistorante);
 
 		String pathDirectoryMenuTematici = CreazioneDirectory.creaDirectoryMenuTematici(pathCompletoFileRistorante);
-		String pathDirectoryPiatti = CreazioneDirectory.creaDirectoryPiatti(pathCompletoFileRistorante);
 
-		HashSet<Piatto> piatti = CreazioneOggetti.creaPiatti(pathDirectoryPiatti);
-		ristorante.setPiatti(piatti);
+		Aggiornamento.aggiornamentoPiatti(ristorante, pathCompletoFileRistorante);
 
 		MenuTematico nuovo = MenuTematicoView.creaMenuTematico(visualizzatoreGestione, pathCompletoFileRistorante, 
 				ristorante);

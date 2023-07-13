@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import Giorno.Giorno;
 import Giorno.Periodo;
 import Magazzino.ListaSpesa;
+import Magazzino.RegistroMagazzino;
 import Prenotazioni.Prenotazione;
 import Ristorante.Giornata;
 import Ristorante.Ristorante;
@@ -46,7 +47,8 @@ public class Aggiornamento {
 				case "Menu alla carta":
 					piattiMenuCarta = CreazioneOggetti.creaPiatti(f.getPath());
 					
-					Periodo periodoMenuCarta = new Periodo(Giorno.parseGiorno(file.getName()));
+					Periodo periodoMenuCarta = new Periodo();
+					periodoMenuCarta.aggiungiGiorno(Giorno.parseGiorno(file.getName()));
 					MenuCarta menu = new MenuCarta(periodoMenuCarta);
 					menu.setElenco(piattiMenuCarta);
 
@@ -101,4 +103,27 @@ public class Aggiornamento {
 		}
 	}
 	
+	public static void aggiornamentoPiatti(Ristorante ristorante, String pathCompletoFileRistorante) {
+		String pathDirectoryPiatti = CreazioneDirectory.creaDirectoryPiatti(pathCompletoFileRistorante);
+		HashSet<Piatto> piatti = CreazioneOggetti.creaPiatti(pathDirectoryPiatti);
+		
+		for (Piatto piatto : piatti) {
+			ristorante.aggiungiPiatto(piatto);
+		}
+	}
+	
+	public static void aggiornamentoMenuTematici(Ristorante ristorante, String pathCompletoFileRistorante) {
+		String pathDirectoryMenuTematici = CreazioneDirectory.creaDirectoryMenuTematici(pathCompletoFileRistorante);
+		HashSet<MenuTematico> menuTematici = CreazioneOggetti.creaMenuTematici(pathDirectoryMenuTematici);
+		
+		for (MenuTematico menu : menuTematici) {
+			ristorante.aggiungiMenuTematico(menu);
+		}
+	}
+	
+	public static void aggiornamentoRegistroMagazzino (Ristorante ristorante, String pathCompletoFileRistorante) {
+		String pathRegistroMagazzino = CreazioneDirectory.creaDirectoryRegistroMagazzino(pathCompletoFileRistorante);
+		RegistroMagazzino registroMagazzino = CreazioneOggetti.creaRegistroMagazzino(pathRegistroMagazzino);
+		ristorante.setRegistroMagazzino(registroMagazzino);
+	}
 }

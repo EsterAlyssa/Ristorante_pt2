@@ -1,5 +1,6 @@
 package Giorno.GiornoView;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 
 import Giorno.Giorno;
@@ -16,20 +17,28 @@ public class GiornoView {
 	static final String MSG_ANNO = "\nInserisci l'anno: ";
 	static final String MSG_MESE = "\nInserisci il mese: ";
 	static final String MSG_GIORNO = "\nInserisci il giorno: ";
+	
+	static final String MSG_SUCCESSO_CREAZIONE_GIORNO = "\nGiorno creato con successo!";
+	static final String MSG_ERR_CREAZIONE_GIORNO = "ATTENZIONE! Il giorno inserito non è valido.";
 
 	public static Giorno richiestaCreaGiorno() {
-		int anno = InputDati.leggiInteroConMinimo(MSG_ANNO, 2023);
-		int mese = InputDati.leggiIntero(MSG_MESE, 1, 12);
-		int giorno = 0;
-		if (mese == 1 || mese == 3 || mese == 5 || mese == 7 || mese == 8 || mese == 10|| mese == 12) {
-			giorno = InputDati.leggiIntero(MSG_GIORNO, 1, 31);
-		} else if (mese == 4 || mese == 6 || mese == 9 || mese == 11) {
-			giorno = InputDati.leggiIntero(MSG_GIORNO, 1, 30);
-		} else {
-			giorno = InputDati.leggiIntero(MSG_GIORNO, 1, 29);
-		}
+		LocalDate data = null;
+		boolean trovato = true;
+		while (trovato) {
+			int anno = InputDati.leggiInteroConMinimo(MSG_ANNO, 2023);
+			int mese = InputDati.leggiIntero(MSG_MESE, 1, 12);
+			int giorno = InputDati.leggiIntero(MSG_GIORNO,1,31);
 
-		return new Giorno (anno, mese, giorno);
+			try {
+				data = LocalDate.of(anno, mese, giorno);
+				trovato = false;
+				System.out.println(MSG_SUCCESSO_CREAZIONE_GIORNO);
+			} catch (DateTimeException e) {
+				System.out.println(MSG_ERR_CREAZIONE_GIORNO);
+				trovato = true;
+			}
+		}
+		return new Giorno (data);
 	}
 
 	public String descrizioneGiorno() {

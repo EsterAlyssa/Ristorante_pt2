@@ -9,12 +9,6 @@ public class Periodo {
 		this.periodoValidita = new TreeSet<>();
 	}
 
-	// crea un periodo dato un singolo giorno
-	public Periodo(Giorno giorno) {	
-		this.periodoValidita = new TreeSet<>();
-		periodoValidita.add(giorno);
-	}
-
 	public TreeSet<Giorno> getPeriodoValidita() {
 		return periodoValidita;
 	}
@@ -23,6 +17,10 @@ public class Periodo {
 		this.periodoValidita = periodoValidita;
 	}
 
+	public boolean aggiungiGiorno(Giorno giorno) {
+		return this.periodoValidita.add(giorno);
+	}
+	
 	public static Periodo unisciPeriodi(Periodo periodo1, Periodo periodo2) {
 		Periodo periodoSomma = new Periodo();
 		// Aggiungi tutti i giorni del primo periodo al periodoSomma

@@ -5,99 +5,72 @@ import Giorno.GiornoView.GiornoView;
 
 public class CreazioneDirectory {
 
-	public static String creaDirectoryCalendario(String pathCompletoFileRistorante) {
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectory = "Calendario";
-		String pathCalendario = pathDirectory + "/" + nomeDirectory;
+	public static String creaDirectory(String pathCompletoFileRistorante, String nomeNuovaDirectory) {
+		String pathDirectoryRistorante = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
+		return creaSubDirectory(pathDirectoryRistorante, nomeNuovaDirectory);
+	}
 
-		// Controlla se la directory "Calendario" esiste, altrimenti la crea
-		ServizioFile.creaDirectory(pathCalendario);
-		return pathCalendario;
+	public static String creaDirectoryCalendario(String pathCompletoFileRistorante) {
+		String nomeDirectory = "Calendario";
+		return creaDirectory(pathCompletoFileRistorante, nomeDirectory);
 	}
 
 	public static String creaDirectoryInsiemiExtra(String pathCompletoFileRistorante) {
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
 		String nomeDirectory = "Insiemi Extra";
-		String pathDirectoryInsiemiExtra = pathDirectory + "/" + nomeDirectory;
-
-		// Controlla se la directory "Calendario" esiste, altrimenti la crea
-		ServizioFile.creaDirectory(pathDirectoryInsiemiExtra);
-		return pathDirectoryInsiemiExtra;
+		return creaDirectory(pathCompletoFileRistorante, nomeDirectory);
 	}
 
 	public static String creaDirectoryRegistroMagazzino(String pathCompletoFileRistorante) {
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
 		String nomeDirectory = "Registro Magazzino";
-		String pathRegistroMagazzino = pathDirectory + "/" + nomeDirectory;
-		// Controlla se la directory "Registro Magazzino" esiste, altrimenti la crea
-		ServizioFile.creaDirectory(pathRegistroMagazzino);
-
-		return pathRegistroMagazzino;
+		return creaDirectory(pathCompletoFileRistorante, nomeDirectory);
 	}
 
 	public static String creaDirectoryRicettario (String pathCompletoFileRistorante) {
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectoryRicettario = "Ricettario";
-		String pathRicettario = pathDirectory + "/" + nomeDirectoryRicettario;
-
-		// Controlla se la directory "Registro Magazzino" esiste, altrimenti la crea
-		ServizioFile.creaDirectory(pathRicettario);
-		
-		return pathRicettario;
+		String nomeDirectory = "Ricettario";
+		return creaDirectory(pathCompletoFileRistorante, nomeDirectory);
 	}
-	
+
 	public static String creaDirectoryPiatti (String pathCompletoFileRistorante) {
-		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
-		String nomeDirectoryPiatti = "Piatti";
-		String pathPiatti = pathDirectory + "/" + nomeDirectoryPiatti;
-
-		// Controlla se la directory "Piatti" esiste, altrimenti la crea
-		ServizioFile.creaDirectory(pathPiatti);
-		
-		return pathPiatti;
+		String nomeDirectory = "Piatti";
+		return creaDirectory(pathCompletoFileRistorante, nomeDirectory);
 	}
-	
+
 	public static String creaDirectoryMenuTematici (String pathCompletoFileRistorante) {
 		String pathDirectory = pathCompletoFileRistorante.substring(0, pathCompletoFileRistorante.lastIndexOf("/"));
 		return creaSubDirectoryMenuTematici(pathDirectory);
 	}
 
-	public static String creaDirectoryGiornata(Giorno dataPrenotazione, String pathCalendario) {
-		GiornoView giornoView = new GiornoView (dataPrenotazione.getGiorno());
+	public static String creaSubDirectory(String pathDirectory, String nomeNuovaDirectory) {
+		String pathNuovaDirectory = pathDirectory + "/" + nomeNuovaDirectory;
+		// Controlla se la directory esiste, altrimenti la crea
+		ServizioFile.creaDirectory(pathNuovaDirectory);
+		return pathNuovaDirectory;
+	}
+
+	public static String creaDirectoryGiornata(Giorno giorno, String pathDirectoryCalendario) {
+		GiornoView giornoView = new GiornoView (giorno.getGiorno());
 		String nomeDirectoryGiornata = giornoView.descrizioneGiorno();
-		String pathGiornata = pathCalendario + "/" + nomeDirectoryGiornata;
-		ServizioFile.creaDirectory(pathGiornata);
-		return pathGiornata;
+		return creaSubDirectory(pathDirectoryCalendario, nomeDirectoryGiornata);
 	}
 
-	public static String creaSubDirectoryMenuTematici(String pathGiornata) {
+	public static String creaSubDirectoryMenuTematici(String pathDirectoryGiornata) {
 		String nomeDirectoryMenuTematici = "Menu tematici";
-		String pathDirectoryMenuTematici = pathGiornata + "/" + nomeDirectoryMenuTematici;
-		ServizioFile.creaDirectory(pathDirectoryMenuTematici);
-		return pathDirectoryMenuTematici;
+		return creaSubDirectory(pathDirectoryGiornata, nomeDirectoryMenuTematici);
 	}
 
-	public static String creaSubDirectoryMenuCarta(String pathGiornata) {
+	public static String creaSubDirectoryMenuCarta(String pathDirectoryGiornata) {
 		String nomeDirectoryMenuCarta = "Menu alla carta";
-		String pathDirectoryMenuCarta = pathGiornata + "/" + nomeDirectoryMenuCarta;
-		ServizioFile.creaDirectory(pathDirectoryMenuCarta);
-		return pathDirectoryMenuCarta;
+		return creaSubDirectory(pathDirectoryGiornata, nomeDirectoryMenuCarta);
 	}
 
-	public static String creaSubDirectoryPrenotazioni(String pathGiornata) {
+	public static String creaSubDirectoryPrenotazioni(String pathDirectoryGiornata) {
 		String nomeDirectoryPrenotazioni = "Prenotazioni";
-		String pathDirectoryPrenotazioni = pathGiornata + "/" + nomeDirectoryPrenotazioni;
-		ServizioFile.creaDirectory(pathDirectoryPrenotazioni);
-		return pathDirectoryPrenotazioni;
+		return creaSubDirectory(pathDirectoryGiornata, nomeDirectoryPrenotazioni);
 	}
 
 	public static String creaSubDirectoryDaComprare(String pathDirectoryGiornata) {
 		String nomeDirectoryDaComprare = "Da comprare";
-		String pathDirectoryDaComprare = pathDirectoryGiornata + "/" + nomeDirectoryDaComprare;
-
-		// Controlla se la directory esiste, altrimenti la crea
-		ServizioFile.creaDirectory(pathDirectoryDaComprare);
-		return pathDirectoryDaComprare;
+		return creaSubDirectory(pathDirectoryGiornata, nomeDirectoryDaComprare);
 	}
 
 

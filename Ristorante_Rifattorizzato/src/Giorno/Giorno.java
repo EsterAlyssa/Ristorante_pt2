@@ -29,13 +29,6 @@ public class Giorno implements Comparable<Giorno> {
 	public int compareTo(Giorno altroGiorno) {
 		return this.giorno.compareTo(altroGiorno.getGiorno());
 	}
-	
-	public int confrontoScadenza(Giorno giorno2) {
-		return giorno.compareTo(giorno2.getGiorno()); 
-		//negativo se giorno scade prima di giorno2,	
-		//positivo se giorno scade dopo giorno2, 
-		//0 se sono lo stesso giorno
-	}
 
 	public static Giorno ritornaGiornoCorrente() {
 		return new Giorno (LocalDate.now());

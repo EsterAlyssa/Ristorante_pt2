@@ -17,7 +17,7 @@ public class Prenotazione {
 		this.data = data;
 		this.elenco = new HashMap<>();
 	}
-	
+
 	public Prenotazione(String cliente) {
 		this.cliente = cliente;
 		this.numCoperti = 0;
@@ -57,8 +57,13 @@ public class Prenotazione {
 		this.elenco = elenco;
 	}
 
-	public void aggiungiScelta (SceltaPrenotazione scelta, int numPersone) {
-		elenco.put(scelta, numPersone);
+	public boolean aggiungiScelta (SceltaPrenotazione scelta, int numPersone) {
+		if (scelta != null && numPersone>0) {
+			elenco.put(scelta, numPersone);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	//metodo che servira' per la lista della spesa relativa alla singola prenotazione
@@ -71,7 +76,7 @@ public class Prenotazione {
 		}
 		return mapPiatti;
 	}
-	
+
 }
 
 
