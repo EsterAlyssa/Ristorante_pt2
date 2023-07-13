@@ -1,5 +1,9 @@
 package Main;
 
+/*
+ * Autrici: Adinolfi Ester 723378, Medaglia Anna 723483
+ */
+
 import Ristorante.Ristorante;
 import Utenti.Utente;
 import Utenti.Gestore.Gestore;
